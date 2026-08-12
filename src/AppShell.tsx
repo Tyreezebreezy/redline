@@ -1,5 +1,6 @@
 import { type Editor, useEditorState } from "@tiptap/react";
 import type { ReactNode } from "react";
+import type { EditorIssue } from "./axiom/projection";
 import type { DocumentSummary, RecoveryPoint } from "./documents";
 import { countText } from "./editor";
 import { ThemeControl } from "./ThemeControl";
@@ -58,7 +59,7 @@ export function TopBar({ saveState }: { saveState: SaveState }) {
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.3</span>
+        <span className="brand-version">0.0.4</span>
       </div>
       <div className="profile">
         <span>Profile</span>
@@ -242,7 +243,33 @@ export function Sidebar({
   );
 }
 
-export function AnalysisPanel() {
+export type AnalysisState =
+  | { status: "ready" }
+  | { status: "analyzing" }
+  | { status: "complete"; issues: EditorIssue[] }
+  | { status: "stale" }
+  | { status: "error"; message: string };
+
+export function AnalysisPanel({
+  analysis,
+  disabled,
+  onAnalyze,
+}: {
+  analysis: AnalysisState;
+  disabled: boolean;
+  onAnalyze: () => void;
+}) {
+  const panelState =
+    analysis.status === "complete"
+      ? `${analysis.issues.length} ${analysis.issues.length === 1 ? "issue" : "issues"}`
+      : analysis.status === "analyzing"
+        ? "Analyzing…"
+        : analysis.status === "stale"
+          ? "Stale"
+          : analysis.status === "error"
+            ? "Failed"
+            : "Ready";
+
   return (
     <aside className="analysis-panel" aria-labelledby="analysis-title">
       <header className="panel-header">
@@ -250,14 +277,71 @@ export function AnalysisPanel() {
           <p className="section-label">Review</p>
           <h2 id="analysis-title">Analysis</h2>
         </div>
-        <span className="panel-state">Inactive</span>
+        <span className="panel-state" role="status">
+          {panelState}
+        </span>
       </header>
-      <div className="analysis-empty">
-        <div className="empty-icon" aria-hidden="true">
-          <Icon name="message" />
-        </div>
-        <h3>Nothing to review yet</h3>
-        <p>Analysis remains inactive until AXIOM is introduced.</p>
+      <div className="analysis-content" aria-live="polite">
+        {analysis.status === "complete" && analysis.issues.length ? (
+          <ol className="issue-list">
+            {analysis.issues.map((issue) => (
+              <li className="issue-card" key={issue.id}>
+                <div className="issue-meta">
+                  <span>{issue.category.replace("-", " ")}</span>
+                  <span>{issue.source}</span>
+                </div>
+                <h3>{issue.message}</h3>
+                <p className="issue-original">“{issue.originalText}”</p>
+                {issue.suggestions.length ? (
+                  <p className="issue-suggestions">
+                    Suggested:{" "}
+                    {issue.suggestions
+                      .map(({ text }) => text || "Remove")
+                      .join(", ")}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <div className="analysis-empty">
+            <div className="empty-icon" aria-hidden="true">
+              <Icon name="message" />
+            </div>
+            <h3>
+              {analysis.status === "analyzing"
+                ? "Checking your writing…"
+                : analysis.status === "complete"
+                  ? "No issues found"
+                  : analysis.status === "stale"
+                    ? "Document changed"
+                    : analysis.status === "error"
+                      ? "Analysis failed"
+                      : "Ready to analyze"}
+            </h3>
+            <p>
+              {analysis.status === "analyzing"
+                ? "AXIOM is analyzing locally."
+                : analysis.status === "complete"
+                  ? "AXIOM found no issues in the current text."
+                  : analysis.status === "stale"
+                    ? "Check again to review the latest text."
+                    : analysis.status === "error"
+                      ? analysis.message
+                      : "Run a private, local grammar check when you are ready."}
+            </p>
+          </div>
+        )}
+        <button
+          className="analyze-button"
+          disabled={disabled || analysis.status === "analyzing"}
+          onClick={onAnalyze}
+          type="button"
+        >
+          {analysis.status === "stale" || analysis.status === "error"
+            ? "Check again"
+            : "Check Writing"}
+        </button>
       </div>
     </aside>
   );

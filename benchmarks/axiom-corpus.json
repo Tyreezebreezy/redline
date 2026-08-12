@@ -1,0 +1,62 @@
+[
+  {
+    "id": "correct-prose",
+    "text": "The report is complete, and the team has reviewed it.",
+    "expected": []
+  },
+  {
+    "id": "grammar-article",
+    "text": "This is a example of clear prose.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "spelling",
+    "text": "The document contains a misspelledd word.",
+    "expected": [{ "originalText": "misspelledd" }]
+  },
+  {
+    "id": "punctuation",
+    "text": "I cant attend the meeting.",
+    "expected": [{ "originalText": "cant" }]
+  },
+  {
+    "id": "casual",
+    "text": "Thanks for checking this out—I really appreciate it! 😀",
+    "expected": []
+  },
+  {
+    "id": "academic",
+    "text": "These findings suggest that the intervention improved retention.",
+    "expected": []
+  },
+  {
+    "id": "professional",
+    "text": "Please send the revised proposal before Friday afternoon.",
+    "expected": []
+  },
+  {
+    "id": "technical-protected",
+    "text": "Run redline_cli --dry-run against 192.168.1.10 and open C:\\REDLINE\\config.toml for v0.0.4. See https://example.com/docs.",
+    "expected": []
+  },
+  {
+    "id": "valid-unusual",
+    "text": "Colorless green ideas sleep furiously.",
+    "expected": []
+  },
+  {
+    "id": "unicode-name",
+    "text": "Zoë reviewed the résumé before the meeting.",
+    "expected": []
+  },
+  {
+    "id": "unicode-offset",
+    "text": "😀 This is a example.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "heading-list-projection",
+    "text": "Deployment checklist\nVerify the database\nRestart the service",
+    "expected": []
+  }
+]

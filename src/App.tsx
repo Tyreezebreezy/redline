@@ -3,11 +3,14 @@ import { type Editor, useEditor } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AnalysisPanel,
+  type AnalysisState,
   type SaveState,
   Sidebar,
   StatusBar,
   TopBar,
 } from "./AppShell";
+import { analyzeText, getGrammarProvider } from "./axiom/axiom";
+import { mapIssue, projectDocument } from "./axiom/projection";
 import {
   type DocumentRecord,
   type DocumentSummary,
@@ -89,16 +92,20 @@ function App() {
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
   const [editorEpoch, setEditorEpoch] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [analysis, setAnalysis] = useState<AnalysisState>({ status: "ready" });
   const editorRef = useRef<Editor | null>(null);
   const activeRef = useRef<DocumentRecord | null>(null);
   const titleRef = useRef(title);
   const dirtyRef = useRef(false);
   const generationRef = useRef(0);
+  const analysisGenerationRef = useRef(0);
   const idleTimer = useRef<number | undefined>(undefined);
   const maxTimer = useRef<number | undefined>(undefined);
   const saveQueue = useRef(Promise.resolve());
 
   const setCurrent = useCallback((document: DocumentRecord | null) => {
+    generationRef.current += 1;
+    analysisGenerationRef.current += 1;
     activeRef.current = document;
     setActive(document);
     const nextTitle = document?.title ?? "Untitled";
@@ -108,6 +115,7 @@ function App() {
     setEditorEpoch((value) => value + 1);
     setSaveState("Saved");
     setSaveError(null);
+    setAnalysis({ status: "ready" });
   }, []);
 
   const refreshLists = useCallback(async (documentId?: string) => {
@@ -186,9 +194,17 @@ function App() {
   );
 
   const markDirty = useCallback(
-    (editor: Editor) => {
+    (editor: Editor, contentChanged = true) => {
       editorRef.current = editor;
       generationRef.current += 1;
+      if (contentChanged) {
+        analysisGenerationRef.current += 1;
+        setAnalysis((current) =>
+          current.status === "ready" || current.status === "error"
+            ? current
+            : { status: "stale" },
+        );
+      }
       const wasDirty = dirtyRef.current;
       dirtyRef.current = true;
       setSaveState("Unsaved");
@@ -292,7 +308,7 @@ function App() {
   const changeTitle = (next: string) => {
     titleRef.current = next;
     setTitle(next);
-    if (editorRef.current) markDirty(editorRef.current);
+    if (editorRef.current) markDirty(editorRef.current, false);
   };
 
   const moveToTrash = async () => {
@@ -349,6 +365,46 @@ function App() {
     }
   };
 
+  const analyze = async () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const generation = analysisGenerationRef.current;
+    const projection = projectDocument(editor.state.doc);
+    setAnalysis({ status: "analyzing" });
+    try {
+      const issues = await analyzeText(
+        projection.text,
+        await getGrammarProvider(),
+      );
+      if (
+        analysisGenerationRef.current !== generation ||
+        editorRef.current !== editor
+      ) {
+        setAnalysis({ status: "stale" });
+        return;
+      }
+      const mapped = issues.map((issue) => mapIssue(projection, issue));
+      if (mapped.some((issue) => issue === null)) {
+        throw new Error(
+          "AXIOM returned an issue that could not be mapped safely.",
+        );
+      }
+      setAnalysis({
+        status: "complete",
+        issues: mapped.filter((issue) => issue !== null),
+      });
+    } catch (error) {
+      if (
+        analysisGenerationRef.current !== generation ||
+        editorRef.current !== editor
+      ) {
+        setAnalysis({ status: "stale" });
+      } else {
+        setAnalysis({ status: "error", message: errorMessage(error) });
+      }
+    }
+  };
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#workspace">
@@ -378,7 +434,11 @@ function App() {
         ) : (
           <main className="workspace" id="workspace" tabIndex={-1} />
         )}
-        <AnalysisPanel />
+        <AnalysisPanel
+          analysis={analysis}
+          disabled={!editorInstance}
+          onAnalyze={() => void analyze()}
+        />
       </div>
       <StatusBar
         editor={editorInstance}

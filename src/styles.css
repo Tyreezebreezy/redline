@@ -279,6 +279,13 @@ body {
   min-height: 0;
 }
 
+.analysis-content {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -707,6 +714,68 @@ body {
   text-align: center;
 }
 
+.issue-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  margin: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.issue-card {
+  padding: 14px;
+  background: var(--surface-selected);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+
+.issue-card h3 {
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.issue-card p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.issue-meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+.issue-original {
+  color: var(--text-secondary);
+}
+
+.issue-suggestions {
+  color: var(--text-muted);
+}
+
+.analyze-button {
+  min-height: 38px;
+  margin: auto 16px 16px;
+  color: white;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  background: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 80%, white 20%);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.analyze-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
 .empty-icon {
   display: grid;
   width: 56px;
@@ -804,6 +873,11 @@ body {
 .trash-button:focus-visible,
 .save-button:focus-visible,
 .title-control input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.analyze-button:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }

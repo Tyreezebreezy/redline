@@ -28,8 +28,14 @@ const packageJson = JSON.parse(packageText);
 assert.deepEqual(config.app.security.capabilities, ["documents"]);
 assert.equal(
   config.app.security.csp["connect-src"],
-  "ipc: http://ipc.localhost",
+  "'self' ipc: http://ipc.localhost",
 );
+assert.equal(
+  config.app.security.csp["script-src"],
+  "'self' 'wasm-unsafe-eval'",
+);
+assert.equal(config.app.security.csp["worker-src"], "'self' blob:");
+assert.equal(config.app.security.devCsp["worker-src"], "'self' blob:");
 assert.match(
   config.app.security.devCsp["connect-src"],
   /ws:\/\/localhost:1420/,
@@ -48,11 +54,12 @@ assert.doesNotMatch(
   appText,
   /Writing Score|Correctness|Clarity|Style|issue count/i,
 );
-assert.equal(packageJson.version, "0.0.3");
-assert.equal(config.version, "0.0.3");
-assert.match(cargoText, /version = "0\.0\.3"/);
-assert.match(appText, /0\.0\.3/);
+assert.equal(packageJson.version, "0.0.4");
+assert.equal(config.version, "0.0.4");
+assert.match(cargoText, /version = "0\.0\.4"/);
+assert.match(appText, /0\.0\.4/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
+assert.equal(packageJson.dependencies["harper.js"], "2.7.0");
 assert.deepEqual(
   Object.entries(packageJson.dependencies)
     .filter(([name]) => name.startsWith("@tiptap/"))
