@@ -1,30 +1,58 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [configText, cargoText, appText, packageText] = await Promise.all([
+const [
+  configText,
+  cargoText,
+  appText,
+  packageText,
+  capabilityText,
+  permissionText,
+] = await Promise.all([
   readFile(new URL("../src-tauri/tauri.conf.json", import.meta.url), "utf8"),
   readFile(new URL("../src-tauri/Cargo.toml", import.meta.url), "utf8"),
   readFile(new URL("../src/AppShell.tsx", import.meta.url), "utf8"),
   readFile(new URL("../package.json", import.meta.url), "utf8"),
+  readFile(
+    new URL("../src-tauri/capabilities/documents.json", import.meta.url),
+    "utf8",
+  ),
+  readFile(
+    new URL("../src-tauri/permissions/documents.toml", import.meta.url),
+    "utf8",
+  ),
 ]);
 const config = JSON.parse(configText);
 const packageJson = JSON.parse(packageText);
 
-assert.deepEqual(config.app.security.capabilities, []);
-assert.equal(config.app.security.csp["connect-src"], "'none'");
+assert.deepEqual(config.app.security.capabilities, ["documents"]);
+assert.equal(
+  config.app.security.csp["connect-src"],
+  "ipc: http://ipc.localhost",
+);
 assert.match(
   config.app.security.devCsp["connect-src"],
   /ws:\/\/localhost:1420/,
 );
-assert.doesNotMatch(cargoText, /tauri-plugin|serde/);
+assert.doesNotMatch(cargoText, /tauri-plugin/);
+assert.match(
+  cargoText,
+  /rusqlite = \{ version = "=0\.40\.1", default-features = false, features = \["bundled"\] \}/,
+);
+assert.match(
+  cargoText,
+  /serde = \{ version = "=1\.0\.229", features = \["derive"\] \}/,
+);
+assert.match(cargoText, /serde_json = "=1\.0\.151"/);
 assert.doesNotMatch(
   appText,
   /Writing Score|Correctness|Clarity|Style|issue count/i,
 );
-assert.equal(packageJson.version, "0.0.2");
-assert.equal(config.version, "0.0.2");
-assert.match(cargoText, /version = "0\.0\.2"/);
-assert.match(appText, /0\.0\.2/);
+assert.equal(packageJson.version, "0.0.3");
+assert.equal(config.version, "0.0.3");
+assert.match(cargoText, /version = "0\.0\.3"/);
+assert.match(appText, /0\.0\.3/);
+assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.deepEqual(
   Object.entries(packageJson.dependencies)
     .filter(([name]) => name.startsWith("@tiptap/"))
@@ -36,5 +64,30 @@ assert.deepEqual(
     ["@tiptap/starter-kit", "3.30.0"],
   ],
 );
+
+const capability = JSON.parse(capabilityText);
+assert.deepEqual(capability.windows, ["main"]);
+assert.deepEqual(capability.permissions, [
+  "documents",
+  "core:event:allow-listen",
+  "core:event:allow-unlisten",
+  "core:window:allow-destroy",
+]);
+assert.doesNotMatch(
+  `${capabilityText}\n${permissionText}`,
+  /fs:|shell:|process:|http:|sql:|dialog:|global-shortcut:|microphone|camera/i,
+);
+for (const command of [
+  "load_workspace",
+  "open_document",
+  "save_document",
+  "delete_document",
+  "list_trash",
+  "restore_deleted_document",
+  "list_document_revisions",
+  "restore_document_revision",
+]) {
+  assert.match(permissionText, new RegExp(`"${command}"`));
+}
 
 console.log("REDLINE foundation boundaries verified.");

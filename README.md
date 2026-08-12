@@ -1,6 +1,6 @@
 # REDLINE
 
-REDLINE is a local-first desktop writing assistant. Version 0.0.2 adds a focused rich-text editor to the desktop foundation. Proofreading, AXIOM, documents, persistence, voice, and synchronization remain deliberately deferred.
+REDLINE is a local-first desktop writing assistant. Version 0.0.3 adds local SQLite documents, autosave, recent documents, Trash restore, and bounded recovery points to the rich-text editor. Proofreading, AXIOM, voice, and synchronization remain deliberately deferred.
 
 ## Commands
 

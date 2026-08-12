@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "REDLINE",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "identifier": "com.tyree.redline",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -22,10 +22,10 @@
       }
     ],
     "security": {
-      "capabilities": [],
+      "capabilities": ["documents"],
       "csp": {
         "default-src": "'self' customprotocol: asset:",
-        "connect-src": "'none'",
+        "connect-src": "ipc: http://ipc.localhost",
         "font-src": "'self'",
         "form-action": "'none'",
         "frame-src": "'none'",

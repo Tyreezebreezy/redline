@@ -1,0 +1,13 @@
+[[permission]]
+identifier = "documents"
+description = "Allows the main window to use REDLINE's bounded document commands."
+commands.allow = [
+  "load_workspace",
+  "open_document",
+  "save_document",
+  "delete_document",
+  "list_trash",
+  "restore_deleted_document",
+  "list_document_revisions",
+  "restore_document_revision",
+]
