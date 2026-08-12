@@ -4,7 +4,9 @@ import { Editor } from "@tiptap/react";
 import { Dialect, LocalLinter } from "harper.js";
 import { binaryInlined } from "harper.js/binaryInlined";
 import {
+  type AxiomIssue,
   analyzeText,
+  findProtectedSpans,
   normalizeDictionaryTerm,
   PROFILE_RULE_OVERRIDES,
   type WritingProfile,
@@ -17,19 +19,27 @@ import {
 } from "../src/axiom/projection.ts";
 import { EDITOR_EXTENSIONS } from "../src/editor.ts";
 
-type ExpectedIssue = { originalText: string; category?: string };
+type ExpectedIssue = {
+  originalText: string;
+  category?: string;
+  ruleId?: string;
+};
 type Case = {
+  audit?: "redundant-that-false-positive" | "redundant-that-true-positive";
   id: string;
   text: string;
   expected: ExpectedIssue[];
+  knownLimitations?: ExpectedIssue[];
   dictionary?: string[];
   ignore?: { occurrence: number; originalText: string };
   profile?: WritingProfile;
   protected?: boolean;
+  protectedSpans?: number;
 };
 type Row = {
   case: string;
   issues: string[];
+  knownLimitations: string[];
   mappingFailures: number;
   missed: string[];
   ms: number;
@@ -57,9 +67,29 @@ let truePositives = 0;
 let expectedFindings = 0;
 let protectedSpanFailures = 0;
 let mappingFailures = 0;
+let knownLimitations = 0;
 const rows: Row[] = [];
 const warmTimes: number[] = [];
 const performanceRows: object[] = [];
+
+function matches(issue: AxiomIssue, expected: ExpectedIssue) {
+  return (
+    expected.originalText === issue.originalText &&
+    (!expected.category || expected.category === issue.category) &&
+    (!expected.ruleId || expected.ruleId === issue.ruleId)
+  );
+}
+
+function consumeMatches(issues: AxiomIssue[], expected: ExpectedIssue[]) {
+  const remaining = [...issues];
+  const missed: ExpectedIssue[] = [];
+  for (const item of expected) {
+    const index = remaining.findIndex((issue) => matches(issue, item));
+    if (index < 0) missed.push(item);
+    else remaining.splice(index, 1);
+  }
+  return { missed, remaining };
+}
 
 try {
   for (const fixture of corpus) {
@@ -106,30 +136,31 @@ try {
         (issue) => !isIgnoredIssue(issue, [ignored]),
       );
     }
-    const unexpected = evaluatedIssues.filter(
-      (issue) =>
-        !fixture.expected.some(
-          (expected) =>
-            expected.originalText === issue.originalText &&
-            (!expected.category || expected.category === issue.category),
-        ),
+    const expectedMatches = consumeMatches(evaluatedIssues, fixture.expected);
+    const knownMatches = consumeMatches(
+      expectedMatches.remaining,
+      fixture.knownLimitations ?? [],
     );
-    const missed = fixture.expected.filter(
-      (expected) =>
-        !evaluatedIssues.some(
-          (issue) =>
-            expected.originalText === issue.originalText &&
-            (!expected.category || expected.category === issue.category),
-        ),
-    );
+    const unexpected = knownMatches.remaining;
+    const missed = expectedMatches.missed;
+    const observedKnown =
+      (fixture.knownLimitations?.length ?? 0) - knownMatches.missed.length;
     editor.destroy();
-    const protectedFailures = fixture.protected ? evaluatedIssues.length : 0;
+    const spanCountFailure =
+      fixture.protectedSpans === undefined
+        ? 0
+        : Number(
+            findProtectedSpans(fixture.text).length !== fixture.protectedSpans,
+          );
+    const protectedFailures =
+      (fixture.protected ? evaluatedIssues.length : 0) + spanCountFailure;
     falsePositives += unexpected.length;
     misses += missed.length;
     truePositives += fixture.expected.length - missed.length;
     expectedFindings += fixture.expected.length;
     protectedSpanFailures += protectedFailures;
     mappingFailures += failedMappings;
+    knownLimitations += observedKnown;
     const elapsed = Number((performance.now() - caseStarted).toFixed(1));
     warmTimes.push(elapsed);
     rows.push({
@@ -139,6 +170,12 @@ try {
           `${issue.originalText}: ${issue.message} [${issue.ruleId ?? "unknown"}]`,
       ),
       mappingFailures: failedMappings,
+      knownLimitations: (fixture.knownLimitations ?? [])
+        .filter((expected) => !knownMatches.missed.includes(expected))
+        .map(
+          (expected) =>
+            `${expected.originalText} [${expected.ruleId ?? "any"}]`,
+        ),
       unexpected: unexpected.map((issue) => issue.originalText),
       missed: missed.map((issue) => issue.originalText),
       ms: elapsed,
@@ -146,15 +183,62 @@ try {
     });
   }
 
-  for (const [name, paragraphs] of [
-    ["short", 1],
-    ["medium", 30],
-    ["long", 150],
+  const redundantThatCases = corpus.filter(({ audit }) => audit);
+  const enabledAudit = { falsePositives: 0, truePositives: 0 };
+  for (const fixture of redundantThatCases) {
+    const issues = await analyzeWithHarper(linter, fixture.text);
+    const hits = issues.filter(
+      ({ ruleId }) => ruleId === "RedundantThat",
+    ).length;
+    if (fixture.audit === "redundant-that-false-positive") {
+      enabledAudit.falsePositives += hits;
+    } else {
+      enabledAudit.truePositives += hits;
+    }
+  }
+  await linter.setLintConfig({ ...defaultConfig, RedundantThat: false });
+  const disabledAudit = {
+    falsePositives: 0,
+    residualFalsePositives: 0,
+    truePositives: 0,
+  };
+  for (const fixture of redundantThatCases) {
+    const issues = await analyzeWithHarper(linter, fixture.text);
+    const hits = issues.filter(
+      ({ ruleId }) => ruleId === "RedundantThat",
+    ).length;
+    if (fixture.audit === "redundant-that-false-positive") {
+      disabledAudit.falsePositives += hits;
+      disabledAudit.residualFalsePositives += issues.length;
+    } else {
+      disabledAudit.truePositives += hits;
+    }
+  }
+  console.log(
+    JSON.stringify(
+      {
+        redundantThatAudit: { disabled: disabledAudit, enabled: enabledAudit },
+      },
+      null,
+      2,
+    ),
+  );
+  await linter.setLintConfig(defaultConfig);
+
+  const cleanSentence =
+    "The revised report is complete and the team reviewed it.";
+  const issueSentence = "This is a unusual result and the team reviewed it.";
+  for (const [name, words] of [
+    ["short", 100],
+    ["one-thousand-words", 1_000],
+    ["five-thousand-words", 5_000],
+    ["ten-thousand-words", 10_000],
   ] as const) {
-    const content = Array.from({ length: paragraphs }, (_, index) =>
-      index === paragraphs - 1
-        ? "This is a unusual result that requires review."
-        : "The revised report is complete, and the team has reviewed it carefully.",
+    const paragraphs = Math.max(1, words / 100);
+    const content = Array.from({ length: paragraphs }, () =>
+      Array.from({ length: 10 }, (_, index) =>
+        index === 0 ? issueSentence : cleanSentence,
+      ).join(" "),
     );
     const performanceEditor = new Editor({
       element: null,
@@ -184,7 +268,7 @@ try {
     performanceRows.push({
       document: name,
       characters: performanceProjection.text.length,
-      paragraphs,
+      paragraphs: content.length,
       issues: performanceIssues.length,
       projectionMs: Number(projectionMs.toFixed(2)),
       analysisMs: Number(analysisMs.toFixed(1)),
@@ -211,6 +295,7 @@ console.log(
       misses,
       protectedSpanFailures,
       mappingFailures,
+      knownLimitations,
       initializationMs: Number(initializationMs.toFixed(1)),
       warmP50Ms: sortedTimes[Math.floor(sortedTimes.length * 0.5)],
       warmP95Ms: sortedTimes[Math.floor(sortedTimes.length * 0.95)],
@@ -220,7 +305,7 @@ console.log(
     2,
   ),
 );
-assert.equal(corpus.length, 120);
+assert.ok(corpus.length >= 180);
 assert.equal(falsePositives, 0);
 assert.equal(misses, 0);
 assert.equal(protectedSpanFailures, 0);

@@ -655,5 +655,390 @@
     "text": "One misspelledd label follows another misspelledd label.",
     "ignore": { "originalText": "misspelledd", "occurrence": 1 },
     "expected": [{ "originalText": "misspelledd", "category": "spelling" }]
+  },
+  {
+    "id": "protected-cidr-ipv4-03",
+    "text": "Route 10.0.0.0/24 through the gateway.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "control-cidr-fraction",
+    "text": "The test passed in 10/24 trials.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "protected-ipv6-cidr",
+    "text": "The IPv6 prefix is 2001:db8::/32.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 2
+  },
+  {
+    "id": "protected-ipv6-loopback",
+    "text": "Bind the service to ::1 for local testing.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "control-ipv6-clock",
+    "text": "The meeting begins at 10:30:00 tomorrow.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "protected-mac-colon",
+    "text": "The MAC address is 00:1A:2B:3C:4D:5E.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 2
+  },
+  {
+    "id": "protected-mac-hyphen",
+    "text": "The adapter reports 00-1A-2B-3C-4D-5E.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "control-mac-food",
+    "text": "We served mac and cheese after the review.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "protected-wildcard-domain",
+    "text": "The certificate covers *.example.com.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "protected-wildcard-subdomain",
+    "text": "Allow *.services.example.org through the proxy.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "control-asterisk-prose",
+    "text": "An asterisk appears before the example.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "control-wildcard-prose",
+    "text": "The wildcard rule applies to every local service.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "protected-scoped-package",
+    "text": "Install @tiptap/react with the package manager.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "protected-scoped-package-dotted",
+    "text": "The build uses @redline/editor-core locally.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "control-at-sign-prose",
+    "text": "Place an at sign before the account name.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "control-scope-prose",
+    "text": "The scope of the review remains intentionally narrow.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "protected-mime-json",
+    "text": "Set the response type to application/json.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "protected-mime-text",
+    "text": "The endpoint returns text/plain by default.",
+    "expected": [],
+    "protected": true,
+    "protectedSpans": 1
+  },
+  {
+    "id": "control-application-prose",
+    "text": "The application is ready for review.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "control-image-prose",
+    "text": "The image appears beside the final paragraph.",
+    "expected": [],
+    "protectedSpans": 0
+  },
+  {
+    "id": "technical-interface-vlan",
+    "text": "Interface eth0 carries VLAN 20 traffic.",
+    "expected": [],
+    "knownLimitations": [{ "originalText": "eth0", "ruleId": "SpellCheck" }]
+  },
+  {
+    "id": "technical-ports-protocols",
+    "text": "Allow TCP port 443 and UDP port 53.",
+    "expected": []
+  },
+  {
+    "id": "technical-security-acronyms",
+    "text": "The SIEM receives IDS and IPS alerts.",
+    "expected": []
+  },
+  {
+    "id": "technical-firewall",
+    "text": "The firewall denies east-west traffic by default.",
+    "expected": []
+  },
+  {
+    "id": "technical-powershell-cmdlet",
+    "text": "Run Get-NetIPConfiguration in PowerShell.",
+    "expected": [],
+    "protectedSpans": 2
+  },
+  {
+    "id": "technical-bash-command",
+    "text": "Use Bash to inspect the local process list.",
+    "expected": []
+  },
+  {
+    "id": "technical-registry-path",
+    "text": "The value is stored under HKEY_LOCAL_MACHINE\\Software\\REDLINE.",
+    "expected": []
+  },
+  {
+    "id": "technical-cve",
+    "text": "The patch addresses CVE-2024-1234.",
+    "expected": []
+  },
+  {
+    "id": "technical-hostname",
+    "text": "The host api01.prod.example.com is healthy.",
+    "expected": []
+  },
+  {
+    "id": "technical-api-endpoint",
+    "text": "Send a POST request to the documents endpoint.",
+    "expected": []
+  },
+  {
+    "id": "technical-json-field",
+    "text": "The JSON payload contains request_id and content_json.",
+    "expected": [],
+    "protectedSpans": 3
+  },
+  {
+    "id": "technical-tls",
+    "text": "The TLS handshake completed without an error.",
+    "expected": []
+  },
+  {
+    "id": "technical-zero-trust",
+    "text": "The zero-trust policy limits lateral movement.",
+    "expected": []
+  },
+  {
+    "id": "technical-idempotent-api",
+    "text": "The API operation is idempotent.",
+    "expected": []
+  },
+  {
+    "id": "technical-passive-construction",
+    "text": "The packet was rejected because the signature was invalid.",
+    "expected": []
+  },
+  {
+    "id": "unusual-fragment",
+    "text": "No further action.",
+    "expected": []
+  },
+  {
+    "id": "unusual-heading",
+    "text": "Known limitations",
+    "expected": []
+  },
+  {
+    "id": "unusual-emphatic-repetition",
+    "text": "The difference is very, very small.",
+    "expected": []
+  },
+  {
+    "id": "unusual-past-perfect",
+    "text": "By noon, the team had had enough.",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "had had", "ruleId": "RepeatedWords" }
+    ]
+  },
+  {
+    "id": "unusual-dialogue",
+    "text": "“Enough,” she said, “we understand.”",
+    "expected": []
+  },
+  {
+    "id": "unusual-parenthetical",
+    "text": "The result (though unexpected) was valid.",
+    "expected": []
+  },
+  {
+    "id": "unusual-em-dash",
+    "text": "A pause—then silence.",
+    "expected": []
+  },
+  {
+    "id": "unusual-en-dash",
+    "text": "The 2024–2026 plan remains in effect.",
+    "expected": []
+  },
+  {
+    "id": "unusual-semicolons",
+    "text": "Yes; no; perhaps.",
+    "expected": []
+  },
+  {
+    "id": "unusual-legitimate-passive",
+    "text": "The report was reviewed by two analysts.",
+    "expected": []
+  },
+  {
+    "id": "unusual-names",
+    "text": "Renée, Zoë, José, and Nguyễn reviewed the report.",
+    "expected": []
+  },
+  {
+    "id": "unusual-non-latin-name",
+    "text": "李明 reviewed the final draft.",
+    "expected": []
+  },
+  {
+    "id": "unusual-inversion",
+    "text": "Never had the team seen such a result.",
+    "expected": []
+  },
+  {
+    "id": "unusual-rhetorical",
+    "text": "What, then, remains?",
+    "expected": []
+  },
+  {
+    "id": "unusual-ellipsis",
+    "text": "And then… nothing.",
+    "expected": []
+  },
+  {
+    "id": "redundant-that-legitimate-subject",
+    "text": "That that approach works is surprising.",
+    "audit": "redundant-that-false-positive",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "That that", "ruleId": "RedundantThat" }
+    ]
+  },
+  {
+    "id": "redundant-that-reporting",
+    "text": "She said that that approach works.",
+    "audit": "redundant-that-false-positive",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "that that", "ruleId": "RedundantThat" }
+    ]
+  },
+  {
+    "id": "redundant-that-reporting-control",
+    "text": "The report confirms that that control is effective.",
+    "audit": "redundant-that-false-positive",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "that that", "ruleId": "RedundantThat" }
+    ]
+  },
+  {
+    "id": "redundant-that-clause-boundary",
+    "text": "It is clear that that outcome is possible.",
+    "audit": "redundant-that-false-positive",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "that that", "ruleId": "RedundantThat" }
+    ]
+  },
+  {
+    "id": "redundant-that-parenthetical",
+    "text": "We know that that, however, is not the issue.",
+    "audit": "redundant-that-false-positive",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "that that", "ruleId": "RedundantThat" }
+    ]
+  },
+  {
+    "id": "redundant-that-nominal-clause",
+    "text": "That that was permitted surprised everyone.",
+    "audit": "redundant-that-false-positive",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "That that", "ruleId": "RedundantThat" }
+    ]
+  },
+  {
+    "id": "redundant-that-malformed-reporting",
+    "text": "She explained that that the test had passed.",
+    "audit": "redundant-that-true-positive",
+    "expected": [{ "originalText": "that that", "ruleId": "RedundantThat" }]
+  },
+  {
+    "id": "redundant-that-malformed-report",
+    "text": "The report shows that that the service is stable.",
+    "audit": "redundant-that-true-positive",
+    "expected": [{ "originalText": "that that", "ruleId": "RedundantThat" }]
+  },
+  {
+    "id": "redundant-that-malformed-clause",
+    "text": "We know that that the issue is resolved.",
+    "audit": "redundant-that-true-positive",
+    "expected": [{ "originalText": "that that", "ruleId": "RedundantThat" }]
+  },
+  {
+    "id": "redundant-that-malformed-speech",
+    "text": "The analyst confirmed that that the host was reachable.",
+    "audit": "redundant-that-true-positive",
+    "expected": [{ "originalText": "that that", "ruleId": "RedundantThat" }]
+  },
+  {
+    "id": "redundant-that-malformed-belief",
+    "text": "I believe that that the result is correct.",
+    "audit": "redundant-that-true-positive",
+    "expected": [{ "originalText": "that that", "ruleId": "RedundantThat" }]
+  },
+  {
+    "id": "redundant-that-malformed-boundary",
+    "text": "They agreed that that the change was necessary.",
+    "audit": "redundant-that-true-positive",
+    "expected": [{ "originalText": "that that", "ruleId": "RedundantThat" }]
+  },
+  {
+    "id": "exact-multiset-duplicate",
+    "text": "One misspelledd label follows another misspelledd label.",
+    "expected": [
+      { "originalText": "misspelledd", "ruleId": "SpellCheck" },
+      { "originalText": "misspelledd", "ruleId": "SpellCheck" }
+    ]
   }
 ]

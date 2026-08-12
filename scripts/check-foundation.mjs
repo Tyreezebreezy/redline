@@ -50,14 +50,11 @@ assert.match(
   /serde = \{ version = "=1\.0\.229", features = \["derive"\] \}/,
 );
 assert.match(cargoText, /serde_json = "=1\.0\.151"/);
-assert.doesNotMatch(
-  appText,
-  /Writing Score|Correctness|Clarity|Style|issue count/i,
-);
-assert.equal(packageJson.version, "0.0.6");
-assert.equal(config.version, "0.0.6");
-assert.match(cargoText, /version = "0\.0\.6"/);
-assert.match(appText, /0\.0\.6/);
+assert.doesNotMatch(appText, /Writing Score|Correctness|issue count/i);
+assert.equal(packageJson.version, "0.0.7");
+assert.equal(config.version, "0.0.7");
+assert.match(cargoText, /version = "0\.0\.7"/);
+assert.match(appText, /0\.0\.7/);
 assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");

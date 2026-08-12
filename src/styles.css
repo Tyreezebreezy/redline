@@ -172,15 +172,25 @@ body {
 }
 
 .profile {
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 38px;
-  padding: 0 13px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 12px;
+  min-height: 48px;
+  padding: 4px 10px;
   color: var(--text-muted);
   font-size: 12px;
   background: color-mix(in srgb, var(--surface-selected) 70%, transparent);
   border: 1px solid var(--border);
   border-radius: 6px;
+}
+
+.profile small {
+  grid-column: 1 / -1;
+  justify-self: end;
+  color: var(--text-muted);
+  font-size: 9px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .profile select {
@@ -319,6 +329,21 @@ body {
 .dictionary-dialog h2 {
   margin: 3px 0 0;
   font-size: 18px;
+}
+
+.dictionary-count,
+.dictionary-description {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.dictionary-count {
+  margin: 3px 0 0;
+}
+
+.dictionary-description {
+  padding: 12px 20px 4px;
+  margin: 0;
 }
 
 .dictionary-dialog button,
@@ -843,10 +868,31 @@ body {
 }
 
 .issue-card {
+  --card-accent: var(--issue-other);
   padding: 10px;
   background: var(--surface-selected);
   border: 1px solid var(--border);
+  border-left: 3px solid
+    color-mix(in srgb, var(--card-accent) 72%, var(--border));
   border-radius: 7px;
+}
+
+.issue-card[data-category="grammar"] {
+  --card-accent: var(--issue-grammar);
+}
+
+.issue-card[data-category="spelling"] {
+  --card-accent: var(--issue-spelling);
+}
+
+.issue-card[data-category="punctuation"] {
+  --card-accent: var(--issue-punctuation);
+}
+
+.issue-card[data-category="style"],
+.issue-card[data-category="readability"],
+.issue-card[data-category="word-choice"] {
+  --card-accent: var(--issue-style);
 }
 
 .issue-card-selected {
@@ -881,10 +927,17 @@ body {
   text-transform: capitalize;
 }
 
-.issue-original {
+.issue-context {
   color: var(--text-secondary);
   font-size: 12px;
   line-height: 1.45;
+}
+
+.issue-context mark {
+  padding: 1px 2px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--card-accent) 18%, transparent);
+  border-radius: 3px;
 }
 
 .issue-explanation,
@@ -894,6 +947,20 @@ body {
   line-height: 1.45;
 }
 
+.issue-explanation {
+  margin: 7px 4px 0;
+}
+
+.issue-explanation summary {
+  width: fit-content;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.issue-explanation p {
+  margin: 5px 0 0;
+}
+
 .manual-edit-note {
   margin: 8px 4px 2px;
 }
@@ -901,7 +968,9 @@ body {
 .suggestion-actions {
   display: grid;
   gap: 6px;
+  padding: 0;
   margin-top: 10px;
+  border: 0;
 }
 
 .issue-secondary-actions {
@@ -918,7 +987,11 @@ body {
   color: var(--text-secondary);
   font: inherit;
   font-size: 11px;
-  background: var(--panel-bg);
+  background: color-mix(
+    in srgb,
+    var(--card-accent, var(--accent)) 8%,
+    var(--panel-bg)
+  );
   border: 1px solid var(--border-strong);
   border-radius: 5px;
   cursor: pointer;
@@ -1072,6 +1145,7 @@ body {
 }
 
 .issue-select:focus-visible,
+.issue-explanation summary:focus-visible,
 .suggestion-actions button:focus-visible,
 .issue-navigation button:focus-visible,
 .issue-secondary-actions button:focus-visible,
@@ -1080,6 +1154,11 @@ body {
 .profile select:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+
+.panel-header h2:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .status-bar span {

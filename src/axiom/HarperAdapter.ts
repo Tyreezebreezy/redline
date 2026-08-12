@@ -72,6 +72,7 @@ function normalizeSuggestions(lint: Lint): AxiomSuggestion[] {
 export async function analyzeWithHarper(
   linter: Linter,
   text: string,
+  descriptions?: Readonly<Record<string, string>>,
 ): Promise<AxiomIssue[]> {
   const boundaries = utf16Boundaries(text);
   const groups = await linter.organizedLints(text, { language: "plaintext" });
@@ -104,6 +105,7 @@ export async function analyzeWithHarper(
           category: category(lint.lint_kind(), ruleId),
           severity: "suggestion",
           message: lint.message(),
+          explanation: descriptions?.[ruleId],
           from,
           to,
           originalText: problemText,
@@ -121,12 +123,14 @@ export async function analyzeWithHarper(
 export class HarperAdapter implements GrammarProvider {
   readonly #linter = new WorkerLinter({ binary, dialect: Dialect.American });
   #baseline: Awaited<ReturnType<Linter["getDefaultLintConfig"]>> | undefined;
+  #descriptions: Awaited<ReturnType<Linter["getLintDescriptions"]>> | undefined;
   #configuration = "";
   #queue = Promise.resolve();
 
   analyze(text: string, ruleOverrides: Readonly<Record<string, boolean>>) {
     const operation = this.#queue.then(async () => {
       this.#baseline ??= await this.#linter.getDefaultLintConfig();
+      this.#descriptions ??= await this.#linter.getLintDescriptions();
       const configuration = JSON.stringify(ruleOverrides);
       if (configuration !== this.#configuration) {
         for (const rule of Object.keys(ruleOverrides)) {
@@ -140,7 +144,7 @@ export class HarperAdapter implements GrammarProvider {
         });
         this.#configuration = configuration;
       }
-      return analyzeWithHarper(this.#linter, text);
+      return analyzeWithHarper(this.#linter, text, this.#descriptions);
     });
     this.#queue = operation.then(
       () => undefined,

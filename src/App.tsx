@@ -273,7 +273,13 @@ function App() {
     if (!projection.text.trim()) {
       analysisProjectionRef.current = projection;
       setSelectedIssueId(null);
-      setAnalysis({ status: "complete", generation, issues: [], session });
+      setAnalysis({
+        status: "complete",
+        generation,
+        issues: [],
+        session,
+        text: projection.text,
+      });
       return;
     }
 
@@ -311,6 +317,7 @@ function App() {
             issue !== null && !isIgnoredIssue(issue, ignoredIssuesRef.current),
         ),
         session,
+        text: projection.text,
       });
     } catch (error) {
       if (
@@ -714,7 +721,7 @@ function App() {
       <TopBar
         dictionary={dictionary}
         onProfileChange={changeProfile}
-        onRemoveDictionaryTerm={(term) => void removeFromDictionary(term)}
+        onRemoveDictionaryTerm={removeFromDictionary}
         profile={profile}
         saveState={saveState}
       />

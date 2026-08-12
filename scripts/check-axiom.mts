@@ -125,6 +125,34 @@ const spans = findProtectedSpans(
 );
 assert.ok(spans.length >= 8);
 
+for (const [text, token] of [
+  ["Route 10.0.0.0/24 through the gateway.", "10.0.0.0/24"],
+  ["The IPv6 prefix is 2001:db8::/32.", "2001:db8::/32"],
+  ["Bind to ::1 for local testing.", "::1"],
+  ["The MAC address is 00:1A:2B:3C:4D:5E.", "00:1A:2B:3C:4D:5E"],
+  ["The certificate covers *.example.com.", "*.example.com"],
+  ["Install @tiptap/react locally.", "@tiptap/react"],
+  ["Return application/json.", "application/json"],
+] as const) {
+  assert.ok(
+    findProtectedSpans(text).some(
+      ({ from, to }) => text.slice(from, to) === token,
+    ),
+    `Missing protected span for ${token}`,
+  );
+}
+for (const text of [
+  "The test passed in 10/24 trials.",
+  "The meeting begins at 10:30:00 tomorrow.",
+  "The notation uses :: between the clauses.",
+  "We served mac and cheese after the review.",
+  "An asterisk appears before the example.",
+  "Place an at sign before the account name.",
+  "The application is ready for review.",
+]) {
+  assert.equal(findProtectedSpans(text).length, 0, text);
+}
+
 const protectedText = "Visit https://example.com for teh guide.";
 const protectedIssues = await analyzeText(protectedText, {
   analyze: async () => [
@@ -249,6 +277,15 @@ assert.deepEqual(PROFILE_RULE_OVERRIDES.academic, {
 });
 assert.deepEqual(PROFILE_RULE_OVERRIDES.professional, {});
 await harper.setLintConfig(harperDefaults);
+const harperDescriptions = await harper.getLintDescriptions();
+const explainedIssue = (
+  await analyzeWithHarper(
+    harper,
+    "This is a unusual result.",
+    harperDescriptions,
+  )
+).find(({ ruleId }) => ruleId === "AnA");
+assert.equal(explainedIssue?.explanation, harperDescriptions.AnA);
 assert.equal(
   (await analyzeWithHarper(harper, "We don't expect a delay.")).some(
     ({ ruleId }) => ruleId === "AvoidContractions",

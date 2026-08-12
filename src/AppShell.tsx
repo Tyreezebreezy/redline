@@ -1,5 +1,5 @@
 import { type Editor, useEditorState } from "@tiptap/react";
-import { type ReactNode, useRef } from "react";
+import { type ReactNode, useEffect, useMemo, useRef } from "react";
 import {
   type AxiomSuggestion,
   isDictionaryEligible,
@@ -69,11 +69,24 @@ export function TopBar({
 }: {
   dictionary: DictionaryEntry[];
   onProfileChange: (profile: WritingProfile) => void;
-  onRemoveDictionaryTerm: (normalizedTerm: string) => void;
+  onRemoveDictionaryTerm: (normalizedTerm: string) => Promise<void>;
   profile: WritingProfile;
   saveState: SaveState;
 }) {
   const dictionaryDialog = useRef<HTMLDialogElement>(null);
+  const dictionaryButton = useRef<HTMLButtonElement>(null);
+  const dictionaryCloseButton = useRef<HTMLButtonElement>(null);
+  const focusDictionaryIndex = (index: number) => {
+    window.requestAnimationFrame(() => {
+      const buttons =
+        dictionaryDialog.current?.querySelectorAll<HTMLButtonElement>(
+          "[data-dictionary-remove]",
+        );
+      const target = buttons?.[Math.min(index, buttons.length - 1)];
+      (target ?? dictionaryCloseButton.current)?.focus();
+    });
+  };
+
   return (
     <header className="top-bar">
       <div className="brand">
@@ -81,7 +94,7 @@ export function TopBar({
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.6</span>
+        <span className="brand-version">0.0.7</span>
       </div>
       <label className="profile">
         <span>Profile</span>
@@ -96,6 +109,9 @@ export function TopBar({
           <option value="academic">Academic</option>
           <option value="professional">Professional</option>
         </select>
+        {profile === "professional" ? (
+          <small>Uses General rules for now</small>
+        ) : null}
       </label>
       <div className="app-state" role="status">
         <span
@@ -109,33 +125,56 @@ export function TopBar({
         <button
           className="dictionary-button"
           onClick={() => dictionaryDialog.current?.showModal()}
+          ref={dictionaryButton}
           type="button"
         >
           <Icon name="settings" />
           <span>Dictionary</span>
         </button>
       </div>
-      <dialog className="dictionary-dialog" ref={dictionaryDialog}>
+      <dialog
+        aria-describedby="dictionary-description"
+        aria-labelledby="dictionary-title"
+        className="dictionary-dialog"
+        onClose={() => dictionaryButton.current?.focus()}
+        ref={dictionaryDialog}
+      >
         <header>
           <div>
             <p className="section-label">Proofreading</p>
-            <h2>Personal dictionary</h2>
+            <h2 id="dictionary-title">Personal dictionary</h2>
+            <p className="dictionary-count">
+              {dictionary.length} {dictionary.length === 1 ? "term" : "terms"}
+            </p>
           </div>
           <button
             aria-label="Close personal dictionary"
             onClick={() => dictionaryDialog.current?.close()}
+            ref={dictionaryCloseButton}
             type="button"
           >
             Close
           </button>
         </header>
+        <p className="dictionary-description" id="dictionary-description">
+          Terms here are excluded from spelling findings on this device.
+        </p>
         {dictionary.length ? (
           <ul className="dictionary-list">
             {dictionary.map((entry) => (
               <li key={entry.normalizedTerm}>
                 <span>{entry.term}</span>
                 <button
-                  onClick={() => onRemoveDictionaryTerm(entry.normalizedTerm)}
+                  aria-label={`Remove ${entry.term} from personal dictionary`}
+                  data-dictionary-remove
+                  onClick={async () => {
+                    const index = dictionary.findIndex(
+                      ({ normalizedTerm }) =>
+                        normalizedTerm === entry.normalizedTerm,
+                    );
+                    await onRemoveDictionaryTerm(entry.normalizedTerm);
+                    focusDictionaryIndex(index);
+                  }}
                   type="button"
                 >
                   Remove
@@ -319,12 +358,75 @@ export type AnalysisState =
       generation: number;
       issues: EditorIssue[];
       session: number;
+      text: string;
     }
   | { status: "error"; message: string };
 
 function suggestionLabel(suggestion: AxiomSuggestion) {
   if (suggestion.kind === "remove" || !suggestion.text) return "Remove";
   return `${suggestion.kind === "insert-after" ? "Insert" : "Replace with"} “${suggestion.text}”`;
+}
+
+const CATEGORY_LABELS: Record<EditorIssue["category"], string> = {
+  formatting: "Formatting",
+  grammar: "Grammar",
+  other: "Writing",
+  punctuation: "Punctuation",
+  readability: "Clarity",
+  spelling: "Spelling",
+  style: "Style",
+  "word-choice": "Word choice",
+};
+
+const contextSegmenter = new Intl.Segmenter(undefined, {
+  granularity: "grapheme",
+});
+
+function contextBoundaries(text: string) {
+  const boundaries = [0];
+  for (const segment of contextSegmenter.segment(text)) {
+    boundaries.push(segment.index + segment.segment.length);
+  }
+  return boundaries;
+}
+
+function boundaryIndex(boundaries: number[], offset: number) {
+  let low = 0;
+  let high = boundaries.length - 1;
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    if (boundaries[middle] <= offset) low = middle + 1;
+    else high = middle - 1;
+  }
+  return Math.max(0, high);
+}
+
+function issueContext(
+  text: string,
+  boundaries: number[],
+  from: number,
+  to: number,
+) {
+  const issueStart = boundaryIndex(boundaries, from);
+  const issueEnd = boundaryIndex(boundaries, to);
+  const issueLength = Math.max(0, issueEnd - issueStart);
+  const shownIssueLength = Math.min(60, issueLength);
+  const remaining = 120 - shownIssueLength;
+  const beforeLength = Math.floor(remaining / 2);
+  const afterLength = remaining - beforeLength;
+  const start = Math.max(0, issueStart - beforeLength);
+  const shownIssueEnd = Math.min(issueEnd, issueStart + shownIssueLength);
+  const end = Math.min(boundaries.length - 1, issueEnd + afterLength);
+  const clean = (value: string) => value.replace(/\s+/gu, " ");
+
+  return {
+    after: clean(text.slice(to, boundaries[end])).trimEnd(),
+    before: clean(text.slice(boundaries[start], from)).trimStart(),
+    issue: clean(text.slice(from, boundaries[shownIssueEnd])),
+    issueTruncated: shownIssueEnd < issueEnd,
+    leadingEllipsis: start > 0,
+    trailingEllipsis: end < boundaries.length - 1,
+  };
 }
 
 export function AnalysisPanel({
@@ -353,6 +455,43 @@ export function AnalysisPanel({
 }) {
   const issues = analysis.status === "complete" ? analysis.issues : [];
   const selectedIndex = issues.findIndex(({ id }) => id === selectedIssueId);
+  const analysisTitle = useRef<HTMLHeadingElement>(null);
+  const analyzeButton = useRef<HTMLButtonElement>(null);
+  const pendingFocusIndex = useRef<number | null>(null);
+  const analysisText = analysis.status === "complete" ? analysis.text : "";
+  const boundaries = useMemo(
+    () => contextBoundaries(analysisText),
+    [analysisText],
+  );
+
+  useEffect(() => {
+    const pending = pendingFocusIndex.current;
+    if (pending === null) return;
+    if (analysis.status === "error") {
+      pendingFocusIndex.current = null;
+      analyzeButton.current?.focus();
+      return;
+    }
+    if (analysis.status !== "complete") return;
+    pendingFocusIndex.current = null;
+    const next = analysis.issues[Math.min(pending, analysis.issues.length - 1)];
+    if (next) onSelectIssue(next.id);
+    const frame = window.requestAnimationFrame(() => {
+      const target = next
+        ? document.querySelector<HTMLButtonElement>(
+            `#issue-${next.id} .issue-select`,
+          )
+        : null;
+      (target ?? analyzeButton.current)?.focus();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [analysis, onSelectIssue]);
+
+  const afterAction = (index: number, action: () => void) => {
+    pendingFocusIndex.current = index;
+    analysisTitle.current?.focus();
+    action();
+  };
   const selectPrevious = () => {
     const index = selectedIndex < 0 ? issues.length - 1 : selectedIndex - 1;
     if (issues[index]) onSelectIssue(issues[index].id);
@@ -365,24 +504,39 @@ export function AnalysisPanel({
     analysis.status === "complete"
       ? `${analysis.issues.length} ${analysis.issues.length === 1 ? "issue" : "issues"}`
       : analysis.status === "analyzing"
-        ? "Analyzing…"
+        ? "Checking locally…"
         : analysis.status === "pending"
-          ? "Waiting for pause…"
+          ? "Waiting for pause"
           : analysis.status === "error"
             ? "Failed"
-            : "Ready";
+            : "Ready to check";
+  const settledAnnouncement =
+    analysis.status === "complete"
+      ? `${analysis.issues.length} ${analysis.issues.length === 1 ? "issue" : "issues"} found.`
+      : analysis.status === "error"
+        ? "Writing check failed. Your document is unchanged."
+        : "";
 
   return (
-    <aside className="analysis-panel" aria-labelledby="analysis-title">
+    <aside
+      aria-busy={
+        analysis.status === "pending" || analysis.status === "analyzing"
+      }
+      aria-labelledby="analysis-title"
+      className="analysis-panel"
+    >
       <header className="panel-header">
         <div>
           <p className="section-label">Review</p>
-          <h2 id="analysis-title">Analysis</h2>
+          <h2 id="analysis-title" ref={analysisTitle} tabIndex={-1}>
+            Analysis
+          </h2>
         </div>
-        <span className="panel-state" role="status">
-          {panelState}
-        </span>
+        <span className="panel-state">{panelState}</span>
       </header>
+      <span aria-atomic="true" aria-live="polite" className="sr-only">
+        {settledAnnouncement}
+      </span>
       <div className="analysis-content">
         {analysis.status === "complete" && analysis.issues.length ? (
           <>
@@ -406,69 +560,108 @@ export function AnalysisPanel({
               </button>
             </nav>
             <ol className="issue-list">
-              {analysis.issues.map((issue) => {
+              {analysis.issues.map((issue, issueIndex) => {
                 const selected = selectedIssueId === issue.id;
+                const category = CATEGORY_LABELS[issue.category];
+                const context = issueContext(
+                  analysisText,
+                  boundaries,
+                  issue.from,
+                  issue.to,
+                );
                 const safeSuggestions = issue.suggestions.map((suggestion) =>
                   canApplySuggestion(issue, suggestion),
                 );
+                const manualNoteId = `manual-${issue.id}`;
                 return (
                   <li
                     className={`issue-card${selected ? " issue-card-selected" : ""}`}
+                    data-category={issue.category}
                     id={`issue-${issue.id}`}
                     key={issue.id}
                   >
                     <button
+                      aria-label={`${category}: ${issue.message}${issue.originalText ? `. Text: ${issue.originalText}` : ". Insertion point"}`}
                       aria-current={selected ? "true" : undefined}
                       className="issue-select"
                       onClick={() => onSelectIssue(issue.id)}
                       type="button"
                     >
                       <span className="issue-meta">
-                        <span>{issue.category.replace("-", " ")}</span>
-                        <span>{issue.severity}</span>
+                        <span>{category}</span>
                       </span>
                       <strong>{issue.message}</strong>
-                      <span className="issue-original">
-                        “{issue.originalText}”
+                      <span className="issue-context">
+                        {context.leadingEllipsis ? "…" : null}
+                        {context.before}
+                        {issue.originalText ? (
+                          <mark>
+                            {context.issue}
+                            {context.issueTruncated ? "…" : null}
+                          </mark>
+                        ) : (
+                          <mark>Insertion point</mark>
+                        )}
+                        {context.after}
+                        {context.trailingEllipsis ? "…" : null}
                       </span>
-                      {issue.explanation ? (
-                        <span className="issue-explanation">
-                          {issue.explanation}
-                        </span>
-                      ) : null}
                     </button>
+                    {issue.explanation &&
+                    issue.explanation !== issue.message ? (
+                      <details className="issue-explanation">
+                        <summary>Why?</summary>
+                        <p>{issue.explanation}</p>
+                      </details>
+                    ) : null}
                     {issue.suggestions.length ? (
-                      <div className="suggestion-actions">
+                      <fieldset className="suggestion-actions">
+                        <legend className="sr-only">Corrections</legend>
                         {issue.suggestions.map((suggestion, index) => (
                           <button
+                            aria-describedby={
+                              safeSuggestions[index] ? undefined : manualNoteId
+                            }
                             disabled={!safeSuggestions[index]}
                             key={`${suggestion.kind}-${suggestion.text}`}
-                            onClick={() => onApplySuggestion(issue.id, index)}
+                            onClick={() =>
+                              afterAction(issueIndex, () =>
+                                onApplySuggestion(issue.id, index),
+                              )
+                            }
                             type="button"
                           >
                             {suggestionLabel(suggestion)}
                           </button>
                         ))}
-                      </div>
+                      </fieldset>
                     ) : (
-                      <p className="manual-edit-note">Review manually.</p>
+                      <p className="manual-edit-note" id={manualNoteId}>
+                        No automatic change is available. Edit the highlighted
+                        text manually.
+                      </p>
                     )}
                     {safeSuggestions.some((safe) => !safe) ? (
-                      <p className="manual-edit-note">
-                        Edit manually — this suggestion crosses a formatting or
-                        structural boundary.
+                      <p className="manual-edit-note" id={manualNoteId}>
+                        No automatic change is safe here. Edit the highlighted
+                        text manually.
                       </p>
                     ) : null}
                     <div className="issue-secondary-actions">
                       <button
-                        onClick={() => onIgnoreIssue(issue.id)}
+                        onClick={() =>
+                          afterAction(issueIndex, () => onIgnoreIssue(issue.id))
+                        }
                         type="button"
                       >
                         Ignore once
                       </button>
                       {isDictionaryEligible(issue) ? (
                         <button
-                          onClick={() => onAddToDictionary(issue.id)}
+                          onClick={() =>
+                            afterAction(issueIndex, () =>
+                              onAddToDictionary(issue.id),
+                            )
+                          }
                           type="button"
                         >
                           Add to dictionary
@@ -487,25 +680,25 @@ export function AnalysisPanel({
             </div>
             <h3>
               {analysis.status === "analyzing"
-                ? "Checking your writing…"
+                ? "Checking locally…"
                 : analysis.status === "pending"
-                  ? "Waiting for a pause…"
+                  ? "Writing changed"
                   : analysis.status === "complete"
                     ? "No issues found"
                     : analysis.status === "error"
                       ? "Analysis failed"
-                      : "Ready to analyze"}
+                      : "Ready to check"}
             </h3>
             <p>
               {analysis.status === "analyzing"
-                ? "AXIOM is analyzing locally."
+                ? "Your writing stays on this device."
                 : analysis.status === "pending"
-                  ? "Keep writing, or check immediately."
+                  ? "Checking after you pause."
                   : analysis.status === "complete"
-                    ? "AXIOM found no issues in the current text."
+                    ? "No issues found in this check."
                     : analysis.status === "error"
-                      ? analysis.message
-                      : "Run a private, local grammar check when you are ready."}
+                      ? `Your document is unchanged. ${analysis.message}`
+                      : "Run a private, local writing check when you are ready."}
             </p>
           </div>
         )}
@@ -513,6 +706,7 @@ export function AnalysisPanel({
           className="analyze-button"
           disabled={disabled}
           onClick={onAnalyze}
+          ref={analyzeButton}
           type="button"
         >
           {analysis.status === "error" ? "Check again" : "Check Writing"}
