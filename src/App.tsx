@@ -1,4 +1,5 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import type { Transaction } from "@tiptap/pm/state";
 import { type Editor, useEditor } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -13,6 +14,8 @@ import {
   type AxiomSuggestion,
   analyzeText,
   getGrammarProvider,
+  isDictionaryEligible,
+  type WritingProfile,
 } from "./axiom/axiom";
 import {
   AXIOM_DECORATIONS,
@@ -22,11 +25,15 @@ import {
 import {
   correctionPlan,
   type EditorIssue,
+  type IgnoredEditorIssue,
+  isIgnoredIssue,
   mapIssue,
   type Projection,
   projectDocument,
+  remapIgnoredIssues,
 } from "./axiom/projection";
 import {
+  type DictionaryEntry,
   type DocumentRecord,
   type DocumentSummary,
   desktopAvailable,
@@ -47,7 +54,7 @@ function errorMessage(error: unknown) {
 
 type DocumentEditorProps = {
   document: DocumentRecord | null;
-  onDirty: (editor: Editor) => void;
+  onDirty: (editor: Editor, transaction: Transaction) => void;
   onReady: (editor: Editor) => void;
   onSelectIssue: (issueId: string) => void;
 };
@@ -85,7 +92,8 @@ function DocumentEditor({
     enableContentCheck: true,
     extensions: EDITOR_EXTENSIONS,
     injectCSS: false,
-    onUpdate: ({ editor: current }) => onDirty(current),
+    onUpdate: ({ editor: current, transaction }) =>
+      onDirty(current, transaction),
     onContentError: ({ error }) => {
       console.error("REDLINE rejected invalid editor content.", error);
     },
@@ -113,6 +121,8 @@ function App() {
   const [recent, setRecent] = useState<DocumentSummary[]>([]);
   const [trash, setTrash] = useState<DocumentSummary[]>([]);
   const [revisions, setRevisions] = useState<RecoveryPoint[]>([]);
+  const [dictionary, setDictionary] = useState<DictionaryEntry[]>([]);
+  const [profile, setProfile] = useState<WritingProfile>("general");
   const [title, setTitle] = useState("Untitled");
   const [saveState, setSaveState] = useState<SaveState>("Saved");
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -130,6 +140,9 @@ function App() {
   const analysisRequestRef = useRef(0);
   const documentSessionRef = useRef(0);
   const analysisProjectionRef = useRef<Projection | null>(null);
+  const dictionaryRef = useRef<ReadonlySet<string>>(new Set());
+  const profileRef = useRef<WritingProfile>("general");
+  const ignoredIssuesRef = useRef<IgnoredEditorIssue[]>([]);
   const analyzeOnReadyRef = useRef(false);
   const analysisTimer = useRef<number | undefined>(undefined);
   const idleTimer = useRef<number | undefined>(undefined);
@@ -143,6 +156,7 @@ function App() {
       analysisRequestRef.current += 1;
       documentSessionRef.current += 1;
       analysisProjectionRef.current = null;
+      ignoredIssuesRef.current = [];
       analyzeOnReadyRef.current = analyzeOnReady;
       editorRef.current = null;
       setEditorInstance(null);
@@ -151,6 +165,9 @@ function App() {
       analysisGenerationRef.current += 1;
       activeRef.current = document;
       setActive(document);
+      const nextProfile = document?.writingProfile ?? "general";
+      profileRef.current = nextProfile;
+      setProfile(nextProfile);
       const nextTitle = document?.title ?? "Untitled";
       titleRef.current = nextTitle;
       setTitle(nextTitle);
@@ -169,6 +186,10 @@ function App() {
     setAllDocuments(workspace.documents);
     setRecent(workspace.recent);
     setTrash(workspace.trash);
+    dictionaryRef.current = new Set(
+      workspace.dictionary.map(({ normalizedTerm }) => normalizedTerm),
+    );
+    setDictionary(workspace.dictionary);
     if (documentId) {
       setRevisions(await documents.listRevisions(documentId));
     } else {
@@ -213,6 +234,7 @@ function App() {
             title: titleRef.current,
             contentJson: JSON.stringify(editor.getJSON()),
             reason,
+            writingProfile: profileRef.current,
           });
           activeRef.current = saved;
           setActive(saved);
@@ -260,6 +282,10 @@ function App() {
       const issues = await analyzeText(
         projection.text,
         await getGrammarProvider(),
+        {
+          dictionary: dictionaryRef.current,
+          profile: profileRef.current,
+        },
       );
       if (
         analysisRequestRef.current !== request ||
@@ -280,7 +306,10 @@ function App() {
       setAnalysis({
         status: "complete",
         generation,
-        issues: mapped.filter((issue) => issue !== null),
+        issues: mapped.filter(
+          (issue): issue is EditorIssue =>
+            issue !== null && !isIgnoredIssue(issue, ignoredIssuesRef.current),
+        ),
         session,
       });
     } catch (error) {
@@ -316,10 +345,18 @@ function App() {
   );
 
   const markDirty = useCallback(
-    (editor: Editor, contentChanged = true) => {
+    (editor: Editor, transactionOrContentChanged?: Transaction | false) => {
+      const contentChanged = transactionOrContentChanged !== false;
       editorRef.current = editor;
       generationRef.current += 1;
       if (contentChanged) {
+        if (transactionOrContentChanged) {
+          ignoredIssuesRef.current = remapIgnoredIssues(
+            ignoredIssuesRef.current,
+            transactionOrContentChanged.mapping,
+            editor.state.doc,
+          );
+        }
         analysisGenerationRef.current += 1;
         analysisRequestRef.current += 1;
         analysisProjectionRef.current = null;
@@ -368,6 +405,10 @@ function App() {
         setRecent(workspace.recent);
         setTrash(workspace.trash);
         setRevisions(workspace.revisions);
+        dictionaryRef.current = new Set(
+          workspace.dictionary.map(({ normalizedTerm }) => normalizedTerm),
+        );
+        setDictionary(workspace.dictionary);
         setCurrent(workspace.activeDocument, Boolean(workspace.activeDocument));
         setLoaded(true);
       })
@@ -497,6 +538,79 @@ function App() {
     setSelectedIssueId(issueId);
   }, []);
 
+  const rerunAnalysis = () => {
+    analysisRequestRef.current += 1;
+    analysisGenerationRef.current += 1;
+    analysisProjectionRef.current = null;
+    setSelectedIssueId(null);
+    setAnalysis({ status: "ready" });
+    void runAnalysis();
+  };
+
+  const changeProfile = (nextProfile: WritingProfile) => {
+    if (profileRef.current === nextProfile) return;
+    profileRef.current = nextProfile;
+    setProfile(nextProfile);
+    const editor = editorRef.current;
+    if (editor) markDirty(editor, false);
+    rerunAnalysis();
+  };
+
+  const ignoreIssue = (issueId: string) => {
+    if (analysis.status !== "complete") return;
+    const issue = analysis.issues.find(({ id }) => id === issueId);
+    if (!issue) return;
+    ignoredIssuesRef.current = [
+      ...ignoredIssuesRef.current.filter(
+        (ignored) => !isIgnoredIssue(issue, [ignored]),
+      ),
+      issue,
+    ];
+    const issues = analysis.issues.filter(({ id }) => id !== issueId);
+    setSelectedIssueId(null);
+    setAnalysis({ ...analysis, issues });
+  };
+
+  const addToDictionary = async (issueId: string) => {
+    if (analysis.status !== "complete") return;
+    const issue = analysis.issues.find(({ id }) => id === issueId);
+    if (!issue || !isDictionaryEligible(issue)) return;
+    try {
+      const entry = await documents.addDictionaryTerm(issue.originalText);
+      const entries = [
+        ...dictionary.filter(
+          ({ normalizedTerm }) => normalizedTerm !== entry.normalizedTerm,
+        ),
+        entry,
+      ].sort((left, right) =>
+        left.normalizedTerm.localeCompare(right.normalizedTerm),
+      );
+      dictionaryRef.current = new Set(
+        entries.map(({ normalizedTerm }) => normalizedTerm),
+      );
+      setDictionary(entries);
+      rerunAnalysis();
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
+  const removeFromDictionary = async (normalizedTerm: string) => {
+    try {
+      await documents.removeDictionaryTerm(normalizedTerm);
+      const entries = dictionary.filter(
+        (entry) => entry.normalizedTerm !== normalizedTerm,
+      );
+      dictionaryRef.current = new Set(
+        entries.map((entry) => entry.normalizedTerm),
+      );
+      setDictionary(entries);
+      rerunAnalysis();
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
   const canApplySuggestion = useCallback(
     (issue: EditorIssue, suggestion: AxiomSuggestion) => {
       const editor = editorRef.current;
@@ -597,7 +711,13 @@ function App() {
       <a className="skip-link" href="#workspace">
         Skip to workspace
       </a>
-      <TopBar saveState={saveState} />
+      <TopBar
+        dictionary={dictionary}
+        onProfileChange={changeProfile}
+        onRemoveDictionaryTerm={(term) => void removeFromDictionary(term)}
+        profile={profile}
+        saveState={saveState}
+      />
       <div className="app-body">
         <Sidebar
           activeId={active?.id ?? null}
@@ -627,7 +747,9 @@ function App() {
           canApplySuggestion={canApplySuggestion}
           disabled={!editorInstance}
           onAnalyze={() => void runAnalysis()}
+          onAddToDictionary={(issueId) => void addToDictionary(issueId)}
           onApplySuggestion={applySuggestion}
+          onIgnoreIssue={ignoreIssue}
           onSelectIssue={selectIssue}
           selectedIssueId={selectedIssueId}
         />

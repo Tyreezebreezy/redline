@@ -3,15 +3,26 @@ import { readFile } from "node:fs/promises";
 import { history, redo, undo } from "@tiptap/pm/history";
 import { EditorState } from "@tiptap/pm/state";
 import { Editor } from "@tiptap/react";
-import { analyzeText, findProtectedSpans } from "../src/axiom/axiom.ts";
+import { Dialect, LocalLinter } from "harper.js";
+import { binaryInlined } from "harper.js/binaryInlined";
+import {
+  analyzeText,
+  findProtectedSpans,
+  isDictionaryEligible,
+  normalizeDictionaryTerm,
+  PROFILE_RULE_OVERRIDES,
+} from "../src/axiom/axiom.ts";
 import {
   AXIOM_DECORATIONS,
   createAxiomDecorations,
 } from "../src/axiom/decorations.ts";
+import { analyzeWithHarper } from "../src/axiom/HarperAdapter.ts";
 import {
   correctionPlan,
+  isIgnoredIssue,
   mapIssue,
   projectDocument,
+  remapIgnoredIssues,
 } from "../src/axiom/projection.ts";
 import { EDITOR_EXTENSIONS } from "../src/editor.ts";
 
@@ -156,6 +167,102 @@ assert.deepEqual(
   protectedIssues.map(({ id, originalText }) => ({ id, originalText })),
   [{ id: "a1", originalText: "teh" }],
 );
+
+const normalizationFixtures = JSON.parse(
+  await readFile(
+    new URL("../fixtures/dictionary-normalization.json", import.meta.url),
+    "utf8",
+  ),
+) as { input: string; normalized: string }[];
+for (const fixture of normalizationFixtures) {
+  assert.equal(normalizeDictionaryTerm(fixture.input), fixture.normalized);
+}
+
+const dictionaryText = "Zorblaxon is stable.";
+const dictionaryIssue = {
+  id: "dictionary",
+  source: "harper",
+  ruleId: "SpellCheck",
+  category: "spelling" as const,
+  severity: "suggestion" as const,
+  message: "Unknown word",
+  from: 0,
+  to: 9,
+  originalText: "Zorblaxon",
+  suggestions: [],
+};
+assert.equal(isDictionaryEligible(dictionaryIssue), true);
+assert.equal(
+  (
+    await analyzeText(
+      dictionaryText,
+      { analyze: async () => [dictionaryIssue] },
+      { dictionary: new Set(["zorblaxon"]), profile: "general" },
+    )
+  ).length,
+  0,
+);
+assert.equal(
+  (
+    await analyzeText(
+      dictionaryText,
+      {
+        analyze: async () => [
+          { ...dictionaryIssue, ruleId: "AnA", category: "grammar" },
+        ],
+      },
+      { dictionary: new Set(["zorblaxon"]), profile: "general" },
+    )
+  ).length,
+  1,
+);
+
+const harper = new LocalLinter({
+  binary: binaryInlined,
+  dialect: Dialect.American,
+});
+await harper.setup();
+const harperDefaults = await harper.getDefaultLintConfig();
+assert.equal(Object.keys(harperDefaults).length, 823);
+assert.deepEqual(
+  Object.entries(harperDefaults)
+    .filter(([, enabled]) => !enabled)
+    .map(([rule]) => rule)
+    .sort(),
+  [
+    "AnalogAcousticBike",
+    "AnotherThinkComing",
+    "AvoidContractions",
+    "BoringWords",
+    "NoOxfordComma",
+    "PossessiveNoun",
+    "SpelledNumbers",
+    "ViciousCircleOrCycle",
+    "ViciousCycle",
+  ],
+);
+assert.equal(harperDefaults.AvoidContractions, false);
+assert.equal(harperDefaults.LongSentences, true);
+assert.deepEqual(PROFILE_RULE_OVERRIDES.general, {});
+assert.deepEqual(PROFILE_RULE_OVERRIDES.academic, {
+  AvoidContractions: true,
+});
+assert.deepEqual(PROFILE_RULE_OVERRIDES.professional, {});
+await harper.setLintConfig(harperDefaults);
+assert.equal(
+  (await analyzeWithHarper(harper, "We don't expect a delay.")).some(
+    ({ ruleId }) => ruleId === "AvoidContractions",
+  ),
+  false,
+);
+await harper.setLintConfig({ ...harperDefaults, AvoidContractions: true });
+assert.equal(
+  (await analyzeWithHarper(harper, "We don't expect a delay.")).some(
+    ({ ruleId }) => ruleId === "AvoidContractions",
+  ),
+  true,
+);
+await harper.dispose();
 await assert.rejects(
   analyzeText("Provider failure", {
     analyze: async () => {
@@ -348,6 +455,70 @@ assert.deepEqual(decorationState.doc.toJSON(), beforeDecorations);
 assert.equal(undo(decorationState), false);
 assert.equal(AXIOM_DECORATIONS.getState(decorationState)?.find().length, 1);
 unsafeEditor.destroy();
+
+const ignoreEditor = new Editor({
+  element: null,
+  extensions: EDITOR_EXTENSIONS,
+  content: {
+    type: "doc",
+    content: [
+      { type: "paragraph", content: [{ type: "text", text: "teh and teh" }] },
+    ],
+  },
+});
+let ignoreProjection = projectDocument(ignoreEditor.state.doc);
+const firstIssue = mapIssue(ignoreProjection, {
+  id: "first",
+  source: "harper",
+  ruleId: "SpellCheck",
+  category: "spelling",
+  severity: "suggestion",
+  message: "Typo",
+  from: 0,
+  to: 3,
+  originalText: "teh",
+  suggestions: [],
+});
+const secondIssue = mapIssue(ignoreProjection, {
+  id: "second",
+  source: "harper",
+  ruleId: "SpellCheck",
+  category: "spelling",
+  severity: "suggestion",
+  message: "Typo",
+  from: 8,
+  to: 11,
+  originalText: "teh",
+  suggestions: [],
+});
+assert.ok(firstIssue && secondIssue);
+let ignored = [firstIssue];
+assert.equal(isIgnoredIssue(firstIssue, ignored), true);
+assert.equal(isIgnoredIssue(secondIssue, ignored), false);
+let transaction = ignoreEditor.state.tr.insertText("Now ", 1);
+ignoreEditor.view.dispatch(transaction);
+ignored = remapIgnoredIssues(
+  ignored,
+  transaction.mapping,
+  ignoreEditor.state.doc,
+);
+ignoreProjection = projectDocument(ignoreEditor.state.doc);
+const movedIssue = mapIssue(ignoreProjection, {
+  ...firstIssue,
+  from: 4,
+  to: 7,
+});
+assert.ok(movedIssue);
+assert.equal(isIgnoredIssue(movedIssue, ignored), true);
+transaction = ignoreEditor.state.tr.insertText("x", movedIssue.editorFrom + 1);
+ignoreEditor.view.dispatch(transaction);
+ignored = remapIgnoredIssues(
+  ignored,
+  transaction.mapping,
+  ignoreEditor.state.doc,
+);
+assert.deepEqual(ignored, []);
+ignoreEditor.destroy();
 
 const [contractText, adapterText] = await Promise.all([
   readFile(new URL("../src/axiom/axiom.ts", import.meta.url), "utf8"),

@@ -475,5 +475,185 @@
     "id": "structured-mixed-prose",
     "text": "Summary\nThe report is complete.\nNext steps\nThe team will publish it tomorrow.",
     "expected": []
+  },
+  {
+    "id": "dictionary-name",
+    "text": "Zorblaxon reviewed the draft.",
+    "dictionary": ["Zorblaxon"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-security-term",
+    "text": "The xqdrsec policy is active.",
+    "dictionary": ["XQDRSEC"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-model-component",
+    "text": "Use zorblaxon-7 for this build.",
+    "dictionary": ["zorblaxon"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-hyphen-component",
+    "text": "The zorblaxon-core service started.",
+    "dictionary": ["zorblaxon"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-apostrophe",
+    "text": "O'Zorblaxon approved it.",
+    "dictionary": ["O'Zorblaxon"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-unicode",
+    "text": "The zorblaxón result is stable.",
+    "dictionary": ["zorblaxón"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-duplicate-normalized",
+    "text": "Zorblaxon is ready.",
+    "dictionary": ["Zorblaxon", "zorblaxon"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-case-variant",
+    "text": "Zorblaxon is stable.",
+    "dictionary": ["ZORBLAXON"],
+    "expected": []
+  },
+  {
+    "id": "dictionary-removed-returns",
+    "text": "Zorblaxon reviewed the draft.",
+    "expected": [{ "originalText": "Zorblaxon", "category": "spelling" }]
+  },
+  {
+    "id": "dictionary-grammar-unaffected",
+    "text": "Zorblaxon is a example.",
+    "dictionary": ["Zorblaxon"],
+    "expected": [{ "originalText": "a", "category": "grammar" }]
+  },
+  {
+    "id": "academic-general-contraction-01",
+    "text": "We don't expect a delay.",
+    "profile": "general",
+    "expected": []
+  },
+  {
+    "id": "academic-contraction-01",
+    "text": "We don't expect a delay.",
+    "profile": "academic",
+    "expected": [{ "originalText": "don't", "category": "style" }]
+  },
+  {
+    "id": "academic-general-contraction-02",
+    "text": "We're prepared to publish the findings.",
+    "profile": "general",
+    "expected": []
+  },
+  {
+    "id": "academic-contraction-02",
+    "text": "We're prepared to publish the findings.",
+    "profile": "academic",
+    "expected": [{ "originalText": "We're", "category": "style" }]
+  },
+  {
+    "id": "academic-general-contraction-03",
+    "text": "The result isn't statistically significant.",
+    "profile": "general",
+    "expected": []
+  },
+  {
+    "id": "academic-contraction-03",
+    "text": "The result isn't statistically significant.",
+    "profile": "academic",
+    "expected": [{ "originalText": "isn't", "category": "style" }]
+  },
+  {
+    "id": "academic-general-contraction-04",
+    "text": "The team can't reproduce the failure.",
+    "profile": "general",
+    "expected": []
+  },
+  {
+    "id": "academic-contraction-04",
+    "text": "The team can't reproduce the failure.",
+    "profile": "academic",
+    "expected": [{ "originalText": "can't", "category": "style" }]
+  },
+  {
+    "id": "professional-clean-email",
+    "text": "Please send the revised agenda before noon.",
+    "profile": "professional",
+    "expected": []
+  },
+  {
+    "id": "professional-clean-status",
+    "text": "The migration completed without service interruption.",
+    "profile": "professional",
+    "expected": []
+  },
+  {
+    "id": "professional-clean-request",
+    "text": "Could you review the attached proposal today?",
+    "profile": "professional",
+    "expected": []
+  },
+  {
+    "id": "professional-clean-contraction",
+    "text": "We'll send the final report tomorrow.",
+    "profile": "professional",
+    "expected": []
+  },
+  {
+    "id": "professional-article",
+    "text": "The team proposed a alternative schedule.",
+    "profile": "professional",
+    "expected": [{ "originalText": "a", "category": "grammar" }]
+  },
+  {
+    "id": "professional-spelling",
+    "text": "The summary contains a misspelledd heading.",
+    "profile": "professional",
+    "expected": [{ "originalText": "misspelledd", "category": "spelling" }]
+  },
+  {
+    "id": "professional-punctuation",
+    "text": "The client cant approve the draft.",
+    "profile": "professional",
+    "expected": [{ "originalText": "cant" }]
+  },
+  {
+    "id": "professional-technical",
+    "text": "Run redline_cli --check before sending the report.",
+    "profile": "professional",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "ignore-only-issue",
+    "text": "The heading is misspelledd.",
+    "ignore": { "originalText": "misspelledd", "occurrence": 0 },
+    "expected": []
+  },
+  {
+    "id": "ignore-duplicate-preserves-other",
+    "text": "One misspelledd label follows another misspelledd label.",
+    "ignore": { "originalText": "misspelledd", "occurrence": 0 },
+    "expected": [{ "originalText": "misspelledd", "category": "spelling" }]
+  },
+  {
+    "id": "ignore-rule-specific",
+    "text": "A misspelledd term appears beside a unusual phrase.",
+    "ignore": { "originalText": "misspelledd", "occurrence": 0 },
+    "expected": [{ "originalText": "a", "category": "grammar" }]
+  },
+  {
+    "id": "ignore-second-occurrence",
+    "text": "One misspelledd label follows another misspelledd label.",
+    "ignore": { "originalText": "misspelledd", "occurrence": 1 },
+    "expected": [{ "originalText": "misspelledd", "category": "spelling" }]
   }
 ]

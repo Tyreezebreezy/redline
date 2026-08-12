@@ -54,10 +54,11 @@ assert.doesNotMatch(
   appText,
   /Writing Score|Correctness|Clarity|Style|issue count/i,
 );
-assert.equal(packageJson.version, "0.0.5");
-assert.equal(config.version, "0.0.5");
-assert.match(cargoText, /version = "0\.0\.5"/);
-assert.match(appText, /0\.0\.5/);
+assert.equal(packageJson.version, "0.0.6");
+assert.equal(config.version, "0.0.6");
+assert.match(cargoText, /version = "0\.0\.6"/);
+assert.match(appText, /0\.0\.6/);
+assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");
 assert.deepEqual(
@@ -93,6 +94,8 @@ for (const command of [
   "restore_deleted_document",
   "list_document_revisions",
   "restore_document_revision",
+  "add_dictionary_term",
+  "remove_dictionary_term",
 ]) {
   assert.match(permissionText, new RegExp(`"${command}"`));
 }

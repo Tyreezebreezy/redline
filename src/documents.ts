@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { normalizeDictionaryTerm, type WritingProfile } from "./axiom/axiom";
 
 export type DocumentSummary = {
   id: string;
@@ -11,6 +12,13 @@ export type DocumentSummary = {
 
 export type DocumentRecord = DocumentSummary & {
   contentJson: string;
+  createdAt: number;
+  writingProfile: WritingProfile;
+};
+
+export type DictionaryEntry = {
+  term: string;
+  normalizedTerm: string;
   createdAt: number;
 };
 
@@ -28,6 +36,7 @@ export type WorkspaceData = {
   recent: DocumentSummary[];
   trash: DocumentSummary[];
   revisions: RecoveryPoint[];
+  dictionary: DictionaryEntry[];
 };
 
 export type SaveInput = {
@@ -36,6 +45,7 @@ export type SaveInput = {
   title: string;
   contentJson: string;
   reason: "auto" | "manual";
+  writingProfile: WritingProfile;
 };
 
 const EMPTY_WORKSPACE: WorkspaceData = {
@@ -44,6 +54,7 @@ const EMPTY_WORKSPACE: WorkspaceData = {
   recent: [],
   trash: [],
   revisions: [],
+  dictionary: [],
 };
 
 export const desktopAvailable = isTauri();
@@ -72,4 +83,16 @@ export const documents = {
       revisionId,
       expectedRevision,
     }),
+  addDictionaryTerm: (term: string) =>
+    desktopAvailable
+      ? invoke<DictionaryEntry>("add_dictionary_term", { term })
+      : Promise.resolve({
+          term: term.trim().normalize("NFC"),
+          normalizedTerm: normalizeDictionaryTerm(term),
+          createdAt: Date.now(),
+        }),
+  removeDictionaryTerm: (normalizedTerm: string) =>
+    desktopAvailable
+      ? invoke<void>("remove_dictionary_term", { normalizedTerm })
+      : Promise.resolve(),
 };

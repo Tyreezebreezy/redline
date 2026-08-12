@@ -10,4 +10,6 @@ commands.allow = [
   "restore_deleted_document",
   "list_document_revisions",
   "restore_document_revision",
+  "add_dictionary_term",
+  "remove_dictionary_term",
 ]

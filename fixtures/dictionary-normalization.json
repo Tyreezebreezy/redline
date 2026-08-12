@@ -1,0 +1,12 @@
+[
+  { "input": "  Renée  ", "canonical": "Renée", "normalized": "renée" },
+  { "input": "Renée", "canonical": "Renée", "normalized": "renée" },
+  { "input": "ZOË", "canonical": "ZOË", "normalized": "zoë" },
+  { "input": "O’Brien", "canonical": "O’Brien", "normalized": "o’brien" },
+  {
+    "input": "Zero-Trust",
+    "canonical": "Zero-Trust",
+    "normalized": "zero-trust"
+  },
+  { "input": "AXIOM", "canonical": "AXIOM", "normalized": "axiom" }
+]

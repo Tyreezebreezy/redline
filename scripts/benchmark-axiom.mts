@@ -3,9 +3,18 @@ import { readFile } from "node:fs/promises";
 import { Editor } from "@tiptap/react";
 import { Dialect, LocalLinter } from "harper.js";
 import { binaryInlined } from "harper.js/binaryInlined";
-import { analyzeText } from "../src/axiom/axiom.ts";
+import {
+  analyzeText,
+  normalizeDictionaryTerm,
+  PROFILE_RULE_OVERRIDES,
+  type WritingProfile,
+} from "../src/axiom/axiom.ts";
 import { analyzeWithHarper } from "../src/axiom/HarperAdapter.ts";
-import { mapIssue, projectDocument } from "../src/axiom/projection.ts";
+import {
+  isIgnoredIssue,
+  mapIssue,
+  projectDocument,
+} from "../src/axiom/projection.ts";
 import { EDITOR_EXTENSIONS } from "../src/editor.ts";
 
 type ExpectedIssue = { originalText: string; category?: string };
@@ -13,6 +22,9 @@ type Case = {
   id: string;
   text: string;
   expected: ExpectedIssue[];
+  dictionary?: string[];
+  ignore?: { occurrence: number; originalText: string };
+  profile?: WritingProfile;
   protected?: boolean;
 };
 type Row = {
@@ -38,6 +50,7 @@ const linter = new LocalLinter({
 const started = performance.now();
 await linter.setup();
 const initializationMs = performance.now() - started;
+const defaultConfig = await linter.getDefaultLintConfig();
 let falsePositives = 0;
 let misses = 0;
 let truePositives = 0;
@@ -51,24 +64,22 @@ const performanceRows: object[] = [];
 try {
   for (const fixture of corpus) {
     const caseStarted = performance.now();
-    const issues = await analyzeText(fixture.text, {
-      analyze: (text) => analyzeWithHarper(linter, text),
+    const profile = fixture.profile ?? "general";
+    await linter.setLintConfig({
+      ...defaultConfig,
+      ...PROFILE_RULE_OVERRIDES[profile],
     });
-    const unexpected = issues.filter(
-      (issue) =>
-        !fixture.expected.some(
-          (expected) =>
-            expected.originalText === issue.originalText &&
-            (!expected.category || expected.category === issue.category),
+    const issues = await analyzeText(
+      fixture.text,
+      {
+        analyze: (text) => analyzeWithHarper(linter, text),
+      },
+      {
+        dictionary: new Set(
+          (fixture.dictionary ?? []).map(normalizeDictionaryTerm),
         ),
-    );
-    const missed = fixture.expected.filter(
-      (expected) =>
-        !issues.some(
-          (issue) =>
-            expected.originalText === issue.originalText &&
-            (!expected.category || expected.category === issue.category),
-        ),
+        profile,
+      },
     );
     const editor = new Editor({
       element: null,
@@ -82,11 +93,37 @@ try {
       },
     });
     const projection = projectDocument(editor.state.doc);
-    const failedMappings = issues.filter(
-      (issue) => mapIssue(projection, issue) === null,
-    ).length;
+    const mapped = issues.map((issue) => mapIssue(projection, issue));
+    const failedMappings = mapped.filter((issue) => issue === null).length;
+    let evaluatedIssues = mapped.filter((issue) => issue !== null);
+    if (fixture.ignore) {
+      const matches = evaluatedIssues.filter(
+        ({ originalText }) => originalText === fixture.ignore?.originalText,
+      );
+      const ignored = matches[fixture.ignore.occurrence];
+      assert.ok(ignored, `Missing ignored issue in ${fixture.id}`);
+      evaluatedIssues = evaluatedIssues.filter(
+        (issue) => !isIgnoredIssue(issue, [ignored]),
+      );
+    }
+    const unexpected = evaluatedIssues.filter(
+      (issue) =>
+        !fixture.expected.some(
+          (expected) =>
+            expected.originalText === issue.originalText &&
+            (!expected.category || expected.category === issue.category),
+        ),
+    );
+    const missed = fixture.expected.filter(
+      (expected) =>
+        !evaluatedIssues.some(
+          (issue) =>
+            expected.originalText === issue.originalText &&
+            (!expected.category || expected.category === issue.category),
+        ),
+    );
     editor.destroy();
-    const protectedFailures = fixture.protected ? issues.length : 0;
+    const protectedFailures = fixture.protected ? evaluatedIssues.length : 0;
     falsePositives += unexpected.length;
     misses += missed.length;
     truePositives += fixture.expected.length - missed.length;
@@ -97,7 +134,7 @@ try {
     warmTimes.push(elapsed);
     rows.push({
       case: fixture.id,
-      issues: issues.map(
+      issues: evaluatedIssues.map(
         (issue) =>
           `${issue.originalText}: ${issue.message} [${issue.ruleId ?? "unknown"}]`,
       ),
@@ -134,6 +171,7 @@ try {
     const performanceProjection = projectDocument(performanceEditor.state.doc);
     const projectionMs = performance.now() - projectionStarted;
     const analysisStarted = performance.now();
+    await linter.setLintConfig(defaultConfig);
     const performanceIssues = await analyzeText(performanceProjection.text, {
       analyze: (text) => analyzeWithHarper(linter, text),
     });
@@ -182,7 +220,7 @@ console.log(
     2,
   ),
 );
-assert.equal(corpus.length, 90);
+assert.equal(corpus.length, 120);
 assert.equal(falsePositives, 0);
 assert.equal(misses, 0);
 assert.equal(protectedSpanFailures, 0);

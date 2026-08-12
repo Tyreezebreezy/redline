@@ -120,8 +120,32 @@ export async function analyzeWithHarper(
 
 export class HarperAdapter implements GrammarProvider {
   readonly #linter = new WorkerLinter({ binary, dialect: Dialect.American });
+  #baseline: Awaited<ReturnType<Linter["getDefaultLintConfig"]>> | undefined;
+  #configuration = "";
+  #queue = Promise.resolve();
 
-  analyze(text: string) {
-    return analyzeWithHarper(this.#linter, text);
+  analyze(text: string, ruleOverrides: Readonly<Record<string, boolean>>) {
+    const operation = this.#queue.then(async () => {
+      this.#baseline ??= await this.#linter.getDefaultLintConfig();
+      const configuration = JSON.stringify(ruleOverrides);
+      if (configuration !== this.#configuration) {
+        for (const rule of Object.keys(ruleOverrides)) {
+          if (!(rule in this.#baseline)) {
+            throw new Error(`Harper rule is unavailable: ${rule}`);
+          }
+        }
+        await this.#linter.setLintConfig({
+          ...this.#baseline,
+          ...ruleOverrides,
+        });
+        this.#configuration = configuration;
+      }
+      return analyzeWithHarper(this.#linter, text);
+    });
+    this.#queue = operation.then(
+      () => undefined,
+      () => undefined,
+    );
+    return operation;
   }
 }

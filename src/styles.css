@@ -134,7 +134,7 @@ body {
 .profile,
 .app-state,
 .top-actions,
-.future-action,
+.dictionary-button,
 .status-bar span {
   display: flex;
   align-items: center;
@@ -183,10 +183,15 @@ body {
   border-radius: 6px;
 }
 
-.profile strong {
+.profile select {
+  min-width: 112px;
+  padding: 5px 24px 5px 8px;
   color: var(--text);
   font-size: 13px;
   font-weight: 600;
+  background: var(--surface-selected);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
 }
 
 .app-state {
@@ -270,11 +275,79 @@ body {
   outline-offset: 2px;
 }
 
-.future-action {
+.dictionary-button {
   gap: 7px;
   color: var(--text-muted);
   font-size: 12px;
-  cursor: default;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.dictionary-button:hover {
+  color: var(--text);
+}
+
+.dictionary-dialog {
+  width: min(440px, calc(100vw - 48px));
+  max-height: min(560px, calc(100vh - 48px));
+  padding: 0;
+  color: var(--text);
+  background: var(--panel-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.dictionary-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.dictionary-dialog header,
+.dictionary-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dictionary-dialog header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dictionary-dialog h2 {
+  margin: 3px 0 0;
+  font-size: 18px;
+}
+
+.dictionary-dialog button,
+.issue-secondary-actions button {
+  min-height: 30px;
+  padding: 5px 9px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.dictionary-list {
+  padding: 8px 20px 18px;
+  margin: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.dictionary-list li {
+  min-height: 44px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dictionary-empty {
+  padding: 24px 20px;
+  margin: 0;
+  color: var(--text-secondary);
 }
 
 .app-body {
@@ -831,6 +904,13 @@ body {
   margin-top: 10px;
 }
 
+.issue-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
 .suggestion-actions button,
 .issue-navigation button {
   min-height: 32px;
@@ -993,7 +1073,11 @@ body {
 
 .issue-select:focus-visible,
 .suggestion-actions button:focus-visible,
-.issue-navigation button:focus-visible {
+.issue-navigation button:focus-visible,
+.issue-secondary-actions button:focus-visible,
+.dictionary-button:focus-visible,
+.dictionary-dialog button:focus-visible,
+.profile select:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
@@ -1025,7 +1109,7 @@ body {
   }
 
   .brand-version,
-  .future-action span {
+  .dictionary-button span {
     display: none;
   }
 
@@ -1037,7 +1121,7 @@ body {
     padding-inline: 28px;
   }
 
-  .future-action {
+  .dictionary-button {
     width: 28px;
     justify-content: center;
   }

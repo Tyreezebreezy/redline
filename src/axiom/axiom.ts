@@ -3,6 +3,17 @@ export type AxiomSuggestion = {
   text: string;
 };
 
+export type WritingProfile = "general" | "academic" | "professional";
+
+export const PROFILE_RULE_OVERRIDES: Record<
+  WritingProfile,
+  Readonly<Record<string, boolean>>
+> = {
+  general: {},
+  academic: { AvoidContractions: true },
+  professional: {},
+};
+
 export type AxiomIssue = {
   id: string;
   source: string;
@@ -26,8 +37,38 @@ export type AxiomIssue = {
 };
 
 export type GrammarProvider = {
-  analyze(text: string): Promise<AxiomIssue[]>;
+  analyze(
+    text: string,
+    ruleOverrides: Readonly<Record<string, boolean>>,
+  ): Promise<AxiomIssue[]>;
 };
+
+export type AxiomControls = {
+  dictionary: ReadonlySet<string>;
+  profile: WritingProfile;
+};
+
+const DEFAULT_CONTROLS: AxiomControls = {
+  dictionary: new Set(),
+  profile: "general",
+};
+
+export function normalizeDictionaryTerm(term: string) {
+  return term.trim().normalize("NFC").toLowerCase().normalize("NFC");
+}
+
+export function isDictionaryEligible(issue: AxiomIssue) {
+  const term = issue.originalText.trim().normalize("NFC");
+  const length = [...term].length;
+  return (
+    issue.source === "harper" &&
+    issue.ruleId === "SpellCheck" &&
+    length >= 2 &&
+    length <= 64 &&
+    /[\p{L}\p{N}]/u.test(term) &&
+    /^[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}'’-]*[\p{L}\p{N}])?$/u.test(term)
+  );
+}
 
 export type ProtectedSpan = {
   from: number;
@@ -92,9 +133,12 @@ function validIssue(text: string, issue: AxiomIssue) {
 export async function analyzeText(
   text: string,
   provider: GrammarProvider,
+  controls: AxiomControls = DEFAULT_CONTROLS,
 ): Promise<AxiomIssue[]> {
   const protectedSpans = findProtectedSpans(text);
-  const issues = (await provider.analyze(text))
+  const issues = (
+    await provider.analyze(text, PROFILE_RULE_OVERRIDES[controls.profile])
+  )
     .filter((issue) => validIssue(text, issue))
     .filter(
       (issue) =>
@@ -103,6 +147,11 @@ export async function analyzeText(
             issue.from < span.to &&
             (issue.from === issue.to || issue.to > span.from),
         ),
+    )
+    .filter(
+      (issue) =>
+        !isDictionaryEligible(issue) ||
+        !controls.dictionary.has(normalizeDictionaryTerm(issue.originalText)),
     )
     .sort(
       (left, right) =>

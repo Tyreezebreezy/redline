@@ -1,8 +1,16 @@
 import { type Editor, useEditorState } from "@tiptap/react";
-import type { ReactNode } from "react";
-import type { AxiomSuggestion } from "./axiom/axiom";
+import { type ReactNode, useRef } from "react";
+import {
+  type AxiomSuggestion,
+  isDictionaryEligible,
+  type WritingProfile,
+} from "./axiom/axiom";
 import type { EditorIssue } from "./axiom/projection";
-import type { DocumentSummary, RecoveryPoint } from "./documents";
+import type {
+  DictionaryEntry,
+  DocumentSummary,
+  RecoveryPoint,
+} from "./documents";
 import { countText } from "./editor";
 import { ThemeControl } from "./ThemeControl";
 
@@ -52,7 +60,20 @@ function Icon({ name }: { name: IconName }) {
   );
 }
 
-export function TopBar({ saveState }: { saveState: SaveState }) {
+export function TopBar({
+  dictionary,
+  onProfileChange,
+  onRemoveDictionaryTerm,
+  profile,
+  saveState,
+}: {
+  dictionary: DictionaryEntry[];
+  onProfileChange: (profile: WritingProfile) => void;
+  onRemoveDictionaryTerm: (normalizedTerm: string) => void;
+  profile: WritingProfile;
+  saveState: SaveState;
+}) {
+  const dictionaryDialog = useRef<HTMLDialogElement>(null);
   return (
     <header className="top-bar">
       <div className="brand">
@@ -60,12 +81,22 @@ export function TopBar({ saveState }: { saveState: SaveState }) {
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.5</span>
+        <span className="brand-version">0.0.6</span>
       </div>
-      <div className="profile">
+      <label className="profile">
         <span>Profile</span>
-        <strong>General</strong>
-      </div>
+        <select
+          aria-label="Writing profile"
+          onChange={(event) =>
+            onProfileChange(event.target.value as WritingProfile)
+          }
+          value={profile}
+        >
+          <option value="general">General</option>
+          <option value="academic">Academic</option>
+          <option value="professional">Professional</option>
+        </select>
+      </label>
       <div className="app-state" role="status">
         <span
           className={`state-dot state-${saveState.toLowerCase().replace(" ", "-")}`}
@@ -75,14 +106,49 @@ export function TopBar({ saveState }: { saveState: SaveState }) {
       </div>
       <div className="top-actions">
         <ThemeControl />
-        <span
-          className="future-action"
-          title="Settings arrive in a later milestone"
+        <button
+          className="dictionary-button"
+          onClick={() => dictionaryDialog.current?.showModal()}
+          type="button"
         >
           <Icon name="settings" />
-          <span>Settings</span>
-        </span>
+          <span>Dictionary</span>
+        </button>
       </div>
+      <dialog className="dictionary-dialog" ref={dictionaryDialog}>
+        <header>
+          <div>
+            <p className="section-label">Proofreading</p>
+            <h2>Personal dictionary</h2>
+          </div>
+          <button
+            aria-label="Close personal dictionary"
+            onClick={() => dictionaryDialog.current?.close()}
+            type="button"
+          >
+            Close
+          </button>
+        </header>
+        {dictionary.length ? (
+          <ul className="dictionary-list">
+            {dictionary.map((entry) => (
+              <li key={entry.normalizedTerm}>
+                <span>{entry.term}</span>
+                <button
+                  onClick={() => onRemoveDictionaryTerm(entry.normalizedTerm)}
+                  type="button"
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="dictionary-empty">
+            Add eligible spelling terms from an issue card.
+          </p>
+        )}
+      </dialog>
     </header>
   );
 }
@@ -266,7 +332,9 @@ export function AnalysisPanel({
   canApplySuggestion,
   disabled,
   onAnalyze,
+  onAddToDictionary,
   onApplySuggestion,
+  onIgnoreIssue,
   onSelectIssue,
   selectedIssueId,
 }: {
@@ -277,7 +345,9 @@ export function AnalysisPanel({
   ) => boolean;
   disabled: boolean;
   onAnalyze: () => void;
+  onAddToDictionary: (issueId: string) => void;
   onApplySuggestion: (issueId: string, suggestionIndex: number) => void;
+  onIgnoreIssue: (issueId: string) => void;
   onSelectIssue: (issueId: string) => void;
   selectedIssueId: string | null;
 }) {
@@ -389,6 +459,22 @@ export function AnalysisPanel({
                         structural boundary.
                       </p>
                     ) : null}
+                    <div className="issue-secondary-actions">
+                      <button
+                        onClick={() => onIgnoreIssue(issue.id)}
+                        type="button"
+                      >
+                        Ignore once
+                      </button>
+                      {isDictionaryEligible(issue) ? (
+                        <button
+                          onClick={() => onAddToDictionary(issue.id)}
+                          type="button"
+                        >
+                          Add to dictionary
+                        </button>
+                      ) : null}
+                    </div>
                   </li>
                 );
               })}

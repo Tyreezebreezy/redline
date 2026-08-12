@@ -1,5 +1,6 @@
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { Mark } from "@tiptap/pm/model";
+import type { Mapping } from "@tiptap/pm/transform";
 import type { AxiomIssue, AxiomSuggestion } from "./axiom";
 
 export type ProjectionSegment = {
@@ -19,6 +20,45 @@ export type EditorIssue = AxiomIssue & {
   editorFrom: number;
   editorTo: number;
 };
+
+export type IgnoredEditorIssue = Pick<
+  EditorIssue,
+  "editorFrom" | "editorTo" | "originalText" | "ruleId" | "source"
+>;
+
+export function isIgnoredIssue(
+  issue: EditorIssue,
+  ignored: readonly IgnoredEditorIssue[],
+) {
+  return ignored.some(
+    (item) =>
+      item.source === issue.source &&
+      item.ruleId === issue.ruleId &&
+      item.originalText === issue.originalText &&
+      item.editorFrom === issue.editorFrom &&
+      item.editorTo === issue.editorTo,
+  );
+}
+
+export function remapIgnoredIssues(
+  ignored: readonly IgnoredEditorIssue[],
+  mapping: Mapping,
+  doc: ProseMirrorNode,
+) {
+  return ignored.flatMap((issue) => {
+    const from = mapping.mapResult(issue.editorFrom, 1);
+    const to = mapping.mapResult(issue.editorTo, -1);
+    if (
+      from.deletedAcross ||
+      to.deletedAcross ||
+      to.pos < from.pos ||
+      doc.textBetween(from.pos, to.pos, "\n", "\n") !== issue.originalText
+    ) {
+      return [];
+    }
+    return [{ ...issue, editorFrom: from.pos, editorTo: to.pos }];
+  });
+}
 
 export type CorrectionPlan = {
   from: number;
