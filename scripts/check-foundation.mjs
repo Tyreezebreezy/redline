@@ -54,10 +54,10 @@ assert.doesNotMatch(
   appText,
   /Writing Score|Correctness|Clarity|Style|issue count/i,
 );
-assert.equal(packageJson.version, "0.0.4");
-assert.equal(config.version, "0.0.4");
-assert.match(cargoText, /version = "0\.0\.4"/);
-assert.match(appText, /0\.0\.4/);
+assert.equal(packageJson.version, "0.0.5");
+assert.equal(config.version, "0.0.5");
+assert.match(cargoText, /version = "0\.0\.5"/);
+assert.match(appText, /0\.0\.5/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");
 assert.deepEqual(

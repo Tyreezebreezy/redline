@@ -18,7 +18,8 @@ function utf16Boundaries(text: string) {
   return boundaries;
 }
 
-function category(kind: string): AxiomIssue["category"] {
+function category(kind: string, ruleId: string): AxiomIssue["category"] {
+  if (ruleId === "AnA") return "grammar";
   switch (kind) {
     case "Grammar":
     case "Agreement":
@@ -100,7 +101,7 @@ export async function analyzeWithHarper(
           id: "",
           source: "harper",
           ruleId,
-          category: category(lint.lint_kind()),
+          category: category(lint.lint_kind(), ruleId),
           severity: "suggestion",
           message: lint.message(),
           from,

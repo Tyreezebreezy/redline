@@ -45,6 +45,7 @@ const PATTERNS = [
   /\b[a-f\d]{12,}\b/giu,
   /\bv?\d+(?:\.\d+){1,3}(?:[-+][\w.-]+)?\b/giu,
   /\b(?:[A-Za-z]+(?:[A-Z][A-Za-z\d]+)+|[A-Za-z][A-Za-z\d]*_[A-Za-z\d_]+)\b/gu,
+  /(?<![\p{L}\p{M}])(?=[\p{L}\p{M}'’.-]*[^\p{ASCII}])\p{Lu}[\p{L}\p{M}'’.-]*(?![\p{L}\p{M}])/gu,
 ];
 
 export function findProtectedSpans(text: string): ProtectedSpan[] {

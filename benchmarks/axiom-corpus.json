@@ -7,7 +7,7 @@
   {
     "id": "grammar-article",
     "text": "This is a example of clear prose.",
-    "expected": [{ "originalText": "a" }]
+    "expected": [{ "originalText": "a", "category": "grammar" }]
   },
   {
     "id": "spelling",
@@ -36,8 +36,9 @@
   },
   {
     "id": "technical-protected",
-    "text": "Run redline_cli --dry-run against 192.168.1.10 and open C:\\REDLINE\\config.toml for v0.0.4. See https://example.com/docs.",
-    "expected": []
+    "text": "Run redline_cli --dry-run against 192.168.1.10 and open C:\\REDLINE\\config.toml for v0.0.5. See https://example.com/docs.",
+    "expected": [],
+    "protected": true
   },
   {
     "id": "valid-unusual",
@@ -57,6 +58,422 @@
   {
     "id": "heading-list-projection",
     "text": "Deployment checklist\nVerify the database\nRestart the service",
+    "expected": []
+  },
+
+  {
+    "id": "clean-everyday-01",
+    "text": "The rain stopped before we left the house.",
+    "expected": []
+  },
+  {
+    "id": "clean-everyday-02",
+    "text": "She placed the keys beside the blue notebook.",
+    "expected": []
+  },
+  {
+    "id": "clean-everyday-03",
+    "text": "We finished dinner and watched a quiet movie.",
+    "expected": []
+  },
+  {
+    "id": "clean-everyday-04",
+    "text": "The library opens at nine tomorrow morning.",
+    "expected": []
+  },
+  {
+    "id": "clean-everyday-05",
+    "text": "Please call me when the train arrives.",
+    "expected": []
+  },
+  {
+    "id": "clean-casual-01",
+    "text": "That sounds good to me—let's do it.",
+    "expected": []
+  },
+  {
+    "id": "clean-casual-02",
+    "text": "I found the charger, so we're all set.",
+    "expected": []
+  },
+  {
+    "id": "clean-casual-03",
+    "text": "No worries; I can handle that tomorrow.",
+    "expected": []
+  },
+  {
+    "id": "clean-professional-01",
+    "text": "The revised schedule reflects the approved milestones.",
+    "expected": []
+  },
+  {
+    "id": "clean-professional-02",
+    "text": "Our team will review the findings before publication.",
+    "expected": []
+  },
+  {
+    "id": "clean-professional-03",
+    "text": "The deployment completed without service interruption.",
+    "expected": []
+  },
+  {
+    "id": "clean-academic-01",
+    "text": "The observed association remained stable across both samples.",
+    "expected": []
+  },
+  {
+    "id": "clean-academic-02",
+    "text": "Prior research supports a cautious interpretation of these results.",
+    "expected": []
+  },
+  {
+    "id": "clean-academic-03",
+    "text": "The analysis accounts for variation between the study groups.",
+    "expected": []
+  },
+  {
+    "id": "clean-unusual-01",
+    "text": "The brass moon slept beneath a paper sea.",
+    "expected": []
+  },
+  {
+    "id": "clean-unusual-02",
+    "text": "Seven patient clocks watched the empty station.",
+    "expected": []
+  },
+  {
+    "id": "clean-quoted-01",
+    "text": "Maya said, “The draft is ready for review.”",
+    "expected": []
+  },
+  {
+    "id": "clean-compound-01",
+    "text": "The long-term plan uses a risk-based approach.",
+    "expected": []
+  },
+
+  {
+    "id": "bad-article-01",
+    "text": "We saw a elephant near the river.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-02",
+    "text": "This is a unusual result.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-03",
+    "text": "She brought a orange umbrella.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-04",
+    "text": "He waited for a hour.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-05",
+    "text": "They proposed a alternative plan.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-06",
+    "text": "It was a unexpected change.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-07",
+    "text": "We need a accurate estimate.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-08",
+    "text": "This creates a obvious risk.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-09",
+    "text": "She wrote a excellent summary.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-article-10",
+    "text": "The team found a interesting pattern.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "bad-spelling-01",
+    "text": "The first sentence is misspelledd.",
+    "expected": [{ "originalText": "misspelledd" }]
+  },
+  {
+    "id": "bad-spelling-02",
+    "text": "Please correct the misspelledd label.",
+    "expected": [{ "originalText": "misspelledd" }]
+  },
+  {
+    "id": "bad-spelling-03",
+    "text": "A misspelledd heading appears above.",
+    "expected": [{ "originalText": "misspelledd" }]
+  },
+  {
+    "id": "bad-spelling-04",
+    "text": "The reviewer marked a misspelledd term.",
+    "expected": [{ "originalText": "misspelledd" }]
+  },
+  {
+    "id": "bad-spelling-05",
+    "text": "We removed the misspelledd entry.",
+    "expected": [{ "originalText": "misspelledd" }]
+  },
+  {
+    "id": "bad-apostrophe-01",
+    "text": "I cant find the document.",
+    "expected": [{ "originalText": "cant" }]
+  },
+  {
+    "id": "bad-apostrophe-02",
+    "text": "We cant approve this draft.",
+    "expected": [{ "originalText": "cant" }]
+  },
+  {
+    "id": "bad-apostrophe-03",
+    "text": "They cant reach the server.",
+    "expected": [{ "originalText": "cant" }]
+  },
+  {
+    "id": "bad-apostrophe-04",
+    "text": "You cant remove that record.",
+    "expected": [{ "originalText": "cant" }]
+  },
+  {
+    "id": "bad-apostrophe-05",
+    "text": "The client cant connect today.",
+    "expected": [{ "originalText": "cant" }]
+  },
+
+  {
+    "id": "protected-url-01",
+    "text": "Open https://redline.local/docs.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-url-02",
+    "text": "Read www.example.org/reference before continuing.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-email-01",
+    "text": "Send the report to writer@example.com.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-email-02",
+    "text": "Contact security.team+alerts@example.net for details.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-windows-path-01",
+    "text": "Open C:\\Users\\Tyree\\Documents\\draft.txt.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-windows-path-02",
+    "text": "The database is stored at D:\\REDLINE\\data\\redline.db.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-unc-path",
+    "text": "Copy the file from \\\\server\\share\\draft.docx.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-linux-path-01",
+    "text": "Read /etc/redline/config.toml before startup.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-linux-path-02",
+    "text": "Logs are written to /var/log/redline/app.log.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-flag-01",
+    "text": "Run the command with --dry-run enabled.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-flag-02",
+    "text": "Use -Verbose when troubleshooting the script.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-ipv4-01",
+    "text": "The gateway address is 192.168.1.1.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-ipv4-02",
+    "text": "The service listens on 10.20.30.40.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-hash-01",
+    "text": "Verify hash 9f86d081884c7d659a2feaa0c55ad015.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-hash-02",
+    "text": "The commit is a94a8fe5ccb19ba61c4c0873d391e987982fbbd3.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-version-01",
+    "text": "REDLINE v0.0.5 is installed locally.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-version-02",
+    "text": "The adapter supports release 2.7.0-beta.1.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-identifier-01",
+    "text": "The request_id remains stable during processing.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-identifier-02",
+    "text": "The WorkerLinter runs in a local worker.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-powershell-01",
+    "text": "PowerShell runs Get-ChildItem with --Force.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-command-01",
+    "text": "Run redline_cli --check against the draft.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-model-01",
+    "text": "The report references GPT-5 and AXIOM-01.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-network-01",
+    "text": "Connect to https://10.0.0.8/status for local diagnostics.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-mixed-01",
+    "text": "Email ops@example.com about C:\\REDLINE\\config.toml and v0.0.5.",
+    "expected": [],
+    "protected": true
+  },
+  {
+    "id": "protected-mixed-02",
+    "text": "Run --no-network on 127.0.0.1 with build_id enabled.",
+    "expected": [],
+    "protected": true
+  },
+
+  {
+    "id": "unicode-accent-01",
+    "text": "Renée prepared the café résumé yesterday.",
+    "expected": []
+  },
+  {
+    "id": "unicode-accent-02",
+    "text": "José reviewed the naïve implementation carefully.",
+    "expected": []
+  },
+  { "id": "unicode-emoji-01", "text": "The build passed. ✅", "expected": [] },
+  {
+    "id": "unicode-emoji-02",
+    "text": "We shipped the update 🚀 after review.",
+    "expected": []
+  },
+  {
+    "id": "unicode-curly-quote-01",
+    "text": "She called it “a measured response.”",
+    "expected": []
+  },
+  {
+    "id": "unicode-curly-quote-02",
+    "text": "The editor preserves ‘single quotes’ correctly.",
+    "expected": []
+  },
+  {
+    "id": "unicode-apostrophe-01",
+    "text": "The team’s decision was unanimous.",
+    "expected": []
+  },
+  {
+    "id": "unicode-dash-01",
+    "text": "The result—while unexpected—was valid.",
+    "expected": []
+  },
+  {
+    "id": "unicode-offset-error-01",
+    "text": "🚀 We found a unusual result.",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "unicode-offset-error-02",
+    "text": "Zoë wrote a excellent summary.",
+    "expected": [{ "originalText": "a" }]
+  },
+
+  {
+    "id": "structured-heading-01",
+    "text": "Release notes\nThe update is ready for review.",
+    "expected": []
+  },
+  {
+    "id": "structured-list-01",
+    "text": "Deployment steps\nVerify the package\nRestart the application",
+    "expected": []
+  },
+  {
+    "id": "structured-list-error",
+    "text": "Review checklist\nCheck a unusual result\nApprove the report",
+    "expected": [{ "originalText": "a" }]
+  },
+  {
+    "id": "structured-hard-break",
+    "text": "First line\nSecond line\nThird line",
+    "expected": []
+  },
+  {
+    "id": "structured-mixed-prose",
+    "text": "Summary\nThe report is complete.\nNext steps\nThe team will publish it tomorrow.",
     "expected": []
   }
 ]

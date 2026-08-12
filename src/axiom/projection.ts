@@ -1,5 +1,6 @@
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
-import type { AxiomIssue } from "./axiom";
+import { Mark } from "@tiptap/pm/model";
+import type { AxiomIssue, AxiomSuggestion } from "./axiom";
 
 export type ProjectionSegment = {
   kind: "text" | "hard-break" | "separator";
@@ -17,6 +18,12 @@ export type Projection = {
 export type EditorIssue = AxiomIssue & {
   editorFrom: number;
   editorTo: number;
+};
+
+export type CorrectionPlan = {
+  from: number;
+  marks: readonly Mark[];
+  to: number;
 };
 
 export function projectDocument(doc: ProseMirrorNode): Projection {
@@ -105,4 +112,50 @@ export function mapIssue(
     return null;
   }
   return { ...issue, editorFrom, editorTo };
+}
+
+export function correctionPlan(
+  doc: ProseMirrorNode,
+  projection: Projection,
+  issue: EditorIssue,
+  suggestion: AxiomSuggestion,
+): CorrectionPlan | null {
+  const mapped = mapIssue(projection, issue);
+  if (
+    !mapped ||
+    mapped.editorFrom !== issue.editorFrom ||
+    mapped.editorTo !== issue.editorTo
+  ) {
+    return null;
+  }
+
+  const crossesStructure = projection.segments.some(
+    (segment) =>
+      segment.kind !== "text" &&
+      issue.from < segment.to &&
+      issue.to > segment.from,
+  );
+  if (crossesStructure) return null;
+
+  const from =
+    suggestion.kind === "insert-after" ? mapped.editorTo : mapped.editorFrom;
+  const to = mapped.editorTo;
+  if (from < 0 || to < from || to > doc.content.size) return null;
+
+  const $from = doc.resolve(from);
+  const $to = doc.resolve(to);
+  if (!$from.sameParent($to) || !$from.parent.isTextblock) return null;
+
+  let marks: readonly Mark[] | undefined;
+  let consistent = true;
+  if (from === to) {
+    marks = $from.marks();
+  } else {
+    doc.nodesBetween(from, to, (node) => {
+      if (!node.isText) return;
+      if (marks === undefined) marks = node.marks;
+      else if (!Mark.sameSet(marks, node.marks)) consistent = false;
+    });
+  }
+  return consistent && marks !== undefined ? { from, to, marks } : null;
 }

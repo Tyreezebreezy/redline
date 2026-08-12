@@ -1,5 +1,6 @@
 import { type Editor, useEditorState } from "@tiptap/react";
 import type { ReactNode } from "react";
+import type { AxiomSuggestion } from "./axiom/axiom";
 import type { EditorIssue } from "./axiom/projection";
 import type { DocumentSummary, RecoveryPoint } from "./documents";
 import { countText } from "./editor";
@@ -59,7 +60,7 @@ export function TopBar({ saveState }: { saveState: SaveState }) {
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.4</span>
+        <span className="brand-version">0.0.5</span>
       </div>
       <div className="profile">
         <span>Profile</span>
@@ -245,27 +246,58 @@ export function Sidebar({
 
 export type AnalysisState =
   | { status: "ready" }
+  | { status: "pending" }
   | { status: "analyzing" }
-  | { status: "complete"; issues: EditorIssue[] }
-  | { status: "stale" }
+  | {
+      status: "complete";
+      generation: number;
+      issues: EditorIssue[];
+      session: number;
+    }
   | { status: "error"; message: string };
+
+function suggestionLabel(suggestion: AxiomSuggestion) {
+  if (suggestion.kind === "remove" || !suggestion.text) return "Remove";
+  return `${suggestion.kind === "insert-after" ? "Insert" : "Replace with"} “${suggestion.text}”`;
+}
 
 export function AnalysisPanel({
   analysis,
+  canApplySuggestion,
   disabled,
   onAnalyze,
+  onApplySuggestion,
+  onSelectIssue,
+  selectedIssueId,
 }: {
   analysis: AnalysisState;
+  canApplySuggestion: (
+    issue: EditorIssue,
+    suggestion: AxiomSuggestion,
+  ) => boolean;
   disabled: boolean;
   onAnalyze: () => void;
+  onApplySuggestion: (issueId: string, suggestionIndex: number) => void;
+  onSelectIssue: (issueId: string) => void;
+  selectedIssueId: string | null;
 }) {
+  const issues = analysis.status === "complete" ? analysis.issues : [];
+  const selectedIndex = issues.findIndex(({ id }) => id === selectedIssueId);
+  const selectPrevious = () => {
+    const index = selectedIndex < 0 ? issues.length - 1 : selectedIndex - 1;
+    if (issues[index]) onSelectIssue(issues[index].id);
+  };
+  const selectNext = () => {
+    const index = selectedIndex < 0 ? 0 : selectedIndex + 1;
+    if (issues[index]) onSelectIssue(issues[index].id);
+  };
   const panelState =
     analysis.status === "complete"
       ? `${analysis.issues.length} ${analysis.issues.length === 1 ? "issue" : "issues"}`
       : analysis.status === "analyzing"
         ? "Analyzing…"
-        : analysis.status === "stale"
-          ? "Stale"
+        : analysis.status === "pending"
+          ? "Waiting for pause…"
           : analysis.status === "error"
             ? "Failed"
             : "Ready";
@@ -281,28 +313,87 @@ export function AnalysisPanel({
           {panelState}
         </span>
       </header>
-      <div className="analysis-content" aria-live="polite">
+      <div className="analysis-content">
         {analysis.status === "complete" && analysis.issues.length ? (
-          <ol className="issue-list">
-            {analysis.issues.map((issue) => (
-              <li className="issue-card" key={issue.id}>
-                <div className="issue-meta">
-                  <span>{issue.category.replace("-", " ")}</span>
-                  <span>{issue.source}</span>
-                </div>
-                <h3>{issue.message}</h3>
-                <p className="issue-original">“{issue.originalText}”</p>
-                {issue.suggestions.length ? (
-                  <p className="issue-suggestions">
-                    Suggested:{" "}
-                    {issue.suggestions
-                      .map(({ text }) => text || "Remove")
-                      .join(", ")}
-                  </p>
-                ) : null}
-              </li>
-            ))}
-          </ol>
+          <>
+            <nav className="issue-navigation" aria-label="Issue navigation">
+              <button
+                disabled={!issues.length || selectedIndex === 0}
+                onClick={selectPrevious}
+                type="button"
+              >
+                Previous
+              </button>
+              <span>
+                {selectedIndex < 0 ? "—" : selectedIndex + 1} / {issues.length}
+              </span>
+              <button
+                disabled={!issues.length || selectedIndex === issues.length - 1}
+                onClick={selectNext}
+                type="button"
+              >
+                Next
+              </button>
+            </nav>
+            <ol className="issue-list">
+              {analysis.issues.map((issue) => {
+                const selected = selectedIssueId === issue.id;
+                const safeSuggestions = issue.suggestions.map((suggestion) =>
+                  canApplySuggestion(issue, suggestion),
+                );
+                return (
+                  <li
+                    className={`issue-card${selected ? " issue-card-selected" : ""}`}
+                    id={`issue-${issue.id}`}
+                    key={issue.id}
+                  >
+                    <button
+                      aria-current={selected ? "true" : undefined}
+                      className="issue-select"
+                      onClick={() => onSelectIssue(issue.id)}
+                      type="button"
+                    >
+                      <span className="issue-meta">
+                        <span>{issue.category.replace("-", " ")}</span>
+                        <span>{issue.severity}</span>
+                      </span>
+                      <strong>{issue.message}</strong>
+                      <span className="issue-original">
+                        “{issue.originalText}”
+                      </span>
+                      {issue.explanation ? (
+                        <span className="issue-explanation">
+                          {issue.explanation}
+                        </span>
+                      ) : null}
+                    </button>
+                    {issue.suggestions.length ? (
+                      <div className="suggestion-actions">
+                        {issue.suggestions.map((suggestion, index) => (
+                          <button
+                            disabled={!safeSuggestions[index]}
+                            key={`${suggestion.kind}-${suggestion.text}`}
+                            onClick={() => onApplySuggestion(issue.id, index)}
+                            type="button"
+                          >
+                            {suggestionLabel(suggestion)}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="manual-edit-note">Review manually.</p>
+                    )}
+                    {safeSuggestions.some((safe) => !safe) ? (
+                      <p className="manual-edit-note">
+                        Edit manually — this suggestion crosses a formatting or
+                        structural boundary.
+                      </p>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ol>
+          </>
         ) : (
           <div className="analysis-empty">
             <div className="empty-icon" aria-hidden="true">
@@ -311,10 +402,10 @@ export function AnalysisPanel({
             <h3>
               {analysis.status === "analyzing"
                 ? "Checking your writing…"
-                : analysis.status === "complete"
-                  ? "No issues found"
-                  : analysis.status === "stale"
-                    ? "Document changed"
+                : analysis.status === "pending"
+                  ? "Waiting for a pause…"
+                  : analysis.status === "complete"
+                    ? "No issues found"
                     : analysis.status === "error"
                       ? "Analysis failed"
                       : "Ready to analyze"}
@@ -322,10 +413,10 @@ export function AnalysisPanel({
             <p>
               {analysis.status === "analyzing"
                 ? "AXIOM is analyzing locally."
-                : analysis.status === "complete"
-                  ? "AXIOM found no issues in the current text."
-                  : analysis.status === "stale"
-                    ? "Check again to review the latest text."
+                : analysis.status === "pending"
+                  ? "Keep writing, or check immediately."
+                  : analysis.status === "complete"
+                    ? "AXIOM found no issues in the current text."
                     : analysis.status === "error"
                       ? analysis.message
                       : "Run a private, local grammar check when you are ready."}
@@ -334,13 +425,11 @@ export function AnalysisPanel({
         )}
         <button
           className="analyze-button"
-          disabled={disabled || analysis.status === "analyzing"}
+          disabled={disabled}
           onClick={onAnalyze}
           type="button"
         >
-          {analysis.status === "stale" || analysis.status === "error"
-            ? "Check again"
-            : "Check Writing"}
+          {analysis.status === "error" ? "Check again" : "Check Writing"}
         </button>
       </div>
     </aside>
