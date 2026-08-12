@@ -357,9 +357,8 @@ body {
 }
 
 .workspace {
-  display: grid;
-  place-items: center;
-  padding: 48px;
+  min-width: 0;
+  padding: 28px 36px;
   overflow: auto;
   background:
     radial-gradient(
@@ -370,43 +369,151 @@ body {
     var(--workspace-bg);
 }
 
-.workspace-empty {
-  width: min(560px, 100%);
-  margin-top: -4vh;
-  text-align: center;
+.editor-stage {
+  display: flex;
+  width: min(820px, 100%);
+  min-height: 100%;
+  margin: 0 auto;
+  flex-direction: column;
 }
 
-.eyeline {
+.editor-toolbar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  padding: 7px;
+  margin-bottom: 20px;
+  background: color-mix(in srgb, var(--panel-bg) 93%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.toolbar-group {
+  display: flex;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  gap: 3px;
+  border: 0;
+}
+
+.toolbar-group + .toolbar-group {
+  padding-left: 7px;
+  border-left: 1px solid var(--border);
+}
+
+.toolbar-button {
+  min-width: 34px;
+  min-height: 32px;
+  padding: 0 9px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  color: var(--text-secondary);
+  background: var(--surface-hover);
+}
+
+.toolbar-button[aria-pressed="true"] {
+  color: var(--text);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+.toolbar-button:disabled {
+  color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+  cursor: not-allowed;
+}
+
+.toolbar-button:focus-visible,
+.tiptap:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.editor-content {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+
+.tiptap {
   display: block;
-  width: 42px;
-  height: 2px;
-  margin: 0 auto 25px;
-  background: var(--accent);
-  box-shadow: 18px 0 0 color-mix(in srgb, var(--accent) 30%, transparent);
-}
-
-.workspace h1 {
-  margin: 0 0 24px;
+  flex: 1;
+  min-width: 0;
+  min-height: 360px;
+  padding: 18px 12px 80px;
   color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(34px, 3.3vw, 52px);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
+  font-size: 18px;
+  line-height: 1.72;
+  overflow-wrap: anywhere;
+  caret-color: var(--accent);
 }
 
-.workspace p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 15px;
-  line-height: 1.65;
+.tiptap:focus {
+  border-radius: 4px;
 }
 
-.workspace .workspace-detail {
-  max-width: 430px;
-  margin: 5px auto 0;
+.tiptap > :first-child {
+  margin-top: 0;
+}
+
+.tiptap p {
+  margin: 0 0 1em;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  margin: 1.25em 0 0.45em;
+  color: var(--text);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+
+.tiptap h1 {
+  font-size: 2.15em;
+  font-weight: 500;
+}
+
+.tiptap h2 {
+  font-size: 1.6em;
+  font-weight: 550;
+}
+
+.tiptap h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.55em;
+  margin: 0 0 1em;
+}
+
+.tiptap li > p {
+  margin: 0.15em 0;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  height: 0;
   color: var(--text-muted);
-  font-size: 13px;
+  pointer-events: none;
+  content: attr(data-placeholder);
+  float: left;
 }
 
 .analysis-panel {
@@ -510,6 +617,10 @@ body {
   color: var(--text-secondary);
 }
 
+.editor-counts {
+  gap: 18px;
+}
+
 @media (max-width: 1180px) {
   .top-bar {
     grid-template-columns: 212px 180px 1fr auto;
@@ -524,6 +635,10 @@ body {
 
   .app-body {
     grid-template-columns: 194px minmax(500px, 1fr) 272px;
+  }
+
+  .workspace {
+    padding-inline: 28px;
   }
 
   .future-action {

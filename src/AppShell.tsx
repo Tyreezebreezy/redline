@@ -1,4 +1,6 @@
+import { type Editor, useEditorState } from "@tiptap/react";
 import type { ReactNode } from "react";
+import { countText } from "./editor";
 import { ThemeControl } from "./ThemeControl";
 
 type IconName =
@@ -54,7 +56,7 @@ export function TopBar() {
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.1</span>
+        <span className="brand-version">0.0.2</span>
       </div>
 
       <div className="profile">
@@ -106,21 +108,6 @@ export function Sidebar() {
   );
 }
 
-export function Workspace() {
-  return (
-    <main className="workspace" id="workspace" tabIndex={-1}>
-      <div className="workspace-empty">
-        <span className="eyeline" aria-hidden="true" />
-        <h1>Your writing space</h1>
-        <p>The editor will arrive in a later milestone.</p>
-        <p className="workspace-detail">
-          This will become a focused place for writing and careful revision.
-        </p>
-      </div>
-    </main>
-  );
-}
-
 export function AnalysisPanel() {
   return (
     <aside className="analysis-panel" aria-labelledby="analysis-title">
@@ -142,17 +129,28 @@ export function AnalysisPanel() {
   );
 }
 
-export function StatusBar() {
+export function StatusBar({ editor }: { editor: Editor | null }) {
+  const counts = useEditorState({
+    editor,
+    selector: ({ editor: current }) =>
+      current ? countText(current.getText({ blockSeparator: "\n" })) : null,
+  });
+
   return (
     <footer className="status-bar">
-      <span>
+      <span className="draft-warning">
         <Icon name="info" />
-        No document open
+        Temporary draft — closing REDLINE clears this text.
       </span>
       <span className="status-separator" aria-hidden="true" />
-      <span>
-        <Icon name="folder" />
-        Local workspace
+      <span className="editor-counts" aria-live="polite">
+        <span>
+          {counts?.words ?? 0} {counts?.words === 1 ? "word" : "words"}
+        </span>
+        <span>
+          {counts?.characters ?? 0}{" "}
+          {counts?.characters === 1 ? "character" : "characters"}
+        </span>
       </span>
       <span className="privacy-note">Private by default</span>
     </footer>
