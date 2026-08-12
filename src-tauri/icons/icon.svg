@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>REDLINE app icon</title>
+  <rect width="512" height="512" rx="104" fill="#14161a"/>
+  <path d="M112 104v304" stroke="#f23b48" stroke-width="34" stroke-linecap="round"/>
+  <path d="M180 126h103c64 0 107 35 107 91 0 47-31 80-80 89l91 96h-65l-85-92h-19v92h-52V126Zm52 46v92h48c36 0 56-17 56-46 0-31-20-46-58-46h-46Z" fill="#f4f1ee"/>
+  <path d="M386 93 124 419" stroke="#f23b48" stroke-width="14" stroke-linecap="round" opacity=".78"/>
+</svg>

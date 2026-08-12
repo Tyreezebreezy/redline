@@ -1,0 +1,16 @@
+[package]
+name = "redline"
+version = "0.1.0"
+description = "Local-first writing assistant foundation"
+authors = ["Tyree"]
+edition = "2024"
+
+[lib]
+name = "redline_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }

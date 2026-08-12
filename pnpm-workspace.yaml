@@ -1,0 +1,4 @@
+# pnpm 11 stores per-project security settings here. No package globs are
+# declared, so REDLINE remains a single root package.
+allowBuilds:
+  esbuild: true
