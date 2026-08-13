@@ -1,0 +1,8 @@
+[[permission]]
+identifier = "dictation"
+description = "Allows the main window to use REDLINE's bounded local dictation commands."
+commands.allow = [
+  "start_dictation",
+  "stop_dictation",
+  "cancel_dictation",
+]

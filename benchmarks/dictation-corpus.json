@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Purpose-created locally with Windows system voices or deterministic synthetic samples for REDLINE 0.0.8 QA. No personal conversations.",
+  "fixtures": [
+    {
+      "id": "normal-sentence-01",
+      "category": "normal",
+      "transcript": "The quick brown fox jumps over the lazy dog.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/normal-sentence-01.wav"
+    },
+    {
+      "id": "normal-sentence-02",
+      "category": "normal",
+      "transcript": "Please review the draft before tomorrow morning.",
+      "voice": "Microsoft David Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/normal-sentence-02.wav"
+    },
+    {
+      "id": "paragraph-01",
+      "category": "paragraph",
+      "transcript": "Clear writing helps readers understand an argument. Each sentence should support the main idea, and each paragraph should move the document forward.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/paragraph-01.wav"
+    },
+    {
+      "id": "cybersecurity-01",
+      "category": "cybersecurity",
+      "transcript": "Enable multi-factor authentication and rotate the compromised credentials.",
+      "voice": "Microsoft David Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/cybersecurity-01.wav"
+    },
+    {
+      "id": "cybersecurity-02",
+      "category": "cybersecurity",
+      "transcript": "The security operations center detected lateral movement and privilege escalation.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/cybersecurity-02.wav"
+    },
+    {
+      "id": "networking-01",
+      "category": "networking",
+      "transcript": "The firewall denied inbound traffic on port four hundred forty-three.",
+      "voice": "Microsoft David Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/networking-01.wav"
+    },
+    {
+      "id": "networking-02",
+      "category": "networking",
+      "transcript": "The router advertises the default route through border gateway protocol.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/networking-02.wav"
+    },
+    {
+      "id": "acronyms-01",
+      "category": "acronyms",
+      "transcript": "The C I A triad covers confidentiality, integrity, and availability.",
+      "voice": "Microsoft David Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/acronyms-01.wav"
+    },
+    {
+      "id": "acronyms-02",
+      "category": "acronyms",
+      "transcript": "D N S and D H C P are essential network services.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/acronyms-02.wav"
+    },
+    {
+      "id": "numbers-01",
+      "category": "numbers",
+      "transcript": "The report contains twenty-seven findings across three systems.",
+      "voice": "Microsoft David Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/numbers-01.wav"
+    },
+    {
+      "id": "numbers-02",
+      "category": "numbers",
+      "transcript": "Revenue increased by twelve point five percent in twenty twenty-six.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/numbers-02.wav"
+    },
+    {
+      "id": "ip-address-01",
+      "category": "ip-address",
+      "transcript": "Connect to one nine two dot one six eight dot one dot one.",
+      "voice": "Microsoft David Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/ip-address-01.wav"
+    },
+    {
+      "id": "ip-address-02",
+      "category": "ip-address",
+      "transcript": "The host address is ten dot zero dot zero dot forty-two slash twenty-four.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/ip-address-02.wav"
+    },
+    {
+      "id": "product-01",
+      "category": "product-names",
+      "transcript": "REDLINE runs local proofreading with AXIOM and Harper.",
+      "voice": "Microsoft David Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/product-01.wav"
+    },
+    {
+      "id": "product-02",
+      "category": "product-names",
+      "transcript": "Tiptap stores the rich text document while SQLite stores local records.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/product-02.wav"
+    },
+    {
+      "id": "punctuation-01",
+      "category": "punctuation",
+      "transcript": "First, verify the input; second, run the test; finally, record the result.",
+      "voice": "Microsoft David Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/punctuation-01.wav"
+    },
+    {
+      "id": "punctuation-02",
+      "category": "punctuation",
+      "transcript": "Are we ready? Yes, but check the logs first.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/punctuation-02.wav"
+    },
+    {
+      "id": "proper-names-01",
+      "category": "proper-names",
+      "transcript": "Jordan asked Priya to send the report to Sebastián.",
+      "voice": "Microsoft David Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/proper-names-01.wav"
+    },
+    {
+      "id": "proper-names-02",
+      "category": "proper-names",
+      "transcript": "Renée met O'Brien in São Paulo on Tuesday.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 0,
+      "kind": "speech",
+      "file": "audio/proper-names-02.wav"
+    },
+    {
+      "id": "casual-01",
+      "category": "casual",
+      "transcript": "I think we're good to go, but let's double-check it.",
+      "voice": "Microsoft David Desktop",
+      "rate": 1,
+      "kind": "speech",
+      "file": "audio/casual-01.wav"
+    },
+    {
+      "id": "fast-speech-01",
+      "category": "fast-speech",
+      "transcript": "Please capture this faster sentence without dropping any of the important words.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": 4,
+      "kind": "speech",
+      "file": "audio/fast-speech-01.wav"
+    },
+    {
+      "id": "short-pauses-01",
+      "category": "short-pauses",
+      "transcript": "Start here, pause briefly, continue carefully, and stop there.",
+      "voice": "Microsoft David Desktop",
+      "rate": -2,
+      "kind": "speech",
+      "file": "audio/short-pauses-01.wav"
+    },
+    {
+      "id": "technical-paragraph-01",
+      "category": "technical",
+      "transcript": "The wildcard domain protects subdomains, while the scoped package identifies its namespace. The application should preserve both technical spans during proofreading.",
+      "voice": "Microsoft Zira Desktop",
+      "rate": -1,
+      "kind": "speech",
+      "file": "audio/technical-paragraph-01.wav"
+    },
+    {
+      "id": "silence-01",
+      "category": "silence",
+      "transcript": "",
+      "voice": null,
+      "rate": 0,
+      "kind": "silence",
+      "file": "audio/silence-01.wav"
+    },
+    {
+      "id": "background-noise-01",
+      "category": "background-noise",
+      "transcript": "",
+      "voice": null,
+      "rate": 0,
+      "kind": "noise",
+      "file": "audio/background-noise-01.wav"
+    },
+    {
+      "id": "empty-no-speech-01",
+      "category": "no-speech",
+      "transcript": "",
+      "voice": null,
+      "rate": 0,
+      "kind": "short-silence",
+      "file": "audio/empty-no-speech-01.wav"
+    }
+  ]
+}

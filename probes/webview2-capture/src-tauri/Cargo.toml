@@ -1,0 +1,11 @@
+[package]
+name = "redline-webview2-capture-probe"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[build-dependencies]
+tauri-build = "=2.6.3"
+
+[dependencies]
+tauri = "=2.11.5"

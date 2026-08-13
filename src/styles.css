@@ -697,6 +697,56 @@ body {
   cursor: not-allowed;
 }
 
+.dictation-group {
+  margin-left: auto;
+}
+
+.dictation-group .toolbar-button[aria-pressed="true"] {
+  color: white;
+  background: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 80%, white 20%);
+}
+
+.dictation-status {
+  display: flex;
+  min-height: 22px;
+  align-items: center;
+  gap: 8px;
+  margin: -12px 8px 8px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.dictation-indicator {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  background: var(--text-muted);
+  border-radius: 50%;
+}
+
+.dictation-status-listening {
+  color: var(--text-secondary);
+}
+
+.dictation-status-listening .dictation-indicator {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.dictation-status-preparing .dictation-indicator,
+.dictation-status-processing .dictation-indicator {
+  background: #d8a84e;
+}
+
+.dictation-status-error {
+  color: var(--accent);
+}
+
+.dictation-status-error .dictation-indicator {
+  background: var(--accent);
+}
+
 .toolbar-button:focus-visible,
 .tiptap:focus-visible {
   outline: 2px solid var(--focus);

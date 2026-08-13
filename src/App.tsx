@@ -33,6 +33,15 @@ import {
   remapIgnoredIssues,
 } from "./axiom/projection";
 import {
+  captureDictationTarget,
+  clearDictationTarget,
+  createDictationTargetPlugin,
+  DICTATION_TARGET,
+  type DictationStatus,
+  dictation,
+  insertDictationTranscript,
+} from "./dictation";
+import {
   type DictionaryEntry,
   type DocumentRecord,
   type DocumentSummary,
@@ -53,17 +62,25 @@ function errorMessage(error: unknown) {
 }
 
 type DocumentEditorProps = {
+  dictationStatus: DictationStatus;
   document: DocumentRecord | null;
+  onCancelDictation: () => void;
   onDirty: (editor: Editor, transaction: Transaction) => void;
   onReady: (editor: Editor) => void;
   onSelectIssue: (issueId: string) => void;
+  onStartDictation: () => void;
+  onStopDictation: () => void;
 };
 
 function DocumentEditor({
+  dictationStatus,
   document: initialDocument,
+  onCancelDictation,
   onDirty,
   onReady,
   onSelectIssue,
+  onStartDictation,
+  onStopDictation,
 }: DocumentEditorProps) {
   const editor = useEditor({
     autofocus: "start",
@@ -102,9 +119,13 @@ function DocumentEditor({
 
   useEffect(() => {
     if (!editor || editor.isDestroyed) return;
+    editor.registerPlugin(createDictationTargetPlugin());
     editor.registerPlugin(createAxiomDecorations(editor, onSelectIssue));
     return () => {
-      if (!editor.isDestroyed) editor.unregisterPlugin(AXIOM_DECORATIONS);
+      if (!editor.isDestroyed) {
+        editor.unregisterPlugin(AXIOM_DECORATIONS);
+        editor.unregisterPlugin(DICTATION_TARGET);
+      }
     };
   }, [editor, onSelectIssue]);
 
@@ -112,7 +133,15 @@ function DocumentEditor({
     if (editor && !editor.isDestroyed) onReady(editor);
   }, [editor, onReady]);
 
-  return <EditorWorkspace editor={editor} />;
+  return (
+    <EditorWorkspace
+      dictationStatus={dictationStatus}
+      editor={editor}
+      onCancelDictation={onCancelDictation}
+      onStartDictation={onStartDictation}
+      onStopDictation={onStopDictation}
+    />
+  );
 }
 
 function App() {
@@ -130,6 +159,9 @@ function App() {
   const [editorEpoch, setEditorEpoch] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisState>({ status: "ready" });
+  const [dictationStatus, setDictationStatus] = useState<DictationStatus>({
+    status: "idle",
+  });
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
   const editorRef = useRef<Editor | null>(null);
   const activeRef = useRef<DocumentRecord | null>(null);
@@ -148,6 +180,9 @@ function App() {
   const idleTimer = useRef<number | undefined>(undefined);
   const maxTimer = useRef<number | undefined>(undefined);
   const saveQueue = useRef(Promise.resolve());
+  const dictationSessionRef = useRef<string | null>(null);
+  const dictationDocumentSessionRef = useRef<number | null>(null);
+  const dictationStopRef = useRef<string | null>(null);
 
   const setCurrent = useCallback(
     (document: DocumentRecord | null, analyzeOnReady = false) => {
@@ -402,6 +437,131 @@ function App() {
     [scheduleAnalysis],
   );
 
+  const cancelActiveDictation = useCallback(async () => {
+    const sessionId = dictationSessionRef.current;
+    if (!sessionId) return;
+    dictationSessionRef.current = null;
+    dictationDocumentSessionRef.current = null;
+    dictationStopRef.current = null;
+    clearDictationTarget(editorRef.current, sessionId);
+    setDictationStatus({
+      status: "cancelled",
+      message: "Dictation cancelled. No text was inserted.",
+    });
+    try {
+      await dictation.cancel(sessionId);
+    } catch (error) {
+      setDictationStatus({ status: "error", message: errorMessage(error) });
+    }
+  }, []);
+
+  const finishDictation = useCallback(async (sessionId: string) => {
+    if (
+      dictationSessionRef.current !== sessionId ||
+      dictationStopRef.current === sessionId
+    ) {
+      return;
+    }
+    dictationStopRef.current = sessionId;
+    setDictationStatus({
+      status: "processing",
+      message: "Processing speech locally…",
+    });
+    try {
+      const transcript = await dictation.stop(sessionId);
+      if (dictationSessionRef.current !== sessionId) return;
+      const editor = editorRef.current;
+      const documentSession = dictationDocumentSessionRef.current;
+      if (!editor || editor.isDestroyed || documentSession === null) {
+        throw new Error(
+          "The original document is no longer open. No text was inserted.",
+        );
+      }
+      setDictationStatus({
+        status: "processing",
+        message: "Inserting transcript…",
+      });
+      const result = insertDictationTranscript(
+        editor,
+        sessionId,
+        documentSession,
+        transcript.text,
+      );
+      if (!result.ok) throw new Error(result.message);
+      setDictationStatus({
+        status: "success",
+        message: transcript.timedOut
+          ? "Dictation reached 90 seconds and was inserted."
+          : "Dictation inserted.",
+      });
+    } catch (error) {
+      if (dictationSessionRef.current === sessionId) {
+        clearDictationTarget(editorRef.current, sessionId);
+        setDictationStatus({ status: "error", message: errorMessage(error) });
+        editorRef.current?.view.focus();
+      }
+    } finally {
+      if (dictationSessionRef.current === sessionId) {
+        dictationSessionRef.current = null;
+        dictationDocumentSessionRef.current = null;
+      }
+      if (dictationStopRef.current === sessionId) {
+        dictationStopRef.current = null;
+      }
+    }
+  }, []);
+
+  const startDictation = useCallback(async () => {
+    const editor = editorRef.current;
+    if (!editor || editor.isDestroyed || dictationSessionRef.current) return;
+    const sessionId = crypto.randomUUID();
+    const documentSession = documentSessionRef.current;
+    const target = captureDictationTarget(editor, sessionId, documentSession);
+    if (!target.ok) {
+      setDictationStatus({ status: "error", message: target.message });
+      return;
+    }
+    dictationSessionRef.current = sessionId;
+    dictationDocumentSessionRef.current = documentSession;
+    setDictationStatus({
+      status: "preparing",
+      message: "Preparing the system microphone…",
+    });
+    try {
+      const info = await dictation.start(sessionId, {
+        onError: (message) => {
+          if (dictationSessionRef.current !== sessionId) return;
+          dictationSessionRef.current = null;
+          dictationDocumentSessionRef.current = null;
+          clearDictationTarget(editorRef.current, sessionId);
+          void dictation.cancel(sessionId);
+          setDictationStatus({ status: "error", message });
+          editorRef.current?.view.focus();
+        },
+        onTimeout: () => void finishDictation(sessionId),
+      });
+      if (
+        dictationSessionRef.current !== sessionId ||
+        documentSessionRef.current !== documentSession
+      ) {
+        await dictation.cancel(sessionId);
+        return;
+      }
+      setDictationStatus({
+        status: "listening",
+        deviceName: info.deviceName,
+        message: `Listening on ${info.deviceName}. Speech is processed locally.`,
+      });
+    } catch (error) {
+      if (dictationSessionRef.current === sessionId) {
+        dictationSessionRef.current = null;
+        dictationDocumentSessionRef.current = null;
+        clearDictationTarget(editor, sessionId);
+        setDictationStatus({ status: "error", message: errorMessage(error) });
+      }
+    }
+  }, [finishDictation]);
+
   useEffect(() => {
     let cancelled = false;
     documents
@@ -434,9 +594,10 @@ function App() {
     let unlisten: (() => void) | undefined;
     getCurrentWindow()
       .onCloseRequested(async (event) => {
-        if (!dirtyRef.current) return;
+        if (!dirtyRef.current && !dictationSessionRef.current) return;
         event.preventDefault();
-        if (await save("auto")) {
+        await cancelActiveDictation();
+        if (!dirtyRef.current || (await save("auto"))) {
           await getCurrentWindow().destroy();
         } else if (
           window.confirm(
@@ -450,7 +611,7 @@ function App() {
         unlisten = stop;
       });
     return () => unlisten?.();
-  }, [save]);
+  }, [cancelActiveDictation, save]);
 
   useEffect(() => {
     const handleSave = (event: KeyboardEvent) => {
@@ -464,6 +625,7 @@ function App() {
   }, [save]);
 
   const switchTo = async (id: string) => {
+    await cancelActiveDictation();
     if (dirtyRef.current && !(await save("auto"))) return;
     try {
       const document = await documents.open(id);
@@ -476,6 +638,7 @@ function App() {
   };
 
   const newDocument = async () => {
+    await cancelActiveDictation();
     if (dirtyRef.current && !(await save("auto"))) return;
     setCurrent(null);
     setRevisions([]);
@@ -491,6 +654,7 @@ function App() {
     const current = activeRef.current;
     if (!current) return;
     if (!window.confirm(`Move “${current.title}” to Trash?`)) return;
+    await cancelActiveDictation();
     if (dirtyRef.current && !(await save("auto"))) return;
     const saved = activeRef.current;
     if (!saved) return;
@@ -506,6 +670,7 @@ function App() {
 
   const restoreDeleted = async (id: string) => {
     try {
+      await cancelActiveDictation();
       const document = await documents.restoreDeleted(id);
       setCurrent(document, true);
       await refreshLists(document.id);
@@ -524,6 +689,7 @@ function App() {
       )
     )
       return;
+    await cancelActiveDictation();
     if (dirtyRef.current && !(await save("auto"))) return;
     const saved = activeRef.current;
     if (!saved) return;
@@ -740,11 +906,18 @@ function App() {
         />
         {loaded ? (
           <DocumentEditor
+            dictationStatus={dictationStatus}
             document={active}
             key={`${active?.id ?? "new"}-${editorEpoch}`}
+            onCancelDictation={() => void cancelActiveDictation()}
             onDirty={markDirty}
             onReady={ready}
             onSelectIssue={selectIssue}
+            onStartDictation={() => void startDictation()}
+            onStopDictation={() => {
+              const sessionId = dictationSessionRef.current;
+              if (sessionId) void finishDictation(sessionId);
+            }}
           />
         ) : (
           <main className="workspace" id="workspace" tabIndex={-1} />

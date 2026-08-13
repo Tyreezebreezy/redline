@@ -1,0 +1,22 @@
+REDLINE 0.0.8 local dictation notices
+
+OpenAI Whisper model and code
+Source: https://github.com/openai/whisper
+License: MIT
+
+whisper.cpp and ggml-base.en.bin conversion
+Source: https://github.com/ggml-org/whisper.cpp
+Model source: https://huggingface.co/ggerganov/whisper.cpp
+License: MIT
+
+whisper-rs
+Source: https://codeberg.org/tazz4843/whisper-rs
+License: Unlicense
+
+CPAL
+Source: https://github.com/RustAudio/cpal
+License: Apache-2.0
+
+Rubato
+Source: https://github.com/HEnquist/rubato
+License: MIT OR Apache-2.0

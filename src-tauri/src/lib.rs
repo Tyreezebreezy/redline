@@ -7,8 +7,11 @@ use std::{
     sync::Mutex,
     time::{SystemTime, UNIX_EPOCH},
 };
-use tauri::{Manager, State};
+use tauri::{Manager, State, ipc::InvokeBody};
 use unicode_normalization::{UnicodeNormalization, char::is_combining_mark};
+
+pub mod dictation;
+use dictation::{CaptureInfo, DictationService, SpeechTranscript};
 
 const MAX_CONTENT_BYTES: usize = 5 * 1024 * 1024;
 const MAX_TITLE_CHARS: usize = 200;
@@ -580,6 +583,55 @@ fn remove_dictionary_term(
 }
 
 #[tauri::command]
+fn start_dictation(
+    session_id: String,
+    device_name: String,
+    sample_rate: u32,
+    service: State<'_, DictationService>,
+) -> CommandResult<CaptureInfo> {
+    service.start(session_id, device_name, sample_rate)
+}
+
+#[tauri::command]
+async fn stop_dictation(
+    request: tauri::ipc::Request<'_>,
+    service: State<'_, DictationService>,
+) -> CommandResult<SpeechTranscript> {
+    let header = |name: &str| {
+        request
+            .headers()
+            .get(name)
+            .and_then(|value| value.to_str().ok())
+            .map(str::to_owned)
+            .ok_or_else(|| format!("Missing dictation IPC header: {name}."))
+    };
+    let session_id = header("x-redline-session-id")?;
+    let sample_rate = header("x-redline-sample-rate")?
+        .parse::<u32>()
+        .map_err(|_| "Dictation IPC sample rate is invalid.".to_owned())?;
+    let timed_out = match header("x-redline-timed-out")?.as_str() {
+        "true" => true,
+        "false" => false,
+        _ => return Err("Dictation IPC timeout state is invalid.".into()),
+    };
+    let InvokeBody::Raw(pcm) = request.body() else {
+        return Err("Dictation audio must use raw binary IPC.".into());
+    };
+    let pcm = pcm.clone();
+    let service = service.inner().clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        service.stop(session_id, sample_rate, timed_out, pcm)
+    })
+    .await
+    .map_err(|error| format!("Local transcription task failed: {error}"))?
+}
+
+#[tauri::command]
+fn cancel_dictation(session_id: String, service: State<'_, DictationService>) -> CommandResult<()> {
+    service.cancel(session_id)
+}
+
+#[tauri::command]
 fn delete_document(
     id: String,
     expected_revision: i64,
@@ -684,6 +736,11 @@ pub fn run() {
             let directory = app.path().app_local_data_dir()?;
             fs::create_dir_all(&directory)?;
             app.manage(DocumentStore::open(&directory.join("redline.sqlite3"))?);
+            let model = app.path().resolve(
+                "resources/models/ggml-base.en.bin",
+                tauri::path::BaseDirectory::Resource,
+            )?;
+            app.manage(DictationService::new(model));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -697,6 +754,9 @@ pub fn run() {
             restore_document_revision,
             add_dictionary_term,
             remove_dictionary_term,
+            start_dictation,
+            stop_dictation,
+            cancel_dictation,
         ])
         .run(tauri::generate_context!())
         .expect("error while running REDLINE");

@@ -1,5 +1,6 @@
 import { type Editor, EditorContent, useEditorState } from "@tiptap/react";
-import { type KeyboardEvent, type ReactNode, useState } from "react";
+import { type KeyboardEvent, type ReactNode, useEffect, useState } from "react";
+import type { DictationStatus } from "./dictation";
 
 type ToolbarButtonProps = {
   active?: boolean;
@@ -42,7 +43,19 @@ function ToolbarButton({
   );
 }
 
-export function EditorToolbar({ editor }: { editor: Editor }) {
+export function EditorToolbar({
+  dictationStatus,
+  editor,
+  onCancelDictation,
+  onStartDictation,
+  onStopDictation,
+}: {
+  dictationStatus: DictationStatus;
+  editor: Editor;
+  onCancelDictation: () => void;
+  onStartDictation: () => void;
+  onStopDictation: () => void;
+}) {
   const [tabStop, setTabStop] = useState("paragraph");
   const state = useEditorState({
     editor,
@@ -62,6 +75,24 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
 
   const tabIndex = (id: string) => (tabStop === id ? 0 : -1);
   const focusEditor = () => editor.chain().focus().run();
+
+  useEffect(() => {
+    if (
+      tabStop !== "dictate" ||
+      !["preparing", "processing"].includes(dictationStatus.status)
+    ) {
+      return;
+    }
+    setTabStop("cancel-dictation");
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLButtonElement>(
+          '[data-toolbar-id="cancel-dictation"]',
+        )
+        ?.focus();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [dictationStatus.status, tabStop]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {
@@ -214,15 +245,101 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
           Redo
         </ToolbarButton>
       </fieldset>
+
+      <fieldset className="toolbar-group dictation-group">
+        <legend className="sr-only">Dictation</legend>
+        <ToolbarButton
+          active={dictationStatus.status === "listening"}
+          disabled={
+            dictationStatus.status === "preparing" ||
+            dictationStatus.status === "processing"
+          }
+          id="dictate"
+          label={
+            dictationStatus.status === "listening"
+              ? "Stop dictation"
+              : "Start dictation"
+          }
+          onClick={
+            dictationStatus.status === "listening"
+              ? onStopDictation
+              : onStartDictation
+          }
+          onFocus={() => setTabStop("dictate")}
+          tabIndex={tabIndex("dictate")}
+        >
+          <span aria-hidden="true">●</span>{" "}
+          {dictationStatus.status === "listening"
+            ? "Stop"
+            : dictationStatus.status === "preparing"
+              ? "Preparing…"
+              : dictationStatus.status === "processing"
+                ? "Processing…"
+                : "Dictate"}
+        </ToolbarButton>
+        {dictationStatus.status === "preparing" ||
+        dictationStatus.status === "listening" ||
+        dictationStatus.status === "processing" ? (
+          <button
+            className="toolbar-button"
+            data-toolbar-id="cancel-dictation"
+            onClick={() => {
+              onCancelDictation();
+              setTabStop("paragraph");
+              focusEditor();
+            }}
+            onFocus={() => setTabStop("cancel-dictation")}
+            tabIndex={tabIndex("cancel-dictation")}
+            type="button"
+          >
+            Cancel
+          </button>
+        ) : null}
+      </fieldset>
     </div>
   );
 }
 
-export function EditorWorkspace({ editor }: { editor: Editor | null }) {
+export function EditorWorkspace({
+  dictationStatus,
+  editor,
+  onCancelDictation,
+  onStartDictation,
+  onStopDictation,
+}: {
+  dictationStatus: DictationStatus;
+  editor: Editor | null;
+  onCancelDictation: () => void;
+  onStartDictation: () => void;
+  onStopDictation: () => void;
+}) {
   return (
     <main className="workspace" id="workspace" tabIndex={-1}>
       <div className="editor-stage">
-        {editor ? <EditorToolbar editor={editor} /> : null}
+        {editor ? (
+          <>
+            <EditorToolbar
+              dictationStatus={dictationStatus}
+              editor={editor}
+              onCancelDictation={onCancelDictation}
+              onStartDictation={onStartDictation}
+              onStopDictation={onStopDictation}
+            />
+            <div
+              aria-atomic="true"
+              aria-live="polite"
+              className={`dictation-status dictation-status-${dictationStatus.status}`}
+              role="status"
+            >
+              <span aria-hidden="true" className="dictation-indicator" />
+              <span>
+                {dictationStatus.status === "idle"
+                  ? "Speech is processed locally."
+                  : dictationStatus.message}
+              </span>
+            </div>
+          </>
+        ) : null}
         <EditorContent editor={editor} className="editor-content" />
       </div>
     </main>

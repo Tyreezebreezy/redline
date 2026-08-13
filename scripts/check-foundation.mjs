@@ -8,6 +8,7 @@ const [
   packageText,
   capabilityText,
   permissionText,
+  dictationPermissionText,
 ] = await Promise.all([
   readFile(new URL("../src-tauri/tauri.conf.json", import.meta.url), "utf8"),
   readFile(new URL("../src-tauri/Cargo.toml", import.meta.url), "utf8"),
@@ -19,6 +20,10 @@ const [
   ),
   readFile(
     new URL("../src-tauri/permissions/documents.toml", import.meta.url),
+    "utf8",
+  ),
+  readFile(
+    new URL("../src-tauri/permissions/dictation.toml", import.meta.url),
     "utf8",
   ),
 ]);
@@ -36,11 +41,15 @@ assert.equal(
 );
 assert.equal(config.app.security.csp["worker-src"], "'self' blob:");
 assert.equal(config.app.security.devCsp["worker-src"], "'self' blob:");
+assert.deepEqual(config.app.security.headers, {
+  "Permissions-Policy": "microphone=(self), camera=()",
+});
 assert.match(
   config.app.security.devCsp["connect-src"],
   /ws:\/\/localhost:1420/,
 );
 assert.doesNotMatch(cargoText, /tauri-plugin/);
+assert.doesNotMatch(cargoText, /\bcpal\b/);
 assert.match(
   cargoText,
   /rusqlite = \{ version = "=0\.40\.1", default-features = false, features = \["bundled"\] \}/,
@@ -51,10 +60,10 @@ assert.match(
 );
 assert.match(cargoText, /serde_json = "=1\.0\.151"/);
 assert.doesNotMatch(appText, /Writing Score|Correctness|issue count/i);
-assert.equal(packageJson.version, "0.0.7");
-assert.equal(config.version, "0.0.7");
-assert.match(cargoText, /version = "0\.0\.7"/);
-assert.match(appText, /0\.0\.7/);
+assert.equal(packageJson.version, "0.0.8");
+assert.equal(config.version, "0.0.8");
+assert.match(cargoText, /version = "0\.0\.8"/);
+assert.match(appText, /0\.0\.8/);
 assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");
@@ -74,12 +83,11 @@ const capability = JSON.parse(capabilityText);
 assert.deepEqual(capability.windows, ["main"]);
 assert.deepEqual(capability.permissions, [
   "documents",
-  "core:event:allow-listen",
-  "core:event:allow-unlisten",
+  "dictation",
   "core:window:allow-destroy",
 ]);
 assert.doesNotMatch(
-  `${capabilityText}\n${permissionText}`,
+  `${capabilityText}\n${permissionText}\n${dictationPermissionText}`,
   /fs:|shell:|process:|http:|sql:|dialog:|global-shortcut:|microphone|camera/i,
 );
 for (const command of [
@@ -96,5 +104,11 @@ for (const command of [
 ]) {
   assert.match(permissionText, new RegExp(`"${command}"`));
 }
+const dictationCommands =
+  dictationPermissionText.match(/commands\.allow = \[([\s\S]*?)\]/)?.[1] ?? "";
+assert.deepEqual(
+  [...dictationCommands.matchAll(/"([a-z_]+)"/g)].map((match) => match[1]),
+  ["start_dictation", "stop_dictation", "cancel_dictation"],
+);
 
 console.log("REDLINE foundation boundaries verified.");
