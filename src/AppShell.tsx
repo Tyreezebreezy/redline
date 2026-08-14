@@ -13,6 +13,7 @@ import type {
 } from "./documents";
 import { countText } from "./editor";
 import { ThemeControl } from "./ThemeControl";
+import type { TransformPreset, TransformWorkflowState } from "./transform";
 
 export type SaveState = "Saved" | "Saving" | "Unsaved" | "Save failed";
 
@@ -94,7 +95,7 @@ export function TopBar({
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.8</span>
+        <span className="brand-version">0.0.9</span>
       </div>
       <label className="profile">
         <span>Profile</span>
@@ -711,6 +712,217 @@ export function AnalysisPanel({
         >
           {analysis.status === "error" ? "Check again" : "Check Writing"}
         </button>
+      </div>
+    </aside>
+  );
+}
+
+const TRANSFORM_LABELS: Record<TransformPreset, string> = {
+  academic: "Academic",
+  concise: "Concise",
+  professional: "Professional",
+};
+
+export function TransformPanel({
+  onAccept,
+  onCancel,
+  onGenerate,
+  onPresetChange,
+  onRefreshSelection,
+  state,
+}: {
+  onAccept: () => void;
+  onCancel: () => void;
+  onGenerate: () => void;
+  onPresetChange: (preset: TransformPreset) => void;
+  onRefreshSelection: () => void;
+  state: Exclude<TransformWorkflowState, { status: "idle" }>;
+}) {
+  const heading = useRef<HTMLHeadingElement>(null);
+  const acceptButton = useRef<HTMLButtonElement>(null);
+  const regenerateButton = useRef<HTMLButtonElement>(null);
+  const acceptBlockedReason =
+    state.status === "preview" ? state.acceptBlockedReason : null;
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      if (state.status === "preview") {
+        (acceptBlockedReason
+          ? regenerateButton.current
+          : acceptButton.current
+        )?.focus();
+      } else {
+        heading.current?.focus();
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [state.status, acceptBlockedReason]);
+
+  const cancel = () => {
+    onCancel();
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLButtonElement>('[data-toolbar-id="transform"]')
+        ?.focus();
+    });
+  };
+  const panelState =
+    state.status === "generating"
+      ? "Generating locally…"
+      : state.status === "preview"
+        ? state.stale
+          ? "Source changed"
+          : "Preview ready"
+        : state.status === "error"
+          ? "Generation failed"
+          : state.status === "stale"
+            ? "Source changed"
+            : "Ready";
+  const announcement =
+    state.status === "preview"
+      ? state.acceptBlockedReason
+        ? `Transform preview ready. ${state.acceptBlockedReason}`
+        : "Transform preview ready. Review it before accepting."
+      : state.status === "error"
+        ? `Transform failed. ${state.message}`
+        : state.status === "stale"
+          ? `Transform source changed. ${state.message}`
+          : "";
+
+  return (
+    <aside
+      aria-busy={state.status === "generating"}
+      aria-labelledby="transform-title"
+      className="analysis-panel transform-panel"
+    >
+      <header className="panel-header">
+        <div>
+          <p className="section-label">Rewrite</p>
+          <h2 id="transform-title" ref={heading} tabIndex={-1}>
+            Transform
+          </h2>
+        </div>
+        <span className="panel-state">{panelState}</span>
+      </header>
+      <span aria-atomic="true" aria-live="polite" className="sr-only">
+        {announcement}
+      </span>
+      <div className="analysis-content transform-content">
+        <label className="transform-preset">
+          <span>Preset</span>
+          <select
+            disabled={state.status === "generating"}
+            onChange={(event) =>
+              onPresetChange(event.target.value as TransformPreset)
+            }
+            value={state.preset}
+          >
+            <option value="concise">Concise</option>
+            <option value="professional">Professional</option>
+            <option value="academic">Academic</option>
+          </select>
+        </label>
+        {state.preset === "professional" ? (
+          <p className="transform-guidance">
+            Conservative workplace rewrite · meaning over formality
+          </p>
+        ) : null}
+
+        <section className="transform-preview" aria-labelledby="original-title">
+          <h3 id="original-title">Original</h3>
+          <p>{state.original}</p>
+        </section>
+
+        {state.status === "preview" ? (
+          <section
+            className="transform-preview transform-preview-result"
+            aria-labelledby="transformed-title"
+          >
+            <h3 id="transformed-title">
+              {TRANSFORM_LABELS[state.preset]} preview
+            </h3>
+            <p>{state.response.text}</p>
+          </section>
+        ) : null}
+
+        {state.status === "generating" ? (
+          <div className="transform-progress" role="status">
+            <span aria-hidden="true" />
+            Loading and rewriting on this device…
+          </div>
+        ) : null}
+
+        {state.status === "error" ? (
+          <p className="transform-message transform-message-error" role="alert">
+            {state.message} Your original text is unchanged.
+          </p>
+        ) : null}
+
+        {state.status === "stale" ? (
+          <p
+            className="transform-message transform-message-blocked"
+            role="status"
+          >
+            {state.message} Your original text is unchanged.
+          </p>
+        ) : null}
+
+        {state.status === "preview" && state.acceptBlockedReason ? (
+          <p
+            className="transform-message transform-message-blocked"
+            role="status"
+          >
+            {state.acceptBlockedReason} Your original text is unchanged.
+          </p>
+        ) : state.acceptReason ? (
+          <p className="transform-message">{state.acceptReason}</p>
+        ) : null}
+
+        <div className="transform-actions">
+          {state.status === "ready" ? (
+            <button
+              className="analyze-button"
+              onClick={onGenerate}
+              type="button"
+            >
+              Generate
+            </button>
+          ) : null}
+          {state.status === "preview" && !state.stale ? (
+            <>
+              <button
+                className="analyze-button"
+                disabled={Boolean(state.acceptBlockedReason)}
+                onClick={onAccept}
+                ref={acceptButton}
+                type="button"
+              >
+                Accept
+              </button>
+              <button onClick={onGenerate} ref={regenerateButton} type="button">
+                Regenerate
+              </button>
+            </>
+          ) : null}
+          {state.status === "error" ? (
+            <button onClick={onGenerate} ref={regenerateButton} type="button">
+              Regenerate
+            </button>
+          ) : null}
+          {state.status === "preview" && state.stale ? (
+            <button onClick={onRefreshSelection} type="button">
+              Use current selection
+            </button>
+          ) : null}
+          {state.status === "stale" ? (
+            <button onClick={onRefreshSelection} type="button">
+              Use current selection
+            </button>
+          ) : null}
+          <button onClick={cancel} type="button">
+            Cancel
+          </button>
+        </div>
       </div>
     </aside>
   );

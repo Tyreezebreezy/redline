@@ -9,6 +9,7 @@ import {
   Sidebar,
   StatusBar,
   TopBar,
+  TransformPanel,
 } from "./AppShell";
 import {
   type AxiomSuggestion,
@@ -51,6 +52,18 @@ import {
 } from "./documents";
 import { EditorWorkspace } from "./EditorWorkspace";
 import { EDITOR_EXTENSIONS, EMPTY_DOCUMENT } from "./editor";
+import {
+  acceptTransform,
+  captureTransformTarget,
+  clearTransformTarget,
+  createTransformTargetPlugin,
+  responseAcceptBlock,
+  TRANSFORM_TARGET,
+  type TransformPreset,
+  type TransformWorkflowState,
+  transformProvider,
+  transformTargetState,
+} from "./transform";
 import "./styles.css";
 
 const IDLE_SAVE_MS = 1_000;
@@ -70,6 +83,8 @@ type DocumentEditorProps = {
   onSelectIssue: (issueId: string) => void;
   onStartDictation: () => void;
   onStopDictation: () => void;
+  onTransform: () => void;
+  transformOpen: boolean;
 };
 
 function DocumentEditor({
@@ -81,6 +96,8 @@ function DocumentEditor({
   onSelectIssue,
   onStartDictation,
   onStopDictation,
+  onTransform,
+  transformOpen,
 }: DocumentEditorProps) {
   const editor = useEditor({
     autofocus: "start",
@@ -120,11 +137,13 @@ function DocumentEditor({
   useEffect(() => {
     if (!editor || editor.isDestroyed) return;
     editor.registerPlugin(createDictationTargetPlugin());
+    editor.registerPlugin(createTransformTargetPlugin());
     editor.registerPlugin(createAxiomDecorations(editor, onSelectIssue));
     return () => {
       if (!editor.isDestroyed) {
         editor.unregisterPlugin(AXIOM_DECORATIONS);
         editor.unregisterPlugin(DICTATION_TARGET);
+        editor.unregisterPlugin(TRANSFORM_TARGET);
       }
     };
   }, [editor, onSelectIssue]);
@@ -140,6 +159,8 @@ function DocumentEditor({
       onCancelDictation={onCancelDictation}
       onStartDictation={onStartDictation}
       onStopDictation={onStopDictation}
+      onTransform={onTransform}
+      transformOpen={transformOpen}
     />
   );
 }
@@ -160,6 +181,9 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisState>({ status: "ready" });
   const [dictationStatus, setDictationStatus] = useState<DictationStatus>({
+    status: "idle",
+  });
+  const [transformState, setTransformState] = useState<TransformWorkflowState>({
     status: "idle",
   });
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
@@ -183,6 +207,12 @@ function App() {
   const dictationSessionRef = useRef<string | null>(null);
   const dictationDocumentSessionRef = useRef<number | null>(null);
   const dictationStopRef = useRef<string | null>(null);
+  const transformStateRef = useRef<TransformWorkflowState>({ status: "idle" });
+
+  const updateTransformState = useCallback((next: TransformWorkflowState) => {
+    transformStateRef.current = next;
+    setTransformState(next);
+  }, []);
 
   const setCurrent = useCallback(
     (document: DocumentRecord | null, analyzeOnReady = false) => {
@@ -211,6 +241,8 @@ function App() {
       setSaveState("Saved");
       setSaveError(null);
       setAnalysis({ status: "ready" });
+      transformStateRef.current = { status: "idle" };
+      setTransformState({ status: "idle" });
     },
     [],
   );
@@ -404,6 +436,29 @@ function App() {
         analysisProjectionRef.current = null;
         setSelectedIssueId(null);
         scheduleAnalysis(editor);
+        const transform = transformStateRef.current;
+        if (transform.status !== "idle" && transform.status !== "generating") {
+          const target = transformTargetState(
+            editor,
+            transform.targetId,
+            documentSessionRef.current,
+          );
+          if (!target.current) {
+            updateTransformState(
+              transform.status === "preview"
+                ? {
+                    ...transform,
+                    acceptBlockedReason: target.reason,
+                    stale: true,
+                  }
+                : {
+                    ...transform,
+                    message: target.reason,
+                    status: "stale",
+                  },
+            );
+          }
+        }
       }
       const wasDirty = dirtyRef.current;
       dirtyRef.current = true;
@@ -422,7 +477,7 @@ function App() {
         );
       }
     },
-    [save, scheduleAnalysis],
+    [save, scheduleAnalysis, updateTransformState],
   );
 
   const ready = useCallback(
@@ -513,7 +568,13 @@ function App() {
 
   const startDictation = useCallback(async () => {
     const editor = editorRef.current;
-    if (!editor || editor.isDestroyed || dictationSessionRef.current) return;
+    if (
+      !editor ||
+      editor.isDestroyed ||
+      dictationSessionRef.current ||
+      transformStateRef.current.status !== "idle"
+    )
+      return;
     const sessionId = crypto.randomUUID();
     const documentSession = documentSessionRef.current;
     const target = captureDictationTarget(editor, sessionId, documentSession);
@@ -562,6 +623,180 @@ function App() {
     }
   }, [finishDictation]);
 
+  const openTransform = useCallback(() => {
+    const editor = editorRef.current;
+    if (
+      !editor ||
+      editor.isDestroyed ||
+      dictationSessionRef.current ||
+      ["preparing", "listening", "processing"].includes(dictationStatus.status)
+    ) {
+      return;
+    }
+    clearTransformTarget(editor);
+    const targetId = crypto.randomUUID();
+    const captured = captureTransformTarget(
+      editor,
+      targetId,
+      documentSessionRef.current,
+    );
+    if (!captured.ok) return;
+    updateTransformState({
+      acceptReason: captured.acceptReason,
+      acceptSupported: captured.acceptSupported,
+      original: captured.text,
+      preset: "concise",
+      status: "ready",
+      targetId,
+    });
+  }, [dictationStatus.status, updateTransformState]);
+
+  const cancelActiveTransform = useCallback(async () => {
+    const current = transformStateRef.current;
+    if (current.status === "idle") return;
+    updateTransformState({ status: "idle" });
+    clearTransformTarget(editorRef.current, current.targetId);
+    if (current.status === "generating") {
+      try {
+        await transformProvider.cancel(current.requestId);
+      } catch (error) {
+        setSaveError(errorMessage(error));
+      }
+    }
+  }, [updateTransformState]);
+
+  const cancelInteractiveWork = useCallback(async () => {
+    await cancelActiveTransform();
+    await cancelActiveDictation();
+  }, [cancelActiveDictation, cancelActiveTransform]);
+
+  const changeTransformPreset = useCallback(
+    (preset: TransformPreset) => {
+      const current = transformStateRef.current;
+      if (current.status === "idle" || current.status === "generating") return;
+      updateTransformState({
+        acceptReason: current.acceptReason,
+        acceptSupported: current.acceptSupported,
+        original: current.original,
+        preset,
+        status: "ready",
+        targetId: current.targetId,
+      });
+    },
+    [updateTransformState],
+  );
+
+  const generateTransform = useCallback(async () => {
+    const current = transformStateRef.current;
+    const editor = editorRef.current;
+    if (
+      current.status === "idle" ||
+      current.status === "generating" ||
+      !editor ||
+      editor.isDestroyed
+    ) {
+      return;
+    }
+    const target = transformTargetState(
+      editor,
+      current.targetId,
+      documentSessionRef.current,
+    );
+    if (!target.current) {
+      updateTransformState({
+        ...current,
+        message: target.reason,
+        status: "stale",
+      });
+      return;
+    }
+
+    const requestId = crypto.randomUUID();
+    const selection = {
+      acceptReason: current.acceptReason,
+      acceptSupported: current.acceptSupported,
+      original: current.original,
+      preset: current.preset,
+      targetId: current.targetId,
+    };
+    updateTransformState({ ...selection, requestId, status: "generating" });
+    try {
+      const status = await transformProvider.status();
+      if (!status.available) {
+        throw new Error(
+          "The optional offline Transform model is not installed.",
+        );
+      }
+      const stillPending = transformStateRef.current;
+      if (
+        stillPending.status !== "generating" ||
+        stillPending.requestId !== requestId
+      ) {
+        return;
+      }
+      const response = await transformProvider.generate(
+        requestId,
+        current.original,
+        current.preset,
+      );
+      const pending = transformStateRef.current;
+      if (pending.status !== "generating" || pending.requestId !== requestId) {
+        return;
+      }
+      const mapped = transformTargetState(
+        editor,
+        current.targetId,
+        documentSessionRef.current,
+      );
+      const sourceBlocked = mapped.current ? null : mapped.reason;
+      updateTransformState({
+        ...selection,
+        acceptBlockedReason:
+          sourceBlocked ?? responseAcceptBlock(response, selection),
+        response,
+        stale: !mapped.current,
+        status: "preview",
+      });
+    } catch (error) {
+      const pending = transformStateRef.current;
+      if (pending.status === "generating" && pending.requestId === requestId) {
+        updateTransformState({
+          ...selection,
+          message: errorMessage(error),
+          status: "error",
+        });
+      }
+    }
+  }, [updateTransformState]);
+
+  const acceptTransformPreview = useCallback(() => {
+    const current = transformStateRef.current;
+    const editor = editorRef.current;
+    if (
+      current.status !== "preview" ||
+      current.acceptBlockedReason ||
+      !editor ||
+      editor.isDestroyed
+    ) {
+      return;
+    }
+    const accepted = acceptTransform(
+      editor,
+      current.targetId,
+      documentSessionRef.current,
+      current.response.text,
+    );
+    if (!accepted.ok) {
+      updateTransformState({
+        ...current,
+        acceptBlockedReason: accepted.message,
+        stale: true,
+      });
+      return;
+    }
+    updateTransformState({ status: "idle" });
+  }, [updateTransformState]);
+
   useEffect(() => {
     let cancelled = false;
     documents
@@ -594,9 +829,14 @@ function App() {
     let unlisten: (() => void) | undefined;
     getCurrentWindow()
       .onCloseRequested(async (event) => {
-        if (!dirtyRef.current && !dictationSessionRef.current) return;
+        if (
+          !dirtyRef.current &&
+          !dictationSessionRef.current &&
+          transformStateRef.current.status === "idle"
+        )
+          return;
         event.preventDefault();
-        await cancelActiveDictation();
+        await cancelInteractiveWork();
         if (!dirtyRef.current || (await save("auto"))) {
           await getCurrentWindow().destroy();
         } else if (
@@ -611,7 +851,7 @@ function App() {
         unlisten = stop;
       });
     return () => unlisten?.();
-  }, [cancelActiveDictation, save]);
+  }, [cancelInteractiveWork, save]);
 
   useEffect(() => {
     const handleSave = (event: KeyboardEvent) => {
@@ -625,7 +865,7 @@ function App() {
   }, [save]);
 
   const switchTo = async (id: string) => {
-    await cancelActiveDictation();
+    await cancelInteractiveWork();
     if (dirtyRef.current && !(await save("auto"))) return;
     try {
       const document = await documents.open(id);
@@ -638,7 +878,7 @@ function App() {
   };
 
   const newDocument = async () => {
-    await cancelActiveDictation();
+    await cancelInteractiveWork();
     if (dirtyRef.current && !(await save("auto"))) return;
     setCurrent(null);
     setRevisions([]);
@@ -654,7 +894,7 @@ function App() {
     const current = activeRef.current;
     if (!current) return;
     if (!window.confirm(`Move “${current.title}” to Trash?`)) return;
-    await cancelActiveDictation();
+    await cancelInteractiveWork();
     if (dirtyRef.current && !(await save("auto"))) return;
     const saved = activeRef.current;
     if (!saved) return;
@@ -670,7 +910,7 @@ function App() {
 
   const restoreDeleted = async (id: string) => {
     try {
-      await cancelActiveDictation();
+      await cancelInteractiveWork();
       const document = await documents.restoreDeleted(id);
       setCurrent(document, true);
       await refreshLists(document.id);
@@ -689,7 +929,7 @@ function App() {
       )
     )
       return;
-    await cancelActiveDictation();
+    await cancelInteractiveWork();
     if (dirtyRef.current && !(await save("auto"))) return;
     const saved = activeRef.current;
     if (!saved) return;
@@ -918,21 +1158,34 @@ function App() {
               const sessionId = dictationSessionRef.current;
               if (sessionId) void finishDictation(sessionId);
             }}
+            onTransform={openTransform}
+            transformOpen={transformState.status !== "idle"}
           />
         ) : (
           <main className="workspace" id="workspace" tabIndex={-1} />
         )}
-        <AnalysisPanel
-          analysis={analysis}
-          canApplySuggestion={canApplySuggestion}
-          disabled={!editorInstance}
-          onAnalyze={() => void runAnalysis()}
-          onAddToDictionary={(issueId) => void addToDictionary(issueId)}
-          onApplySuggestion={applySuggestion}
-          onIgnoreIssue={ignoreIssue}
-          onSelectIssue={selectIssue}
-          selectedIssueId={selectedIssueId}
-        />
+        {transformState.status === "idle" ? (
+          <AnalysisPanel
+            analysis={analysis}
+            canApplySuggestion={canApplySuggestion}
+            disabled={!editorInstance}
+            onAnalyze={() => void runAnalysis()}
+            onAddToDictionary={(issueId) => void addToDictionary(issueId)}
+            onApplySuggestion={applySuggestion}
+            onIgnoreIssue={ignoreIssue}
+            onSelectIssue={selectIssue}
+            selectedIssueId={selectedIssueId}
+          />
+        ) : (
+          <TransformPanel
+            onAccept={acceptTransformPreview}
+            onCancel={() => void cancelActiveTransform()}
+            onGenerate={() => void generateTransform()}
+            onPresetChange={changeTransformPreset}
+            onRefreshSelection={openTransform}
+            state={transformState}
+          />
+        )}
       </div>
       <StatusBar
         editor={editorInstance}

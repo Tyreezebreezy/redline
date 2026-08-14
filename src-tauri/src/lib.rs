@@ -11,7 +11,13 @@ use tauri::{Manager, State, ipc::InvokeBody};
 use unicode_normalization::{UnicodeNormalization, char::is_combining_mark};
 
 pub mod dictation;
+pub mod local_ai;
+pub mod transform;
 use dictation::{CaptureInfo, DictationService, SpeechTranscript};
+use local_ai::LocalAiGate;
+use transform::{
+    MODEL_FILE, TransformRequest, TransformResponse, TransformService, TransformStatus,
+};
 
 const MAX_CONTENT_BYTES: usize = 5 * 1024 * 1024;
 const MAX_TITLE_CHARS: usize = 200;
@@ -632,6 +638,27 @@ fn cancel_dictation(session_id: String, service: State<'_, DictationService>) ->
 }
 
 #[tauri::command]
+fn transform_status(service: State<'_, TransformService>) -> TransformStatus {
+    service.status()
+}
+
+#[tauri::command]
+async fn generate_transform(
+    request: TransformRequest,
+    service: State<'_, TransformService>,
+) -> CommandResult<TransformResponse> {
+    let service = service.inner().clone();
+    tauri::async_runtime::spawn_blocking(move || service.generate(request))
+        .await
+        .map_err(|error| format!("Local Transform task failed: {error}"))?
+}
+
+#[tauri::command]
+fn cancel_transform(request_id: String, service: State<'_, TransformService>) -> CommandResult<()> {
+    service.cancel(&request_id)
+}
+
+#[tauri::command]
 fn delete_document(
     id: String,
     expected_revision: i64,
@@ -736,11 +763,22 @@ pub fn run() {
             let directory = app.path().app_local_data_dir()?;
             fs::create_dir_all(&directory)?;
             app.manage(DocumentStore::open(&directory.join("redline.sqlite3"))?);
-            let model = app.path().resolve(
+            let gate = LocalAiGate::default();
+            let whisper_model = app.path().resolve(
                 "resources/models/ggml-base.en.bin",
                 tauri::path::BaseDirectory::Resource,
             )?;
-            app.manage(DictationService::new(model));
+            let bundled_transform_model = app.path().resolve(
+                format!("resources/models/{MODEL_FILE}"),
+                tauri::path::BaseDirectory::Resource,
+            )?;
+            let optional_transform_model = directory.join("models").join(MODEL_FILE);
+            app.manage(DictationService::new(whisper_model, gate.clone()));
+            app.manage(TransformService::new(
+                bundled_transform_model,
+                optional_transform_model,
+                gate,
+            ));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -757,6 +795,9 @@ pub fn run() {
             start_dictation,
             stop_dictation,
             cancel_dictation,
+            transform_status,
+            generate_transform,
+            cancel_transform,
         ])
         .run(tauri::generate_context!())
         .expect("error while running REDLINE");

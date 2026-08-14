@@ -2,6 +2,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { Mark } from "@tiptap/pm/model";
 import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
 import type { Editor } from "@tiptap/react";
+import { marksForTextSelection } from "./editor.ts";
 
 export type DictationStatus =
   | { status: "idle" }
@@ -290,42 +291,12 @@ export function createDictationTargetPlugin() {
   });
 }
 
-function marksForRange(
-  editor: Editor,
-  selection: TextSelection = editor.state.selection as TextSelection,
-) {
-  const { storedMarks } = editor.state;
-  if (
-    !(selection instanceof TextSelection) ||
-    !selection.$from.sameParent(selection.$to)
-  ) {
-    return null;
-  }
-  if (selection.empty) return storedMarks ?? selection.$from.marks();
-
-  let marks: readonly Mark[] | null = null;
-  let invalid = false;
-  selection.$from.parent.nodesBetween(
-    selection.$from.parentOffset,
-    selection.$to.parentOffset,
-    (node) => {
-      if (node.isText) {
-        if (marks === null) marks = node.marks;
-        else if (!Mark.sameSet(marks, node.marks)) invalid = true;
-      } else if (node.isLeaf) {
-        invalid = true;
-      }
-    },
-  );
-  return invalid ? null : (marks ?? []);
-}
-
 export function captureDictationTarget(
   editor: Editor,
   sessionId: string,
   documentSession: number,
 ) {
-  const marks = marksForRange(editor);
+  const marks = marksForTextSelection(editor);
   const { selection } = editor.state;
   if (!marks || !selection.$from.parent.isTextblock) {
     return {
@@ -425,7 +396,7 @@ export function insertDictationTranscript(
     };
   }
   if (target.from !== target.to) {
-    const currentMarks = marksForRange(
+    const currentMarks = marksForTextSelection(
       editor,
       TextSelection.create(editor.state.doc, target.from, target.to),
     );

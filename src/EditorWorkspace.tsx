@@ -1,6 +1,7 @@
 import { type Editor, EditorContent, useEditorState } from "@tiptap/react";
 import { type KeyboardEvent, type ReactNode, useEffect, useState } from "react";
 import type { DictationStatus } from "./dictation";
+import { transformSelection } from "./transform";
 
 type ToolbarButtonProps = {
   active?: boolean;
@@ -49,12 +50,16 @@ export function EditorToolbar({
   onCancelDictation,
   onStartDictation,
   onStopDictation,
+  onTransform,
+  transformOpen,
 }: {
   dictationStatus: DictationStatus;
   editor: Editor;
   onCancelDictation: () => void;
   onStartDictation: () => void;
   onStopDictation: () => void;
+  onTransform: () => void;
+  transformOpen: boolean;
 }) {
   const [tabStop, setTabStop] = useState("paragraph");
   const state = useEditorState({
@@ -70,6 +75,7 @@ export function EditorToolbar({
       italic: current.isActive("italic"),
       orderedList: current.isActive("orderedList"),
       paragraph: current.isActive("paragraph"),
+      transformSelection: transformSelection(current),
     }),
   });
 
@@ -93,6 +99,12 @@ export function EditorToolbar({
     });
     return () => window.cancelAnimationFrame(frame);
   }, [dictationStatus.status, tabStop]);
+
+  useEffect(() => {
+    if (tabStop === "transform" && !state.transformSelection.ok) {
+      setTabStop("paragraph");
+    }
+  }, [state.transformSelection.ok, tabStop]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape") {
@@ -251,6 +263,7 @@ export function EditorToolbar({
         <ToolbarButton
           active={dictationStatus.status === "listening"}
           disabled={
+            transformOpen ||
             dictationStatus.status === "preparing" ||
             dictationStatus.status === "processing"
           }
@@ -296,6 +309,30 @@ export function EditorToolbar({
           </button>
         ) : null}
       </fieldset>
+
+      <fieldset className="toolbar-group transform-group">
+        <legend className="sr-only">Transform</legend>
+        <ToolbarButton
+          active={transformOpen}
+          disabled={
+            !state.transformSelection.ok ||
+            ["preparing", "listening", "processing"].includes(
+              dictationStatus.status,
+            )
+          }
+          id="transform"
+          label={
+            state.transformSelection.ok
+              ? "Transform selected text"
+              : state.transformSelection.reason
+          }
+          onClick={onTransform}
+          onFocus={() => setTabStop("transform")}
+          tabIndex={tabIndex("transform")}
+        >
+          Transform
+        </ToolbarButton>
+      </fieldset>
     </div>
   );
 }
@@ -306,12 +343,16 @@ export function EditorWorkspace({
   onCancelDictation,
   onStartDictation,
   onStopDictation,
+  onTransform,
+  transformOpen,
 }: {
   dictationStatus: DictationStatus;
   editor: Editor | null;
   onCancelDictation: () => void;
   onStartDictation: () => void;
   onStopDictation: () => void;
+  onTransform: () => void;
+  transformOpen: boolean;
 }) {
   return (
     <main className="workspace" id="workspace" tabIndex={-1}>
@@ -324,6 +365,8 @@ export function EditorWorkspace({
               onCancelDictation={onCancelDictation}
               onStartDictation={onStartDictation}
               onStopDictation={onStopDictation}
+              onTransform={onTransform}
+              transformOpen={transformOpen}
             />
             <div
               aria-atomic="true"

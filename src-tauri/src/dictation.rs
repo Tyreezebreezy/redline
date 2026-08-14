@@ -1,3 +1,4 @@
+use crate::local_ai::{LocalAiGate, LocalAiTask};
 use rubato::{
     Fft, FixedSync, Resampler, WindowFunction, audioadapter::Adapter,
     audioadapter_buffers::owned::InterleavedOwned,
@@ -30,6 +31,7 @@ type DictationResult<T> = Result<T, String>;
 #[derive(Clone)]
 pub struct DictationService {
     capture: Arc<Mutex<CaptureState>>,
+    gate: LocalAiGate,
     provider: Arc<Mutex<WhisperCppProvider>>,
 }
 
@@ -54,6 +56,17 @@ struct CapturedAudio {
 struct ProcessingSession {
     id: String,
     cancelled: Arc<AtomicBool>,
+}
+
+struct DictationGateGuard {
+    gate: LocalAiGate,
+    session_id: String,
+}
+
+impl Drop for DictationGateGuard {
+    fn drop(&mut self) {
+        self.gate.release(LocalAiTask::Dictation, &self.session_id);
+    }
 }
 
 struct WhisperCppProvider {
@@ -90,9 +103,10 @@ trait SpeechToTextProvider {
 }
 
 impl DictationService {
-    pub fn new(model_path: PathBuf) -> Self {
+    pub fn new(model_path: PathBuf, gate: LocalAiGate) -> Self {
         Self {
             capture: Arc::new(Mutex::new(CaptureState::default())),
+            gate,
             provider: Arc::new(Mutex::new(WhisperCppProvider {
                 model_path,
                 context: None,
@@ -111,11 +125,16 @@ impl DictationService {
             return Err("Microphone identity is invalid.".into());
         }
         validate_sample_rate(sample_rate)?;
-        let mut state = self
-            .capture
-            .lock()
-            .map_err(|_| "Dictation state is unavailable.")?;
+        self.gate.claim(LocalAiTask::Dictation, &session_id)?;
+        let mut state = match self.capture.lock() {
+            Ok(state) => state,
+            Err(_) => {
+                self.gate.release(LocalAiTask::Dictation, &session_id);
+                return Err("Dictation state is unavailable.".into());
+            }
+        };
         if state.active.is_some() || state.processing.is_some() {
+            self.gate.release(LocalAiTask::Dictation, &session_id);
             return Err("Another dictation session is already active.".into());
         }
         state.active = Some(ActiveSession {
@@ -139,6 +158,10 @@ impl DictationService {
         mut pcm: Vec<u8>,
     ) -> DictationResult<SpeechTranscript> {
         validate_session_id(&session_id)?;
+        let _gate = DictationGateGuard {
+            gate: self.gate.clone(),
+            session_id: session_id.clone(),
+        };
         let (started, cancelled) = {
             let mut state = self
                 .capture
@@ -204,6 +227,7 @@ impl DictationService {
             .is_some_and(|active| active.id == session_id)
         {
             state.active = None;
+            self.gate.release(LocalAiTask::Dictation, &session_id);
         } else if let Some(processing) = state
             .processing
             .as_ref()
@@ -456,7 +480,7 @@ mod tests {
         assert!(validate_pcm(&vec![0_u8; 48_000 * 2], 48_000).is_ok());
         assert!(validate_pcm(&[0_u8], 48_000).is_err());
         assert!(validate_pcm(&vec![0_u8; MAX_PCM_BYTES + 2], 48_000).is_err());
-        let service = DictationService::new(PathBuf::from("unused-model"));
+        let service = DictationService::new(PathBuf::from("unused-model"), LocalAiGate::default());
         service
             .start(
                 "invalid-session-01".into(),

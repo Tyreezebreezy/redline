@@ -1,4 +1,4 @@
-REDLINE 0.0.8 local dictation notices
+REDLINE local AI notices
 
 OpenAI Whisper model and code
 Source: https://github.com/openai/whisper
@@ -13,9 +13,17 @@ whisper-rs
 Source: https://codeberg.org/tazz4843/whisper-rs
 License: Unlicense
 
-CPAL
-Source: https://github.com/RustAudio/cpal
+Qwen2.5-1.5B-Instruct and official Q4_K_M GGUF
+Source: https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF
 License: Apache-2.0
+
+llama.cpp
+Source: https://github.com/ggml-org/llama.cpp
+License: MIT
+
+llama-cpp-2 and llama-cpp-sys-2
+Source: https://github.com/utilityai/llama-cpp-rs
+License: MIT OR Apache-2.0
 
 Rubato
 Source: https://github.com/HEnquist/rubato

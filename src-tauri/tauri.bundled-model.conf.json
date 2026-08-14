@@ -1,0 +1,8 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "resources": {
+      "resources/models/qwen2.5-1.5b-instruct-q4_k_m.gguf": "resources/models/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+    }
+  }
+}

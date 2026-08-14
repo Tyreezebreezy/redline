@@ -9,6 +9,7 @@ const [
   capabilityText,
   permissionText,
   dictationPermissionText,
+  transformPermissionText,
 ] = await Promise.all([
   readFile(new URL("../src-tauri/tauri.conf.json", import.meta.url), "utf8"),
   readFile(new URL("../src-tauri/Cargo.toml", import.meta.url), "utf8"),
@@ -24,6 +25,10 @@ const [
   ),
   readFile(
     new URL("../src-tauri/permissions/dictation.toml", import.meta.url),
+    "utf8",
+  ),
+  readFile(
+    new URL("../src-tauri/permissions/transform.toml", import.meta.url),
     "utf8",
   ),
 ]);
@@ -60,10 +65,10 @@ assert.match(
 );
 assert.match(cargoText, /serde_json = "=1\.0\.151"/);
 assert.doesNotMatch(appText, /Writing Score|Correctness|issue count/i);
-assert.equal(packageJson.version, "0.0.8");
-assert.equal(config.version, "0.0.8");
-assert.match(cargoText, /version = "0\.0\.8"/);
-assert.match(appText, /0\.0\.8/);
+assert.equal(packageJson.version, "0.0.9");
+assert.equal(config.version, "0.0.9");
+assert.match(cargoText, /version = "0\.0\.9"/);
+assert.match(appText, /0\.0\.9/);
 assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");
@@ -84,10 +89,11 @@ assert.deepEqual(capability.windows, ["main"]);
 assert.deepEqual(capability.permissions, [
   "documents",
   "dictation",
+  "transform",
   "core:window:allow-destroy",
 ]);
 assert.doesNotMatch(
-  `${capabilityText}\n${permissionText}\n${dictationPermissionText}`,
+  `${capabilityText}\n${permissionText}\n${dictationPermissionText}\n${transformPermissionText}`,
   /fs:|shell:|process:|http:|sql:|dialog:|global-shortcut:|microphone|camera/i,
 );
 for (const command of [
@@ -109,6 +115,12 @@ const dictationCommands =
 assert.deepEqual(
   [...dictationCommands.matchAll(/"([a-z_]+)"/g)].map((match) => match[1]),
   ["start_dictation", "stop_dictation", "cancel_dictation"],
+);
+const transformCommands =
+  transformPermissionText.match(/commands\.allow = \[([\s\S]*?)\]/)?.[1] ?? "";
+assert.deepEqual(
+  [...transformCommands.matchAll(/"([a-z_]+)"/g)].map((match) => match[1]),
+  ["transform_status", "generate_transform", "cancel_transform"],
 );
 
 console.log("REDLINE foundation boundaries verified.");

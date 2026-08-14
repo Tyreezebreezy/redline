@@ -1,12 +1,12 @@
 {
   "name": "redline",
   "private": true,
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "pnpm typecheck && vite build",
-    "check": "pnpm typecheck && biome check . && pnpm test:foundation && pnpm test:editor && pnpm test:dictation && pnpm test:axiom && pnpm test:persistence",
+    "check": "pnpm typecheck && biome check . && pnpm test:foundation && pnpm test:editor && pnpm test:dictation && pnpm test:transform && pnpm test:axiom && pnpm test:persistence",
     "format": "biome format .",
     "format:write": "biome format --write .",
     "lint": "biome lint .",
@@ -14,6 +14,7 @@
     "test:foundation": "node scripts/check-foundation.mjs",
     "test:editor": "node scripts/check-editor.mjs",
     "test:dictation": "node scripts/check-dictation.mts",
+    "test:transform": "node scripts/check-transform.mts",
     "test:axiom": "node scripts/check-axiom.mts",
     "benchmark:axiom": "node scripts/benchmark-axiom.mts",
     "benchmark:dictation": "cargo test --release --manifest-path src-tauri/Cargo.toml benchmark_dictation_corpus -- --ignored --nocapture",

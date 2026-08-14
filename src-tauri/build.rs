@@ -9,6 +9,14 @@ fn main() {
             "restore_deleted_document",
             "list_document_revisions",
             "restore_document_revision",
+            "add_dictionary_term",
+            "remove_dictionary_term",
+            "start_dictation",
+            "stop_dictation",
+            "cancel_dictation",
+            "transform_status",
+            "generate_transform",
+            "cancel_transform",
         ]),
     ))
     .expect("failed to build REDLINE");

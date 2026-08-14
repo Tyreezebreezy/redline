@@ -3,5 +3,10 @@
   "identifier": "documents",
   "description": "REDLINE document persistence and close-flush access for the main window.",
   "windows": ["main"],
-  "permissions": ["documents", "dictation", "core:window:allow-destroy"]
+  "permissions": [
+    "documents",
+    "dictation",
+    "transform",
+    "core:window:allow-destroy"
+  ]
 }

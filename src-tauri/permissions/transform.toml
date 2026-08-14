@@ -1,0 +1,8 @@
+[[permission]]
+identifier = "transform"
+description = "Allows the main window to use REDLINE's bounded local Transform commands."
+commands.allow = [
+  "transform_status",
+  "generate_transform",
+  "cancel_transform",
+]
