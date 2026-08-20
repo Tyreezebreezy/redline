@@ -14,14 +14,75 @@ import {
   transformTargetState,
 } from "../src/transform.ts";
 
-const [panelSource, nativeSource, permissionSource] = await Promise.all([
+const [
+  panelSource,
+  nativeSource,
+  permissionSource,
+  corpusText,
+  manualScoresText,
+] = await Promise.all([
   readFile(new URL("../src/AppShell.tsx", import.meta.url), "utf8"),
   readFile(new URL("../src-tauri/src/transform.rs", import.meta.url), "utf8"),
   readFile(
     new URL("../src-tauri/permissions/transform.toml", import.meta.url),
     "utf8",
   ),
+  readFile(
+    new URL("../benchmarks/transform-corpus.json", import.meta.url),
+    "utf8",
+  ),
+  readFile(
+    new URL("../benchmarks/transform-manual-scores.json", import.meta.url),
+    "utf8",
+  ),
 ]);
+
+const corpus = JSON.parse(corpusText) as {
+  cases: Array<{ id: string; kind: string; preset: string }>;
+  version: string;
+};
+const manualScores = JSON.parse(manualScoresText) as {
+  scores: Array<{
+    id: string;
+    meaningPreservation: number;
+    presetAdherence: number;
+  }>;
+  version: string;
+};
+assert.equal(corpus.version, "redline-transform-corpus-v1");
+assert.equal(corpus.cases.length, 40);
+assert.deepEqual(
+  [...new Set(corpus.cases.map(({ preset }) => preset))].sort(),
+  ["academic", "concise", "professional"],
+);
+assert.equal(corpus.cases.filter(({ kind }) => kind === "normal").length, 24);
+assert.equal(corpus.cases.filter(({ kind }) => kind !== "normal").length, 16);
+assert.equal(manualScores.version, "redline-transform-manual-scores-v1");
+assert.equal(manualScores.scores.length, 24);
+assert.deepEqual(
+  manualScores.scores.map(({ id }) => id).sort(),
+  corpus.cases
+    .filter(({ kind }) => kind === "normal")
+    .map(({ id }) => id)
+    .sort(),
+);
+for (const preset of ["concise", "professional", "academic"]) {
+  const scores = manualScores.scores.filter(({ id }) => id.startsWith(preset));
+  const median = (values: number[]) =>
+    values.toSorted((left, right) => left - right)[values.length / 2 - 1];
+  assert.ok(
+    median(scores.map(({ meaningPreservation }) => meaningPreservation)) >= 4,
+  );
+  assert.ok(median(scores.map(({ presetAdherence }) => presetAdherence)) >= 4);
+}
+assert.ok(
+  manualScores.scores.filter(
+    ({ meaningPreservation, presetAdherence }) =>
+      meaningPreservation >= 4 && presetAdherence >= 4,
+  ).length /
+    manualScores.scores.length >=
+    0.85,
+);
 
 const transformPanelSource = panelSource.slice(
   panelSource.indexOf("export function TransformPanel"),
@@ -34,6 +95,12 @@ assert.deepEqual(
   ["concise", "professional", "academic"],
 );
 assert.doesNotMatch(transformPanelSource, /Archaic|Gothic Command/);
+assert.match(transformPanelSource, /Model not installed/);
+assert.match(transformPanelSource, /Check again/);
+assert.match(
+  transformPanelSource,
+  /%LOCALAPPDATA%\\com\.tyree\.redline\\models\\qwen2\.5-1\.5b-instruct-q4_k_m\.gguf/,
+);
 assert.match(
   nativeSource,
   /PROMPT_CONTRACT_VERSION: &str = "redline-transform-v1"/,

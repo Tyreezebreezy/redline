@@ -41,6 +41,7 @@ import {
   type DictationStatus,
   dictation,
   insertDictationTranscript,
+  MICROPHONE_PERMISSION_ERROR,
 } from "./dictation";
 import {
   type DictionaryEntry,
@@ -60,6 +61,7 @@ import {
   responseAcceptBlock,
   TRANSFORM_TARGET,
   type TransformPreset,
+  type TransformSelection,
   type TransformWorkflowState,
   transformProvider,
   transformTargetState,
@@ -618,10 +620,54 @@ function App() {
         dictationSessionRef.current = null;
         dictationDocumentSessionRef.current = null;
         clearDictationTarget(editor, sessionId);
-        setDictationStatus({ status: "error", message: errorMessage(error) });
+        const message = errorMessage(error);
+        setDictationStatus({
+          status: "error",
+          message,
+          permissionHelp: message === MICROPHONE_PERMISSION_ERROR,
+        });
       }
     }
   }, [finishDictation]);
+
+  const checkTransformAvailability = useCallback(
+    async (selection: TransformSelection) => {
+      updateTransformState({ ...selection, status: "checking" });
+      try {
+        const status = await transformProvider.status();
+        const pending = transformStateRef.current;
+        if (
+          pending.status !== "checking" ||
+          pending.targetId !== selection.targetId
+        ) {
+          return;
+        }
+        updateTransformState(
+          status.available
+            ? { ...selection, status: "ready" }
+            : {
+                ...selection,
+                message:
+                  "The optional offline Transform model is not installed.",
+                status: "unavailable",
+              },
+        );
+      } catch (error) {
+        const pending = transformStateRef.current;
+        if (
+          pending.status === "checking" &&
+          pending.targetId === selection.targetId
+        ) {
+          updateTransformState({
+            ...selection,
+            message: errorMessage(error),
+            status: "error",
+          });
+        }
+      }
+    },
+    [updateTransformState],
+  );
 
   const openTransform = useCallback(() => {
     const editor = editorRef.current;
@@ -641,15 +687,26 @@ function App() {
       documentSessionRef.current,
     );
     if (!captured.ok) return;
-    updateTransformState({
+    void checkTransformAvailability({
       acceptReason: captured.acceptReason,
       acceptSupported: captured.acceptSupported,
       original: captured.text,
       preset: "concise",
-      status: "ready",
       targetId,
     });
-  }, [dictationStatus.status, updateTransformState]);
+  }, [checkTransformAvailability, dictationStatus.status]);
+
+  const recheckTransformAvailability = useCallback(() => {
+    const current = transformStateRef.current;
+    if (current.status === "idle" || current.status === "generating") return;
+    void checkTransformAvailability({
+      acceptReason: current.acceptReason,
+      acceptSupported: current.acceptSupported,
+      original: current.original,
+      preset: current.preset,
+      targetId: current.targetId,
+    });
+  }, [checkTransformAvailability]);
 
   const cancelActiveTransform = useCallback(async () => {
     const current = transformStateRef.current;
@@ -673,7 +730,13 @@ function App() {
   const changeTransformPreset = useCallback(
     (preset: TransformPreset) => {
       const current = transformStateRef.current;
-      if (current.status === "idle" || current.status === "generating") return;
+      if (
+        current.status === "idle" ||
+        current.status === "generating" ||
+        current.status === "checking" ||
+        current.status === "unavailable"
+      )
+        return;
       updateTransformState({
         acceptReason: current.acceptReason,
         acceptSupported: current.acceptSupported,
@@ -692,6 +755,8 @@ function App() {
     if (
       current.status === "idle" ||
       current.status === "generating" ||
+      current.status === "checking" ||
+      current.status === "unavailable" ||
       !editor ||
       editor.isDestroyed
     ) {
@@ -1182,6 +1247,7 @@ function App() {
             onCancel={() => void cancelActiveTransform()}
             onGenerate={() => void generateTransform()}
             onPresetChange={changeTransformPreset}
+            onCheckAgain={recheckTransformAvailability}
             onRefreshSelection={openTransform}
             state={transformState}
           />

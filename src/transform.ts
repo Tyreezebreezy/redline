@@ -51,6 +51,8 @@ export type TransformSelection = {
 
 export type TransformWorkflowState =
   | { status: "idle" }
+  | ({ status: "checking" } & TransformSelection)
+  | ({ message: string; status: "unavailable" } & TransformSelection)
   | ({ status: "ready" } & TransformSelection)
   | ({ requestId: string; status: "generating" } & TransformSelection)
   | ({

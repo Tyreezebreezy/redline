@@ -95,7 +95,7 @@ export function TopBar({
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.0.9</span>
+        <span className="brand-version">0.1.0</span>
       </div>
       <label className="profile">
         <span>Profile</span>
@@ -726,6 +726,7 @@ const TRANSFORM_LABELS: Record<TransformPreset, string> = {
 export function TransformPanel({
   onAccept,
   onCancel,
+  onCheckAgain,
   onGenerate,
   onPresetChange,
   onRefreshSelection,
@@ -733,6 +734,7 @@ export function TransformPanel({
 }: {
   onAccept: () => void;
   onCancel: () => void;
+  onCheckAgain: () => void;
   onGenerate: () => void;
   onPresetChange: (preset: TransformPreset) => void;
   onRefreshSelection: () => void;
@@ -767,27 +769,33 @@ export function TransformPanel({
     });
   };
   const panelState =
-    state.status === "generating"
-      ? "Generating locally…"
-      : state.status === "preview"
-        ? state.stale
-          ? "Source changed"
-          : "Preview ready"
-        : state.status === "error"
-          ? "Generation failed"
-          : state.status === "stale"
-            ? "Source changed"
-            : "Ready";
+    state.status === "checking"
+      ? "Checking setup…"
+      : state.status === "unavailable"
+        ? "Model not installed"
+        : state.status === "generating"
+          ? "Generating locally…"
+          : state.status === "preview"
+            ? state.stale
+              ? "Source changed"
+              : "Preview ready"
+            : state.status === "error"
+              ? "Generation failed"
+              : state.status === "stale"
+                ? "Source changed"
+                : "Ready";
   const announcement =
-    state.status === "preview"
-      ? state.acceptBlockedReason
-        ? `Transform preview ready. ${state.acceptBlockedReason}`
-        : "Transform preview ready. Review it before accepting."
-      : state.status === "error"
-        ? `Transform failed. ${state.message}`
-        : state.status === "stale"
-          ? `Transform source changed. ${state.message}`
-          : "";
+    state.status === "unavailable"
+      ? `Transform unavailable. ${state.message}`
+      : state.status === "preview"
+        ? state.acceptBlockedReason
+          ? `Transform preview ready. ${state.acceptBlockedReason}`
+          : "Transform preview ready. Review it before accepting."
+        : state.status === "error"
+          ? `Transform failed. ${state.message}`
+          : state.status === "stale"
+            ? `Transform source changed. ${state.message}`
+            : "";
 
   return (
     <aside
@@ -811,7 +819,11 @@ export function TransformPanel({
         <label className="transform-preset">
           <span>Preset</span>
           <select
-            disabled={state.status === "generating"}
+            disabled={
+              state.status === "generating" ||
+              state.status === "checking" ||
+              state.status === "unavailable"
+            }
             onChange={(event) =>
               onPresetChange(event.target.value as TransformPreset)
             }
@@ -852,6 +864,29 @@ export function TransformPanel({
           </div>
         ) : null}
 
+        {state.status === "checking" ? (
+          <div className="transform-progress" role="status">
+            <span aria-hidden="true" />
+            Checking the local Transform model…
+          </div>
+        ) : null}
+
+        {state.status === "unavailable" ? (
+          <div className="transform-setup" role="status">
+            <p>{state.message} Your original text is unchanged.</p>
+            <p>
+              Extract the offline Transform package into
+              <code>%LOCALAPPDATA%\com.tyree.redline</code>, then check again.
+            </p>
+            <p>
+              Expected model:
+              <code>
+                %LOCALAPPDATA%\com.tyree.redline\models\qwen2.5-1.5b-instruct-q4_k_m.gguf
+              </code>
+            </p>
+          </div>
+        ) : null}
+
         {state.status === "error" ? (
           <p className="transform-message transform-message-error" role="alert">
             {state.message} Your original text is unchanged.
@@ -886,6 +921,15 @@ export function TransformPanel({
               type="button"
             >
               Generate
+            </button>
+          ) : null}
+          {state.status === "unavailable" ? (
+            <button
+              className="analyze-button"
+              onClick={onCheckAgain}
+              type="button"
+            >
+              Check again
             </button>
           ) : null}
           {state.status === "preview" && !state.stale ? (

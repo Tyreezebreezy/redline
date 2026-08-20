@@ -11,7 +11,10 @@ export type DictationStatus =
   | { status: "processing"; message: string }
   | { status: "success"; message: string }
   | { status: "cancelled"; message: string }
-  | { status: "error"; message: string };
+  | { status: "error"; message: string; permissionHelp?: boolean };
+
+export const MICROPHONE_PERMISSION_ERROR =
+  "Microphone access is blocked. Open recovery help for next steps.";
 
 export type CaptureInfo = {
   deviceName: string;
@@ -73,9 +76,7 @@ export const DICTATION_TARGET = new PluginKey<DictationTarget | null>(
 
 function microphoneError(error: unknown) {
   if (error instanceof DOMException && error.name === "NotAllowedError") {
-    return new Error(
-      "Microphone permission was denied. To ask again, close REDLINE, rename %LOCALAPPDATA%\\com.tyree.redline\\EBWebView, then reopen REDLINE; your documents are stored separately. Also confirm Windows Settings > Privacy & security > Microphone > Let desktop apps access your microphone is on.",
-    );
+    return new Error(MICROPHONE_PERMISSION_ERROR);
   }
   if (error instanceof DOMException && error.name === "NotFoundError") {
     return new Error("No system microphone is available.");

@@ -35,6 +35,7 @@ function ToolbarButton({
       disabled={disabled}
       onClick={onClick}
       onFocus={onFocus}
+      onMouseDown={(event) => event.preventDefault()}
       tabIndex={tabIndex}
       title={shortcut ? `${label} (${shortcut})` : label}
       type="button"
@@ -381,6 +382,27 @@ export function EditorWorkspace({
                   : dictationStatus.message}
               </span>
             </div>
+            {dictationStatus.status === "error" &&
+            dictationStatus.permissionHelp ? (
+              <details className="microphone-help">
+                <summary>Microphone permission help</summary>
+                <ol>
+                  <li>
+                    In Windows Settings, open Privacy &amp; security →
+                    Microphone and allow desktop apps to use the microphone.
+                  </li>
+                  <li>
+                    Close REDLINE completely, then reopen it and try again.
+                  </li>
+                  <li>
+                    If REDLINE remains denied, close it and rename
+                    <code>%LOCALAPPDATA%\com.tyree.redline\EBWebView</code>.
+                    Reopen REDLINE to receive a fresh permission prompt. Your
+                    documents are stored separately.
+                  </li>
+                </ol>
+              </details>
+            ) : null}
           </>
         ) : null}
         <EditorContent editor={editor} className="editor-content" />

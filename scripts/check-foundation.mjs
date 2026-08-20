@@ -49,6 +49,32 @@ assert.equal(config.app.security.devCsp["worker-src"], "'self' blob:");
 assert.deepEqual(config.app.security.headers, {
   "Permissions-Policy": "microphone=(self), camera=()",
 });
+assert.equal(
+  config.app.windows[0].additionalBrowserArgs,
+  "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,msOneAuthWAM",
+);
+assert.equal(config.bundle.publisher, "Tyree");
+assert.equal(config.bundle.windows.allowDowngrades, false);
+assert.deepEqual(config.bundle.windows.nsis, {
+  installMode: "currentUser",
+  installerHooks: "installer-hooks.nsh",
+  installerIcon: "icons/icon.ico",
+  uninstallerIcon: "icons/icon.ico",
+});
+assert.match(
+  await readFile(
+    new URL("../src-tauri/installer-hooks.nsh", import.meta.url),
+    "utf8",
+  ),
+  /SemverCompare[\s\S]*\$R9 = -1[\s\S]*Quit/,
+);
+assert.match(
+  await readFile(
+    new URL("../src-tauri/installer-hooks.nsh", import.meta.url),
+    "utf8",
+  ),
+  /NSIS_HOOK_POSTUNINSTALL[\s\S]*DeleteAppDataCheckboxState = 1[\s\S]*RmDir \/r \/REBOOTOK "\$LOCALAPPDATA\\\$\{BUNDLEID\}"/,
+);
 assert.match(
   config.app.security.devCsp["connect-src"],
   /ws:\/\/localhost:1420/,
@@ -65,10 +91,10 @@ assert.match(
 );
 assert.match(cargoText, /serde_json = "=1\.0\.151"/);
 assert.doesNotMatch(appText, /Writing Score|Correctness|issue count/i);
-assert.equal(packageJson.version, "0.0.9");
-assert.equal(config.version, "0.0.9");
-assert.match(cargoText, /version = "0\.0\.9"/);
-assert.match(appText, /0\.0\.9/);
+assert.equal(packageJson.version, "0.1.0");
+assert.equal(config.version, "0.1.0");
+assert.match(cargoText, /version = "0\.1\.0"/);
+assert.match(appText, /0\.1\.0/);
 assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");
@@ -90,6 +116,8 @@ assert.deepEqual(capability.permissions, [
   "documents",
   "dictation",
   "transform",
+  "core:event:allow-listen",
+  "core:event:allow-unlisten",
   "core:window:allow-destroy",
 ]);
 assert.doesNotMatch(

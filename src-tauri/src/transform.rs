@@ -565,6 +565,25 @@ fn inference_threads() -> i32 {
 mod tests {
     use super::*;
 
+    #[derive(Deserialize)]
+    #[serde(rename_all = "camelCase")]
+    struct BenchmarkCase {
+        id: String,
+        preset: TransformPreset,
+        kind: String,
+        source: String,
+        forbidden_exact_output: Option<String>,
+        forbidden_contains: Option<String>,
+        repeat_scalars: Option<usize>,
+        expected_error: Option<String>,
+    }
+
+    #[derive(Deserialize)]
+    struct BenchmarkCorpus {
+        version: String,
+        cases: Vec<BenchmarkCase>,
+    }
+
     fn request(text: &str, preset: TransformPreset) -> TransformRequest {
         TransformRequest {
             request_id: "request-01".into(),
@@ -596,5 +615,86 @@ mod tests {
         assert!(report.protected_token_mutations >= 4);
         assert!(report.changed_numbers);
         assert!(!report.missing.contains_key("proper-name"));
+    }
+
+    #[test]
+    #[ignore = "loads the optional 1.09 GB model and runs the 40-case release corpus"]
+    fn benchmark_transform_corpus() {
+        let manifest = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let corpus: BenchmarkCorpus = serde_json::from_str(
+            &fs::read_to_string(manifest.join("../benchmarks/transform-corpus.json"))
+                .expect("read Transform corpus"),
+        )
+        .expect("parse Transform corpus");
+        assert_eq!(corpus.version, "redline-transform-corpus-v1");
+        assert_eq!(corpus.cases.len(), 40);
+
+        let model = std::env::var_os("REDLINE_TRANSFORM_MODEL")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| manifest.join("resources/models").join(MODEL_FILE));
+        let service = TransformService::new(model.clone(), model, LocalAiGate::default());
+        let mut generated = 0;
+
+        for case in corpus.cases {
+            let text = case
+                .repeat_scalars
+                .map_or_else(|| case.source.clone(), |count| case.source.repeat(count));
+            let request = TransformRequest {
+                request_id: format!("benchmark-{}", case.id),
+                text,
+                preset: case.preset,
+            };
+            if let Some(expected) = case.expected_error {
+                let error = validate_request(&request).expect_err("expected request rejection");
+                match expected.as_str() {
+                    "empty-input" => assert!(error.contains("Select text")),
+                    "input-too-large" => assert!(error.contains("limited to 4000")),
+                    _ => panic!("unknown expected error: {expected}"),
+                }
+                continue;
+            }
+
+            let response = service
+                .generate(request)
+                .unwrap_or_else(|error| panic!("{} failed: {error}", case.id));
+            assert!(!response.text.trim().is_empty(), "{} was empty", case.id);
+            assert!(
+                response.invariants.protected_token_mutations == 0,
+                "{} mutated protected tokens",
+                case.id
+            );
+            if let Some(forbidden) = case.forbidden_exact_output {
+                assert_ne!(
+                    response.text.trim().to_lowercase(),
+                    forbidden.to_lowercase(),
+                    "{} obeyed injected instructions",
+                    case.id
+                );
+            }
+            if let Some(forbidden) = case.forbidden_contains {
+                assert!(
+                    !response
+                        .text
+                        .to_lowercase()
+                        .contains(&forbidden.to_lowercase()),
+                    "{} invented forbidden content",
+                    case.id
+                );
+            }
+            println!(
+                "{}",
+                serde_json::to_string(&json!({
+                    "id": case.id,
+                    "kind": case.kind,
+                    "preset": case.preset.as_str(),
+                    "text": response.text,
+                    "invariants": response.invariants,
+                    "metrics": response.metrics,
+                }))
+                .expect("serialize benchmark result")
+            );
+            generated += 1;
+        }
+        assert_eq!(generated, 38);
     }
 }

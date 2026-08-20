@@ -10,16 +10,19 @@ import {
 } from "../src/dictation.ts";
 import { EDITOR_EXTENSIONS } from "../src/editor.ts";
 
-const [captureSource, nativeSource, commandSource, workletSource] =
-  await Promise.all([
-    readFile(new URL("../src/dictation.ts", import.meta.url), "utf8"),
-    readFile(new URL("../src-tauri/src/dictation.rs", import.meta.url), "utf8"),
-    readFile(new URL("../src-tauri/src/lib.rs", import.meta.url), "utf8"),
-    readFile(
-      new URL("../public/dictation-capture.js", import.meta.url),
-      "utf8",
-    ),
-  ]);
+const [
+  captureSource,
+  workspaceSource,
+  nativeSource,
+  commandSource,
+  workletSource,
+] = await Promise.all([
+  readFile(new URL("../src/dictation.ts", import.meta.url), "utf8"),
+  readFile(new URL("../src/EditorWorkspace.tsx", import.meta.url), "utf8"),
+  readFile(new URL("../src-tauri/src/dictation.rs", import.meta.url), "utf8"),
+  readFile(new URL("../src-tauri/src/lib.rs", import.meta.url), "utf8"),
+  readFile(new URL("../public/dictation-capture.js", import.meta.url), "utf8"),
+]);
 assert.match(
   captureSource,
   /getUserMedia\(\{\s*audio: true,\s*video: false,?\s*\}\)/,
@@ -31,6 +34,12 @@ assert.match(captureSource, /"stop_dictation", pcm/);
 assert.match(commandSource, /InvokeBody::Raw\(pcm\)/);
 assert.doesNotMatch(nativeSource, /\bcpal\b|build_input_stream/);
 assert.match(workletSource, /registerProcessor\("redline-pcm-capture"/);
+assert.match(
+  captureSource,
+  /Microphone access is blocked\. Open recovery help for next steps\./,
+);
+assert.match(workspaceSource, /<summary>Microphone permission help<\/summary>/);
+assert.match(workspaceSource, /%LOCALAPPDATA%\\com\.tyree\.redline\\EBWebView/);
 
 function editorWith(content: object) {
   const editor = new Editor({

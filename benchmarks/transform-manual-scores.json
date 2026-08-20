@@ -1,0 +1,179 @@
+{
+  "version": "redline-transform-manual-scores-v1",
+  "scale": {
+    "meaningPreservation": "5 exact; 4 minor nuance; 3 noticeable but core meaning retained; 2 material loss/change; 1 failure",
+    "presetAdherence": "5 strong; 4 clear; 3 weak/mixed; 2 minimal; 1 absent",
+    "readability": "5 natural; 4 minor awkwardness; 3 distracting awkwardness; 2 grammatical/nonsense defect; 1 unusable",
+    "unsupportedAdditions": "5 none; 4 harmless embellishment; 3 questionable addition; 2 material unsupported addition; 1 fabrication"
+  },
+  "scores": [
+    {
+      "id": "concise-01",
+      "meaningPreservation": 4,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-02",
+      "meaningPreservation": 5,
+      "presetAdherence": 4,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-03",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-04",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-05",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-06",
+      "meaningPreservation": 5,
+      "presetAdherence": 4,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-07",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "concise-08",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-01",
+      "meaningPreservation": 5,
+      "presetAdherence": 4,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-02",
+      "meaningPreservation": 4,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-03",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-04",
+      "meaningPreservation": 3,
+      "presetAdherence": 4,
+      "readability": 3,
+      "unsupportedAdditions": 4
+    },
+    {
+      "id": "professional-05",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-06",
+      "meaningPreservation": 4,
+      "presetAdherence": 3,
+      "readability": 2,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-07",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 4,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "professional-08",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-01",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-02",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 4,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-03",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 4,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-04",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-05",
+      "meaningPreservation": 4,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-06",
+      "meaningPreservation": 4,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-07",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 4,
+      "unsupportedAdditions": 5
+    },
+    {
+      "id": "academic-08",
+      "meaningPreservation": 5,
+      "presetAdherence": 5,
+      "readability": 5,
+      "unsupportedAdditions": 5
+    }
+  ]
+}

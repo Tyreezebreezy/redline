@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { Editor } from "@tiptap/react";
 import { countText, EDITOR_EXTENSIONS } from "../src/editor.ts";
 
@@ -90,6 +91,15 @@ assert.deepEqual(countText(""), { words: 0, characters: 0 });
 assert.deepEqual(countText("Hello, world!"), { words: 2, characters: 13 });
 assert.deepEqual(countText("Café 👨‍👩‍👧‍👦"), { words: 1, characters: 6 });
 assert.deepEqual(countText("one\ntwo"), { words: 2, characters: 7 });
+
+const workspaceSource = await readFile(
+  new URL("../src/EditorWorkspace.tsx", import.meta.url),
+  "utf8",
+);
+assert.match(
+  workspaceSource,
+  /onMouseDown=\{\(event\) => event\.preventDefault\(\)\}/,
+);
 
 editor.destroy();
 console.log("REDLINE editor schema and counts verified.");

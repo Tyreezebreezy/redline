@@ -747,6 +747,36 @@ body {
   background: var(--accent);
 }
 
+.microphone-help {
+  margin: -5px 8px 10px 22px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.microphone-help summary {
+  width: fit-content;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.microphone-help ol {
+  max-width: 680px;
+  padding-left: 20px;
+  margin: 8px 0 0;
+}
+
+.microphone-help code {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.microphone-help summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .toolbar-button:focus-visible,
 .tiptap:focus-visible {
   outline: 2px solid var(--focus);
@@ -1178,6 +1208,30 @@ body {
   margin: 0;
   background: color-mix(in srgb, var(--issue-grammar) 9%, transparent);
   border-left: 2px solid var(--issue-grammar);
+}
+
+.transform-setup {
+  padding: 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  background: color-mix(in srgb, var(--surface-selected) 65%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+
+.transform-setup p {
+  margin: 0 0 8px;
+}
+
+.transform-setup p:last-child {
+  margin-bottom: 0;
+}
+
+.transform-setup code {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
 }
 
 .transform-actions {
