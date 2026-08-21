@@ -124,6 +124,7 @@ export function TopBar({
       <div className="top-actions">
         <ThemeControl />
         <button
+          aria-label="Personal dictionary"
           className="dictionary-button"
           onClick={() => dictionaryDialog.current?.showModal()}
           ref={dictionaryButton}
