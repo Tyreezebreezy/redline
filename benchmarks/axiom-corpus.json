@@ -1040,5 +1040,67 @@
       { "originalText": "misspelledd", "ruleId": "SpellCheck" },
       { "originalText": "misspelledd", "ruleId": "SpellCheck" }
     ]
+  },
+  {
+    "id": "known-miss-subordinate-word-order-01",
+    "text": "We need to decide where we are classes.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "where we are classes", "category": "grammar" }
+    ]
+  },
+  {
+    "id": "known-miss-subordinate-word-order-02",
+    "text": "The schedule explains where we are classes.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "where we are classes", "category": "grammar" }
+    ]
+  },
+  {
+    "id": "known-miss-subordinate-word-order-03",
+    "text": "Please show where we are classes tomorrow.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "where we are classes", "category": "grammar" }
+    ]
+  },
+  {
+    "id": "known-miss-subordinate-word-order-04",
+    "text": "They asked where we are classes this week.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "where we are classes", "category": "grammar" }
+    ]
+  },
+  {
+    "id": "control-subordinate-clause-boundary",
+    "text": "Where we are, classes start at nine.",
+    "expected": []
+  },
+  {
+    "id": "control-subordinate-word-order",
+    "text": "We know where the classes are.",
+    "expected": []
+  },
+  {
+    "id": "control-demonstrative-classes",
+    "text": "These are the classes we offer.",
+    "expected": []
+  },
+  {
+    "id": "control-relative-clause-classes",
+    "text": "The room where we are remains ready for classes.",
+    "expected": []
+  },
+  {
+    "id": "control-where-we-are-in-class",
+    "text": "Where we are in class matters.",
+    "expected": []
+  },
+  {
+    "id": "control-vocative-class",
+    "text": "She asked, “Where are we, class?”",
+    "expected": []
   }
 ]

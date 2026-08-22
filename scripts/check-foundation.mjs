@@ -91,10 +91,11 @@ assert.match(
 );
 assert.match(cargoText, /serde_json = "=1\.0\.151"/);
 assert.doesNotMatch(appText, /Writing Score|Correctness|issue count/i);
-assert.equal(packageJson.version, "0.1.0");
-assert.equal(config.version, "0.1.0");
-assert.match(cargoText, /version = "0\.1\.0"/);
-assert.match(appText, /0\.1\.0/);
+assert.equal(packageJson.version, "0.1.1");
+assert.equal(config.version, "0.1.1");
+assert.match(cargoText, /version = "0\.1\.1"/);
+assert.match(appText, /0\.1\.1/);
+assert.match(appText, /Always allow word/);
 assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");
 assert.equal(packageJson.dependencies["harper.js"], "2.7.0");

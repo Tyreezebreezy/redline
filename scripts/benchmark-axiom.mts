@@ -30,6 +30,7 @@ type Case = {
   text: string;
   expected: ExpectedIssue[];
   knownLimitations?: ExpectedIssue[];
+  knownMisses?: ExpectedIssue[];
   dictionary?: string[];
   ignore?: { occurrence: number; originalText: string };
   profile?: WritingProfile;
@@ -40,6 +41,7 @@ type Row = {
   case: string;
   issues: string[];
   knownLimitations: string[];
+  knownMisses: string[];
   mappingFailures: number;
   missed: string[];
   ms: number;
@@ -68,6 +70,7 @@ let expectedFindings = 0;
 let protectedSpanFailures = 0;
 let mappingFailures = 0;
 let knownLimitations = 0;
+let knownMisses = 0;
 const rows: Row[] = [];
 const warmTimes: number[] = [];
 const performanceRows: object[] = [];
@@ -137,8 +140,12 @@ try {
       );
     }
     const expectedMatches = consumeMatches(evaluatedIssues, fixture.expected);
-    const knownMatches = consumeMatches(
+    const knownMissMatches = consumeMatches(
       expectedMatches.remaining,
+      fixture.knownMisses ?? [],
+    );
+    const knownMatches = consumeMatches(
+      knownMissMatches.remaining,
       fixture.knownLimitations ?? [],
     );
     const unexpected = knownMatches.remaining;
@@ -161,6 +168,7 @@ try {
     protectedSpanFailures += protectedFailures;
     mappingFailures += failedMappings;
     knownLimitations += observedKnown;
+    knownMisses += knownMissMatches.missed.length;
     const elapsed = Number((performance.now() - caseStarted).toFixed(1));
     warmTimes.push(elapsed);
     rows.push({
@@ -176,6 +184,9 @@ try {
           (expected) =>
             `${expected.originalText} [${expected.ruleId ?? "any"}]`,
         ),
+      knownMisses: knownMissMatches.missed.map(
+        (expected) => `${expected.originalText} [${expected.ruleId ?? "any"}]`,
+      ),
       unexpected: unexpected.map((issue) => issue.originalText),
       missed: missed.map((issue) => issue.originalText),
       ms: elapsed,
@@ -296,6 +307,7 @@ console.log(
       protectedSpanFailures,
       mappingFailures,
       knownLimitations,
+      knownMisses,
       initializationMs: Number(initializationMs.toFixed(1)),
       warmP50Ms: sortedTimes[Math.floor(sortedTimes.length * 0.5)],
       warmP95Ms: sortedTimes[Math.floor(sortedTimes.length * 0.95)],

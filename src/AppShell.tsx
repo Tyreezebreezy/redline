@@ -95,7 +95,7 @@ export function TopBar({
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.1.0</span>
+        <span className="brand-version">0.1.1</span>
       </div>
       <label className="profile">
         <span>Profile</span>
@@ -159,7 +159,7 @@ export function TopBar({
           </button>
         </header>
         <p className="dictionary-description" id="dictionary-description">
-          Terms here are excluded from spelling findings on this device.
+          Words here are always allowed in spelling checks on this device.
         </p>
         {dictionary.length ? (
           <ul className="dictionary-list">
@@ -186,7 +186,7 @@ export function TopBar({
           </ul>
         ) : (
           <p className="dictionary-empty">
-            Add eligible spelling terms from an issue card.
+            Allow eligible spelling words from an issue card.
           </p>
         )}
       </dialog>
@@ -666,7 +666,7 @@ export function AnalysisPanel({
                           }
                           type="button"
                         >
-                          Add to dictionary
+                          Always allow word
                         </button>
                       ) : null}
                     </div>
