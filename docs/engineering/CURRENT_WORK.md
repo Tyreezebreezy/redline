@@ -5,7 +5,8 @@
 - Branch: `codex/redline-0.1.1-daily-use`
 - Baseline: `bd52aa3a4f1c796e91ac88dde10c1352ef55e7ea`
 - Release tag protected: `v0.1.0` -> `b775095666b45ce283d02e5875f7516bb936f83b`
-- Status: verified locally; ready for owner review, not published
+- Accepted implementation: `f61f44db201c57b16bd36f5731f798e0fa9acb05`
+- Status: 0.1.1A accepted; verified branch available on origin for sequential Claude Code or Codex handoff
 
 ### In scope
 
@@ -25,4 +26,6 @@
 
 ### Handoff
 
-The bounded pass is complete. Review `docs/engineering/0.1.1-daily-use-audit.md` and the final worklog entry. Do not publish, tag, merge, or expand 0.1.1 without owner approval.
+Continue from real observations in `REAL_WORLD_FINDINGS.md`. For AXIOM gaps, classify malformed grammar, test Harper first, and require paired positive and negative fixtures before considering a narrow deterministic rule. Keep collecting real vocabulary cases before broadening personal allowances. The `where we are classes` example is representative evidence, not a phrase to hardcode.
+
+The accepted branch is available for sequential Claude Code or Codex work. Do not merge, tag, release, build installers, or begin Tone, Voice, User Profiles, or a production dictation rewrite without owner approval.

@@ -23,3 +23,11 @@ Append entries; do not rewrite earlier evidence.
 - Rendered QA passed at 1024x720, 1366x768, 1440x900, and 1920x1080 with no horizontal overflow or console errors; Dark, Light, and System remained functional.
 - Verified no capability, command, permission, CSP, dependency, or external-request expansion. Gitleaks 8.30.1 scanned 11 commits with no findings.
 - Ponytail removed one redundant benchmark counter; the full regression and 193-case benchmark passed again afterward.
+
+## 2026-08-23 — 0.1.1A accepted for handoff
+
+- Owner accepted `f61f44db201c57b16bd36f5731f798e0fa9acb05` (`feat: prepare REDLINE 0.1.1 daily-use pass`).
+- Published `codex/redline-0.1.1-daily-use` to origin for sequential Claude Code or Codex handoff; no merge, tag, release, installer, or artifact was created.
+- Kept local and remote `main` at the accepted post-0.1.0 state and preserved the protected `v0.1.0` release tag.
+- Set the next priority to evidence from daily use: grammatical classes and paired fixtures with Harper evaluated first, real personal-vocabulary cases before broader allowances, and current entries in `REAL_WORLD_FINDINGS.md`.
+- Retained `where we are classes` as a representative known miss, not a phrase-specific rule.
