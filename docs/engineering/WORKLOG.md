@@ -41,3 +41,11 @@ Append entries; do not rewrite earlier evidence.
 - Final benchmark: 75/75 required findings, zero unexplained false positives or misses, 22 documented known misses, nine documented known limitations, and zero protected-span or mapping failures.
 - Kept noun agreement, broad punctuation, broader confusion sets, morphology, malformed-sentence repair, and Word Tools out of production until real examples establish safe semantics.
 - Published the verified update to `codex/redline-0.1.1-daily-use`; `main`, `v0.1.0`, releases, installers, and artifacts remain unchanged.
+
+## 2026-09-04 — 0.1.1B accepted; findings loop prepared
+
+- Accepted `2bccc3cdade7f560fbc79ba228af1d5efc1ab31e` as the current 0.1.1 daily-use grammar baseline, including the 265-case, 75/75, zero-unexplained-regression result.
+- Recorded `CanonicalTerm` as the only 0.1.1B AXIOM rule and `Facebook Marketplace` plus `LinkedIn Learning` as its first entries.
+- Set the active objective to collecting and classifying exact or redacted real-world grammar misses before adding rules.
+- Added a reusable findings schema, controlled statuses, the evidence-to-rule promotion path, the zero-unexplained-false-positive gate, and the advisory-only Word Tools boundary.
+- Changed documentation only; no production source, grammar behavior, dependency, native boundary, tag, installer, or release was modified.
