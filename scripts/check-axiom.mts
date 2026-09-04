@@ -196,6 +196,85 @@ assert.deepEqual(
   [{ id: "a1", originalText: "teh" }],
 );
 
+const canonicalText = "Use facebook marketplace and linkedin learning.";
+const canonicalIssues = await analyzeText(canonicalText, {
+  analyze: async () => [
+    {
+      id: "provider-facebook",
+      source: "harper",
+      ruleId: "SpellCheck",
+      category: "spelling" as const,
+      severity: "suggestion" as const,
+      message: "Capitalize Facebook",
+      from: 4,
+      to: 12,
+      originalText: "facebook",
+      suggestions: [{ kind: "replace" as const, text: "Facebook" }],
+    },
+    {
+      id: "provider-linkedin",
+      source: "harper",
+      ruleId: "OrthographicConsistency",
+      category: "punctuation" as const,
+      severity: "suggestion" as const,
+      message: "Capitalize LinkedIn",
+      from: 29,
+      to: 37,
+      originalText: "linkedin",
+      suggestions: [{ kind: "replace" as const, text: "LinkedIn" }],
+    },
+  ],
+});
+assert.deepEqual(
+  canonicalIssues.map((issue) => ({
+    originalText: issue.originalText,
+    replacement: issue.suggestions[0]?.text,
+    ruleId: issue.ruleId,
+    source: issue.source,
+  })),
+  [
+    {
+      originalText: "facebook marketplace",
+      replacement: "Facebook Marketplace",
+      ruleId: "CanonicalTerm",
+      source: "axiom",
+    },
+    {
+      originalText: "linkedin learning",
+      replacement: "LinkedIn Learning",
+      ruleId: "CanonicalTerm",
+      source: "axiom",
+    },
+  ],
+);
+const [partialCanonicalIssue] = await analyzeText("Use LinkedIn learning.", {
+  analyze: async () => [],
+});
+assert.deepEqual(
+  {
+    originalText: partialCanonicalIssue?.originalText,
+    replacement: partialCanonicalIssue?.suggestions[0]?.text,
+    ruleId: partialCanonicalIssue?.ruleId,
+  },
+  {
+    originalText: "learning",
+    replacement: "Learning",
+    ruleId: "CanonicalTerm",
+  },
+);
+for (const text of [
+  "Use Facebook Marketplace and LinkedIn Learning.",
+  "The marketplace supports learning.",
+  "Facebook\nMarketplace",
+  "myfacebook marketplace is a test label.",
+]) {
+  assert.deepEqual(
+    await analyzeText(text, { analyze: async () => [] }),
+    [],
+    text,
+  );
+}
+
 const normalizationFixtures = JSON.parse(
   await readFile(
     new URL("../fixtures/dictionary-normalization.json", import.meta.url),

@@ -6,7 +6,7 @@
 - Baseline: `bd52aa3a4f1c796e91ac88dde10c1352ef55e7ea`
 - Release tag protected: `v0.1.0` -> `b775095666b45ce283d02e5875f7516bb936f83b`
 - Accepted implementation: `f61f44db201c57b16bd36f5731f798e0fa9acb05`
-- Status: 0.1.1A accepted; verified branch available on origin for sequential Claude Code or Codex handoff
+- Status: 0.1.1B verified and published on the working branch; not merged or released
 
 ### In scope
 
@@ -15,6 +15,8 @@
 - Clarify that the existing persistent personal dictionary is the global **Always allow word** control.
 - Record evidence-backed decisions for Casual context, local feedback, live dictation, Tone, and Voice.
 - Add no dependency, native command, database migration, network access, or CSP expansion.
+- Keep the 265-case real-world coverage corpus and the bounded AXIOM `CanonicalTerm` rule for `Facebook Marketplace` and `LinkedIn Learning`.
+- Convert new redacted daily-use observations into paired fixtures before changing grammar behavior.
 
 ### Explicitly deferred
 
@@ -23,9 +25,11 @@
 - Casual profile until it differs usefully from General under paired fixtures.
 - Local wrong-suggestion storage until the review/delete UX and privacy-minimal evidence shape are approved.
 - Production streaming dictation and Tone/Voice features.
+- Broad noun-agreement, punctuation, confusion-set, word-form, or malformed-sentence heuristics without precision-gate evidence.
+- Synonyms and other Word Tools as correctness findings; their future boundary is advisory only.
 
 ### Handoff
 
-Continue from real observations in `REAL_WORLD_FINDINGS.md`. For AXIOM gaps, classify malformed grammar, test Harper first, and require paired positive and negative fixtures before considering a narrow deterministic rule. Keep collecting real vocabulary cases before broadening personal allowances. The `where we are classes` example is representative evidence, not a phrase to hardcode.
+Review `0.1.1-daily-use-audit.md` for the 0.1.1B coverage matrix and rule decisions. Continue from real observations in `REAL_WORLD_FINDINGS.md`: test Harper first, retain ambiguous examples as `Needs real example`, and require paired positive and negative fixtures before changing behavior. The `where we are classes` example remains representative evidence, not a phrase to hardcode.
 
 The accepted branch is available for sequential Claude Code or Codex work. Do not merge, tag, release, build installers, or begin Tone, Voice, User Profiles, or a production dictation rewrite without owner approval.

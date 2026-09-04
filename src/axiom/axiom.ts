@@ -53,6 +53,62 @@ const DEFAULT_CONTROLS: AxiomControls = {
   profile: "general",
 };
 
+const CANONICAL_TERMS = ["Facebook Marketplace", "LinkedIn Learning"];
+const WORD_CHARACTER = /[\p{L}\p{M}\p{N}]/u;
+
+function canonicalTermIssues(text: string): AxiomIssue[] {
+  const issues: AxiomIssue[] = [];
+  for (const canonical of CANONICAL_TERMS) {
+    const pattern = new RegExp(canonical, "giu");
+    for (const match of text.matchAll(pattern)) {
+      const from = match.index;
+      const to = from + match[0].length;
+      if (
+        match[0] === canonical ||
+        WORD_CHARACTER.test(text[from - 1] ?? "") ||
+        WORD_CHARACTER.test(text[to] ?? "")
+      ) {
+        continue;
+      }
+      const canonicalWords = canonical.split(" ");
+      const observedWords = match[0].split(" ");
+      const mismatches = observedWords.flatMap((word, index) =>
+        word === canonicalWords[index] ? [] : [index],
+      );
+      const firstMismatch = mismatches[0];
+      const lastMismatch = mismatches[mismatches.length - 1];
+      if (firstMismatch === undefined || lastMismatch === undefined) continue;
+      const prefix = observedWords.slice(0, firstMismatch).join(" ");
+      const issueFrom = from + prefix.length + Number(prefix.length > 0);
+      const originalText = observedWords
+        .slice(firstMismatch, lastMismatch + 1)
+        .join(" ");
+      issues.push({
+        id: "",
+        source: "axiom",
+        ruleId: "CanonicalTerm",
+        category: "formatting",
+        severity: "suggestion",
+        message: `Use the canonical name “${canonical}”.`,
+        explanation:
+          "REDLINE preserves the official capitalization of known product and service names.",
+        from: issueFrom,
+        to: issueFrom + originalText.length,
+        originalText,
+        suggestions: [
+          {
+            kind: "replace",
+            text: canonicalWords
+              .slice(firstMismatch, lastMismatch + 1)
+              .join(" "),
+          },
+        ],
+      });
+    }
+  }
+  return issues;
+}
+
 export function normalizeDictionaryTerm(term: string) {
   return term.trim().normalize("NFC").toLowerCase().normalize("NFC");
 }
@@ -143,9 +199,18 @@ export async function analyzeText(
   controls: AxiomControls = DEFAULT_CONTROLS,
 ): Promise<AxiomIssue[]> {
   const protectedSpans = findProtectedSpans(text);
+  const canonicalIssues = canonicalTermIssues(text);
   const issues = (
     await provider.analyze(text, PROFILE_RULE_OVERRIDES[controls.profile])
   )
+    .filter(
+      (issue) =>
+        !canonicalIssues.some(
+          (canonical) =>
+            issue.from >= canonical.from && issue.to <= canonical.to,
+        ),
+    )
+    .concat(canonicalIssues)
     .filter((issue) => validIssue(text, issue))
     .filter(
       (issue) =>

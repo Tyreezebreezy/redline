@@ -31,3 +31,13 @@ Append entries; do not rewrite earlier evidence.
 - Kept local and remote `main` at the accepted post-0.1.0 state and preserved the protected `v0.1.0` release tag.
 - Set the next priority to evidence from daily use: grammatical classes and paired fixtures with Harper evaluated first, real personal-vocabulary cases before broader allowances, and current entries in `REAL_WORLD_FINDINGS.md`.
 - Retained `where we are classes` as a representative known miss, not a phrase-specific rule.
+
+## 2026-09-04 — 0.1.1B AXIOM real-world coverage verified
+
+- Audited Harper 2.7.0 across spelling, canonical capitalization, subject-verb agreement, punctuation, contextual wrong words, word forms, and broader malformed syntax.
+- Expanded the corpus from 193 to 265 cases with paired warning, clean, casual, technical, contraction, ambiguous, and documented-miss fixtures.
+- Added one AXIOM-owned `CanonicalTerm` rule for exact multiword capitalization of `Facebook Marketplace` and `LinkedIn Learning`; no Harper configuration, dependency, profile, native command, permission, or CSP changed.
+- Preserved protected spans. All-uppercase product phrases remain documented conservative misses instead of bypassing identifier protection.
+- Final benchmark: 75/75 required findings, zero unexplained false positives or misses, 22 documented known misses, nine documented known limitations, and zero protected-span or mapping failures.
+- Kept noun agreement, broad punctuation, broader confusion sets, morphology, malformed-sentence repair, and Word Tools out of production until real examples establish safe semantics.
+- Published the verified update to `codex/redline-0.1.1-daily-use`; `main`, `v0.1.0`, releases, installers, and artifacts remain unchanged.

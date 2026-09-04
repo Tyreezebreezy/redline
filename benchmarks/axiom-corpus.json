@@ -1102,5 +1102,567 @@
     "id": "control-vocative-class",
     "text": "She asked, “Where are we, class?”",
     "expected": []
+  },
+  {
+    "id": "canonical-facebook-lower",
+    "text": "I listed the chair on facebook marketplace.",
+    "expected": [
+      {
+        "originalText": "facebook marketplace",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "canonical-facebook-partial",
+    "text": "The seller opened Facebook marketplace.",
+    "expected": [
+      {
+        "originalText": "marketplace",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "canonical-facebook-upper",
+    "text": "The listing appears on FACEBOOK MARKETPLACE.",
+    "expected": [],
+    "knownMisses": [
+      {
+        "originalText": "FACEBOOK MARKETPLACE",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "canonical-linkedin-lower",
+    "text": "I finished a course on linkedin learning.",
+    "expected": [
+      {
+        "originalText": "linkedin learning",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "canonical-linkedin-partial",
+    "text": "The course is available through LinkedIn learning.",
+    "expected": [
+      {
+        "originalText": "learning",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "canonical-linkedin-upper",
+    "text": "The team uses LINKEDIN LEARNING.",
+    "expected": [],
+    "knownMisses": [
+      {
+        "originalText": "LINKEDIN LEARNING",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "canonical-facebook-control",
+    "text": "The chair is listed on Facebook Marketplace.",
+    "expected": []
+  },
+  {
+    "id": "canonical-linkedin-control",
+    "text": "The course is on LinkedIn Learning.",
+    "expected": []
+  },
+  {
+    "id": "canonical-generic-control",
+    "text": "The marketplace supports learning.",
+    "expected": []
+  },
+  {
+    "id": "canonical-technical-control",
+    "text": "The field names are marketplace and learning.",
+    "expected": []
+  },
+  {
+    "id": "coverage-spelling-definitely",
+    "text": "The update is definately ready.",
+    "expected": [
+      {
+        "originalText": "definately",
+        "category": "spelling",
+        "ruleId": "SpellCheck"
+      }
+    ]
+  },
+  {
+    "id": "coverage-spelling-received",
+    "text": "We recieved the final report.",
+    "expected": [
+      {
+        "originalText": "recieved",
+        "category": "spelling",
+        "ruleId": "SpellCheck"
+      }
+    ]
+  },
+  {
+    "id": "coverage-spelling-separated",
+    "text": "The files were seperated yesterday.",
+    "expected": [
+      {
+        "originalText": "seperated",
+        "category": "spelling",
+        "ruleId": "SpellCheck"
+      }
+    ]
+  },
+  {
+    "id": "coverage-spelling-occurred",
+    "text": "The error occured twice.",
+    "expected": [
+      {
+        "originalText": "occured",
+        "category": "spelling",
+        "ruleId": "SpellCheck"
+      }
+    ]
+  },
+  {
+    "id": "coverage-spelling-casual-control",
+    "text": "Yeah, the update is ready.",
+    "expected": []
+  },
+  {
+    "id": "coverage-spelling-technical-control",
+    "text": "The API response is idempotent.",
+    "expected": []
+  },
+  {
+    "id": "coverage-agreement-singular-pronoun",
+    "text": "She walk to work every day.",
+    "expected": [
+      {
+        "originalText": "walk",
+        "category": "grammar",
+        "ruleId": "PronounVerbAgreement"
+      }
+    ]
+  },
+  {
+    "id": "coverage-agreement-plural-pronoun",
+    "text": "They goes to work every day.",
+    "expected": [
+      {
+        "originalText": "goes",
+        "category": "grammar",
+        "ruleId": "PronounVerbAgreement"
+      }
+    ]
+  },
+  {
+    "id": "coverage-agreement-first-person",
+    "text": "I are ready.",
+    "expected": [
+      {
+        "originalText": "I are",
+        "category": "grammar",
+        "ruleId": "IAmAgreement"
+      }
+    ]
+  },
+  {
+    "id": "coverage-agreement-singular-noun-miss",
+    "text": "The report are ready.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "report are", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-agreement-plural-noun-miss",
+    "text": "The reports is ready.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "reports is", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-agreement-intervening-noun-miss",
+    "text": "The report from the teams are ready.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "report from the teams are", "category": "grammar" }
+    ]
+  },
+  {
+    "id": "coverage-agreement-compound-subject-miss",
+    "text": "Alice and Bob is ready.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "Alice and Bob is", "category": "grammar" }
+    ]
+  },
+  {
+    "id": "coverage-agreement-singular-control",
+    "text": "The report is ready.",
+    "expected": []
+  },
+  {
+    "id": "coverage-agreement-plural-control",
+    "text": "The reports are ready.",
+    "expected": []
+  },
+  {
+    "id": "coverage-agreement-contraction-control",
+    "text": "The reports aren't ready.",
+    "expected": []
+  },
+  {
+    "id": "coverage-agreement-collective-control",
+    "text": "The team are divided on the issue.",
+    "expected": []
+  },
+  {
+    "id": "coverage-punctuation-however",
+    "text": "However we should wait.",
+    "expected": [
+      {
+        "originalText": "However",
+        "category": "punctuation",
+        "ruleId": "DiscourseMarkers"
+      }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-therefore",
+    "text": "Therefore we should wait.",
+    "expected": [
+      {
+        "originalText": "Therefore",
+        "category": "punctuation",
+        "ruleId": "DiscourseMarkers"
+      }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-for-example",
+    "text": "For example we can retry.",
+    "expected": [
+      {
+        "originalText": "For example",
+        "category": "punctuation",
+        "ruleId": "DiscourseMarkers"
+      }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-space-after",
+    "text": "The report,is ready.",
+    "expected": [
+      { "originalText": ",", "category": "punctuation", "ruleId": "CommaFixes" }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-space-before",
+    "text": "The report ,is ready.",
+    "expected": [
+      {
+        "originalText": " ,",
+        "category": "punctuation",
+        "ruleId": "CommaFixes"
+      }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-introductory-phrase-miss",
+    "text": "After reviewing the report we approved it.",
+    "expected": [],
+    "knownMisses": [
+      {
+        "originalText": "After reviewing the report",
+        "category": "punctuation"
+      }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-dependent-clause-miss",
+    "text": "When the build finishes we will deploy it.",
+    "expected": [],
+    "knownMisses": [
+      { "originalText": "When the build finishes", "category": "punctuation" }
+    ]
+  },
+  {
+    "id": "coverage-punctuation-duplicate-comma-miss",
+    "text": "The report,, is ready.",
+    "expected": [],
+    "knownMisses": [{ "originalText": ",,", "category": "punctuation" }]
+  },
+  {
+    "id": "coverage-punctuation-introductory-control",
+    "text": "After reviewing the report, we approved it.",
+    "expected": []
+  },
+  {
+    "id": "coverage-punctuation-short-intro-control",
+    "text": "After lunch we walked outside.",
+    "expected": []
+  },
+  {
+    "id": "coverage-punctuation-discourse-control",
+    "text": "For example, we can retry.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-choice-then-than",
+    "text": "This is better then the old version.",
+    "expected": [{ "originalText": "then", "ruleId": "ThenThan" }]
+  },
+  {
+    "id": "coverage-word-choice-affect-effect",
+    "text": "The change had a positive affect.",
+    "expected": [
+      {
+        "originalText": "affect",
+        "category": "word-choice",
+        "ruleId": "NounVerbConfusion"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-lose-loose",
+    "text": "I do not want to loose the receipt.",
+    "expected": [
+      {
+        "originalText": "to loose",
+        "category": "spelling",
+        "ruleId": "ToLoseTooLoose"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-its-possessive",
+    "text": "The company changed it's policy.",
+    "expected": [
+      {
+        "originalText": "it's",
+        "category": "grammar",
+        "ruleId": "ItsPossessive"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-their-theyre",
+    "text": "Their going to finish today.",
+    "expected": [
+      {
+        "originalText": "Their",
+        "category": "grammar",
+        "ruleId": "TheirToTheyre"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-there-their",
+    "text": "There report is ready.",
+    "expected": [
+      {
+        "originalText": "There",
+        "category": "grammar",
+        "ruleId": "ThereToTheir"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-your-youre",
+    "text": "Your kind.",
+    "expected": [
+      {
+        "originalText": "Your",
+        "category": "grammar",
+        "ruleId": "YourPredicateAdjective"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-principal",
+    "text": "Our principle goal is safety.",
+    "expected": [
+      {
+        "originalText": "principle",
+        "category": "grammar",
+        "ruleId": "PrincipleToPrincipalRoleNoun"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-loose-modal-miss",
+    "text": "You will loose the receipt.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "loose", "category": "word-choice" }]
+  },
+  {
+    "id": "coverage-word-choice-your-going-miss",
+    "text": "Your going to like this.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "Your", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-word-choice-youre-possessive-miss",
+    "text": "You're report is ready.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "You're", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-word-choice-its-contraction-miss",
+    "text": "Its raining today.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "Its", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-word-choice-accept-except-miss",
+    "text": "Please except the invitation.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "except", "category": "word-choice" }]
+  },
+  {
+    "id": "coverage-word-choice-sequence-control",
+    "text": "We finished, then we left.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-choice-affect-verb-control",
+    "text": "The delay will affect the schedule.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-choice-affect-noun-control",
+    "text": "The affect was flat during the interview.",
+    "expected": [],
+    "knownLimitations": [
+      { "originalText": "affect", "ruleId": "NounVerbConfusion" }
+    ]
+  },
+  {
+    "id": "coverage-word-choice-loose-control",
+    "text": "Loosen the loose strap.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-choice-possessive-controls",
+    "text": "Your report explains its policy and their decision.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-choice-principle-control",
+    "text": "The principle guides our work.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-form-singular-pronoun",
+    "text": "He go to work every day.",
+    "expected": [
+      {
+        "originalText": "go",
+        "category": "grammar",
+        "ruleId": "PronounVerbAgreement"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-form-plural-pronoun",
+    "text": "They goes to work every day.",
+    "expected": [
+      {
+        "originalText": "goes",
+        "category": "grammar",
+        "ruleId": "PronounVerbAgreement"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-form-first-person",
+    "text": "I are prepared.",
+    "expected": [
+      {
+        "originalText": "I are",
+        "category": "grammar",
+        "ruleId": "IAmAgreement"
+      }
+    ]
+  },
+  {
+    "id": "coverage-word-form-number-miss",
+    "text": "These report are complete.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "These report", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-word-form-infinitive-miss",
+    "text": "She wants to walking home.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "to walking", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-word-form-past-infinitive-miss",
+    "text": "We need to reviewed the file.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "to reviewed", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-word-form-past-control",
+    "text": "Yesterday she walked home.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-form-present-control",
+    "text": "She walks to work every day.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-form-number-control",
+    "text": "These reports are complete.",
+    "expected": []
+  },
+  {
+    "id": "coverage-word-form-contraction-control",
+    "text": "She doesn't walk to work every day.",
+    "expected": []
+  },
+  {
+    "id": "coverage-malformed-missing-to",
+    "text": "We need decide the schedule.",
+    "expected": [
+      {
+        "originalText": "need",
+        "category": "word-choice",
+        "ruleId": "MissingTo"
+      }
+    ]
+  },
+  {
+    "id": "coverage-malformed-missing-verb-miss",
+    "text": "The report ready for review.",
+    "expected": [],
+    "knownMisses": [{ "originalText": "report ready", "category": "grammar" }]
+  },
+  {
+    "id": "coverage-malformed-complete-control",
+    "text": "The report is ready for review.",
+    "expected": []
+  },
+  {
+    "id": "coverage-malformed-heading-control",
+    "text": "Report ready for review.",
+    "expected": []
+  },
+  {
+    "id": "coverage-malformed-infinitive-control",
+    "text": "We need to decide the schedule.",
+    "expected": []
   }
 ]
