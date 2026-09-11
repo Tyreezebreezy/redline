@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { readFile, writeFile } from "node:fs/promises";
-import { extname, resolve } from "node:path";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
 import { Editor } from "@tiptap/react";
 import { Dialect, LocalLinter } from "harper.js";
 import { binaryInlined } from "harper.js/binaryInlined";
@@ -117,6 +117,8 @@ type CorpusCase = {
   profile?: WritingProfile;
   protected?: boolean;
   protectedSpans?: number;
+  robustness_group?: string;
+  robustness_variant?: "O" | "A1" | "A2" | "A3" | "A4" | "A5";
 };
 
 type NativeCase = {
@@ -151,9 +153,30 @@ type SourceManifest = {
 type EvaluationRow = {
   id: string;
   source: SourceKind;
+  source_id: string;
+  source_case_id: string;
+  license: string;
+  provenance: string[];
+  original: string;
+  corrected?: string;
   category: TaxonomyCategory;
+  rule_id?: string;
   status: Status;
+  robustness_group?: string;
+  robustness_variant?: "O" | "A1" | "A2" | "A3" | "A4" | "A5";
   expected: ExpectedIssue[];
+  harper_actual: Array<{
+    rule_id?: string;
+    category: string;
+    from: number;
+    to: number;
+    original: string;
+    replacements: string[];
+  }>;
+  harper_missed: ExpectedIssue[];
+  harper_false_positives: string[];
+  axiom_added: string[];
+  axiom_suppressed: string[];
   actual: Array<{
     rule_id?: string;
     category: string;
@@ -170,6 +193,15 @@ type EvaluationRow = {
   false_positives: string[];
   mapping_failures: number;
   protected_failures: number;
+};
+
+type DuplicateRecord = {
+  kept_source_id: string;
+  kept_case_id: string;
+  removed_source_id: string;
+  removed_case_id: string;
+  category: TaxonomyCategory;
+  removed: boolean;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -557,6 +589,226 @@ function parseM2(text: string, manifest: SourceManifest) {
   return cases;
 }
 
+async function weirFiles(root: string): Promise<string[]> {
+  const paths: string[] = [];
+  for (const entry of await readdir(root, { withFileTypes: true })) {
+    const path = join(root, entry.name);
+    if (entry.isDirectory()) paths.push(...(await weirFiles(path)));
+    else if (entry.isFile() && extname(entry.name) === ".weir")
+      paths.push(path);
+  }
+  return paths.toSorted();
+}
+
+function decodeWeirLiteral(literal: string) {
+  let value = "";
+  for (let index = 1; index < literal.length - 1; index += 1) {
+    const character = literal[index];
+    if (character !== "\\") {
+      value += character;
+      continue;
+    }
+    index += 1;
+    const escaped = literal[index];
+    if (escaped === "n") value += "\n";
+    else if (escaped === "r") value += "\r";
+    else if (escaped === "t") value += "\t";
+    else if (["\\", '"', "“", "”"].includes(escaped)) value += escaped;
+    else throw new Error(`Unsupported Harper string escape: \\${escaped}`);
+  }
+  return value;
+}
+
+function parseHarperWeirText(
+  text: string,
+  sourcePath: string,
+  manifest: SourceManifest,
+) {
+  const cases: CorpusCase[] = [];
+  const ruleId = basename(sourcePath, ".weir");
+  const lines = text.split(/\r?\n/u);
+  lines.forEach((line, index) => {
+    if (!line.startsWith("test ")) return;
+    const match = line.match(
+      /^test\s+("(?:[^"\\]|\\.)*")\s+("(?:[^"\\]|\\.)*")\s*$/u,
+    );
+    if (!match) {
+      throw new Error(`Unsupported Harper test at ${sourcePath}:${index + 1}`);
+    }
+    const original = decodeWeirLiteral(match[1]);
+    const corrected = decodeWeirLiteral(match[2]);
+    const expected = tokenEdits(original, corrected);
+    const sourceCaseId = `${sourcePath}:${index + 1}`;
+    cases.push({
+      id: `${manifest.id}:${sourceCaseId}`,
+      source: manifest.source,
+      source_id: manifest.id,
+      source_case_id: sourceCaseId,
+      license: manifest.license,
+      category: taxonomyFor(ruleId),
+      original,
+      corrected,
+      expected,
+      rule_id: ruleId,
+      should_warn: expected.length > 0,
+      expected_span: expected[0]
+        ? { from: expected[0].from ?? 0, to: expected[0].to ?? 0 }
+        : undefined,
+      expected_replacement: expected[0]?.replacement,
+      tags: ["external", "harper", "weir"],
+      redistribution: manifest.redistribution,
+      provenance: [
+        `${manifest.source_url}/blob/dc1182cc2b33603748105df074d6bb47f0de3720/harper-core/src/linting/weir_rules/${sourcePath}#L${index + 1}`,
+      ],
+      benchmark_status: expected.length > 0 ? "required" : "control",
+    });
+  });
+  return cases;
+}
+
+async function parseHarperWeir(root: string, manifest: SourceManifest) {
+  const cases: CorpusCase[] = [];
+  for (const path of await weirFiles(root)) {
+    const sourcePath = relative(root, path).replaceAll("\\", "/");
+    cases.push(
+      ...parseHarperWeirText(
+        await readFile(path, "utf8"),
+        sourcePath,
+        manifest,
+      ),
+    );
+  }
+  return cases;
+}
+
+type OffsetToken = { text: string; from: number; to: number };
+
+function offsetTokens(text: string): OffsetToken[] {
+  return [...text.matchAll(/\S+/gu)].map((match) => ({
+    text: match[0],
+    from: match.index,
+    to: match.index + match[0].length,
+  }));
+}
+
+function tokenEdits(original: string, corrected: string): ExpectedIssue[] {
+  const before = offsetTokens(original);
+  const after = offsetTokens(corrected);
+  const lengths = Array.from(
+    { length: before.length + 1 },
+    () => new Uint16Array(after.length + 1),
+  );
+  for (let left = before.length - 1; left >= 0; left -= 1) {
+    for (let right = after.length - 1; right >= 0; right -= 1) {
+      lengths[left][right] =
+        before[left].text === after[right].text
+          ? lengths[left + 1][right + 1] + 1
+          : Math.max(lengths[left + 1][right], lengths[left][right + 1]);
+    }
+  }
+
+  const matches: Array<[number, number]> = [];
+  let left = 0;
+  let right = 0;
+  while (left < before.length && right < after.length) {
+    if (before[left].text === after[right].text) {
+      matches.push([left, right]);
+      left += 1;
+      right += 1;
+    } else if (lengths[left + 1][right] >= lengths[left][right + 1]) {
+      left += 1;
+    } else {
+      right += 1;
+    }
+  }
+  matches.push([before.length, after.length]);
+
+  const edits: ExpectedIssue[] = [];
+  let beforeStart = 0;
+  let afterStart = 0;
+  for (const [beforeEnd, afterEnd] of matches) {
+    if (beforeStart !== beforeEnd || afterStart !== afterEnd) {
+      const from = beforeStart === 0 ? 0 : before[beforeStart - 1].to;
+      const to =
+        beforeEnd < before.length ? before[beforeEnd].from : original.length;
+      const replacementFrom = afterStart === 0 ? 0 : after[afterStart - 1].to;
+      const replacementTo =
+        afterEnd < after.length ? after[afterEnd].from : corrected.length;
+      const replacement = corrected.slice(replacementFrom, replacementTo);
+      edits.push({
+        originalText: original.slice(from, to),
+        from,
+        to,
+        replacement,
+      });
+    }
+    beforeStart = beforeEnd + 1;
+    afterStart = afterEnd + 1;
+  }
+  return edits;
+}
+
+function parseRobustGec(
+  text: string,
+  manifest: SourceManifest,
+  sourcePath: string,
+) {
+  const cases: CorpusCase[] = [];
+  const dataset = basename(dirname(resolve(sourcePath)));
+  const blocks = text.trim().split(/\r?\n\s*\r?\n/u);
+  let lineNumber = 1;
+  blocks.forEach((block, blockIndex) => {
+    const variants = new Map<string, { source?: string; target?: string }>();
+    const blockLines = block.split(/\r?\n/u);
+    for (const line of blockLines) {
+      const match = line.match(/^(O|A[1-5])-([ST])\s(.*)$/u);
+      if (!match) throw new Error(`Malformed RobustGEC line: ${line}`);
+      const record = variants.get(match[1]) ?? {};
+      if (match[2] === "S") record.source = match[3];
+      else record.target = match[3];
+      variants.set(match[1], record);
+    }
+    for (const variant of ["O", "A1", "A2", "A3", "A4", "A5"] as const) {
+      const record = variants.get(variant);
+      if (!record?.source || record.target === undefined) {
+        throw new Error(
+          `RobustGEC block ${blockIndex + 1} lacks ${variant}-S/T`,
+        );
+      }
+      const expected = tokenEdits(record.source, record.target);
+      const sourceCaseId = `${dataset}:${blockIndex + 1}:${variant}`;
+      cases.push({
+        id: `${manifest.id}:${sourceCaseId}`,
+        source: manifest.source,
+        source_id: manifest.id,
+        source_case_id: sourceCaseId,
+        license: manifest.license,
+        category: "OTHER",
+        original: record.source,
+        corrected: record.target,
+        expected,
+        should_warn: expected.length > 0,
+        expected_span: expected[0]
+          ? { from: expected[0].from ?? 0, to: expected[0].to ?? 0 }
+          : undefined,
+        expected_replacement: expected[0]?.replacement,
+        tags: ["external", "robustgec", dataset, variant],
+        notes:
+          "ERRANT category intentionally unavailable without the external Python/spaCy toolchain.",
+        redistribution: manifest.redistribution,
+        provenance: [
+          `${manifest.source_url}/blob/1c5787b3c6288a45f0d99b883a501c02b54812a1/benchmark/${dataset}/para.txt#L${lineNumber}`,
+        ],
+        benchmark_status: expected.length > 0 ? "required" : "control",
+        robustness_group: `${manifest.id}:${dataset}:${blockIndex + 1}`,
+        robustness_variant: variant,
+      });
+    }
+    lineNumber += blockLines.length + 1;
+  });
+  return cases;
+}
+
 function duplicateKey(fixture: CorpusCase) {
   const normalized = (value: string | undefined) =>
     (value ?? "")
@@ -572,16 +824,30 @@ function duplicateKey(fixture: CorpusCase) {
 }
 
 function deduplicate(cases: CorpusCase[]) {
-  const retained = new Map<string, CorpusCase>();
-  let duplicates = 0;
+  const retained: CorpusCase[] = [];
+  const seen = new Map<string, CorpusCase>();
+  const duplicates: DuplicateRecord[] = [];
   for (const fixture of cases) {
     const key = duplicateKey(fixture);
-    const existing = retained.get(key);
+    const existing = seen.get(key);
     if (!existing) {
-      retained.set(key, fixture);
+      seen.set(key, fixture);
+      retained.push(fixture);
       continue;
     }
-    duplicates += 1;
+    const remove = !existing.robustness_group && !fixture.robustness_group;
+    duplicates.push({
+      kept_source_id: existing.source_id,
+      kept_case_id: existing.source_case_id,
+      removed_source_id: fixture.source_id,
+      removed_case_id: fixture.source_case_id,
+      category: fixture.category,
+      removed: remove,
+    });
+    if (!remove) {
+      retained.push(fixture);
+      continue;
+    }
     existing.provenance = [
       ...new Set([...existing.provenance, ...fixture.provenance]),
     ];
@@ -592,26 +858,65 @@ function deduplicate(cases: CorpusCase[]) {
       .filter(Boolean)
       .join(" ");
   }
-  return { cases: [...retained.values()], duplicates };
+  return { cases: retained, duplicates };
 }
 
-function matches(issue: AxiomIssue, expected: ExpectedIssue) {
+function issueKey(issue: AxiomIssue) {
+  return JSON.stringify([
+    issue.ruleId,
+    issue.from,
+    issue.to,
+    issue.originalText,
+    issue.suggestions.map(({ kind, text }) => [kind, text]),
+  ]);
+}
+
+function issueLabel(issue: AxiomIssue) {
+  return `${issue.ruleId ?? "unknown"}@${issue.from}-${issue.to}:${issue.originalText}`;
+}
+
+function matches(
+  issue: AxiomIssue,
+  expected: ExpectedIssue,
+  original?: string,
+) {
+  const equivalentCorrection =
+    original !== undefined &&
+    expected.from !== undefined &&
+    expected.to !== undefined &&
+    expected.replacement !== undefined &&
+    issue.suggestions.some(
+      ({ text }) =>
+        original.slice(0, issue.from) + text + original.slice(issue.to) ===
+        original.slice(0, expected.from) +
+          expected.replacement +
+          original.slice(expected.to),
+    );
   return (
-    issue.originalText === expected.originalText &&
+    (equivalentCorrection ||
+      (issue.originalText === expected.originalText &&
+        (expected.from === undefined || issue.from === expected.from) &&
+        (expected.to === undefined || issue.to === expected.to) &&
+        (expected.replacement === undefined ||
+          issue.suggestions.some(
+            ({ text }) => text === expected.replacement,
+          )))) &&
     (expected.category === undefined || issue.category === expected.category) &&
-    (expected.ruleId === undefined || issue.ruleId === expected.ruleId) &&
-    (expected.from === undefined || issue.from === expected.from) &&
-    (expected.to === undefined || issue.to === expected.to) &&
-    (expected.replacement === undefined ||
-      issue.suggestions.some(({ text }) => text === expected.replacement))
+    (expected.ruleId === undefined || issue.ruleId === expected.ruleId)
   );
 }
 
-function consumeMatches(issues: AxiomIssue[], expected: ExpectedIssue[]) {
+function consumeMatches(
+  issues: AxiomIssue[],
+  expected: ExpectedIssue[],
+  original?: string,
+) {
   const remaining = [...issues];
   const missed: ExpectedIssue[] = [];
   for (const item of expected) {
-    const index = remaining.findIndex((issue) => matches(issue, item));
+    const index = remaining.findIndex((issue) =>
+      matches(issue, item, original),
+    );
     if (index < 0) missed.push(item);
     else remaining.splice(index, 1);
   }
@@ -633,9 +938,15 @@ async function evaluate(cases: CorpusCase[]) {
         ...baseline,
         ...PROFILE_RULE_OVERRIDES[profile],
       });
+      let harperIssues: AxiomIssue[] = [];
       const issues = await analyzeText(
         fixture.original,
-        { analyze: (text) => analyzeWithHarper(linter, text) },
+        {
+          analyze: async (text) => {
+            harperIssues = await analyzeWithHarper(linter, text);
+            return harperIssues;
+          },
+        },
         {
           dictionary: new Set(
             (fixture.dictionary ?? []).map(normalizeDictionaryTerm),
@@ -667,14 +978,20 @@ async function evaluate(cases: CorpusCase[]) {
           (issue) => !isIgnoredIssue(issue, [ignored]),
         );
       }
-      const required = consumeMatches(evaluated, fixture.expected);
+      const required = consumeMatches(
+        evaluated,
+        fixture.expected,
+        fixture.original,
+      );
       const knownMiss = consumeMatches(
         required.remaining,
         fixture.knownMisses ?? [],
+        fixture.original,
       );
       const knownLimitation = consumeMatches(
         knownMiss.remaining,
         fixture.knownLimitations ?? [],
+        fixture.original,
       );
       const spanFailure =
         fixture.protectedSpans === undefined
@@ -685,6 +1002,23 @@ async function evaluate(cases: CorpusCase[]) {
             );
       const protectedFailures =
         (fixture.protected ? evaluated.length : 0) + spanFailure;
+      const harperRequired = consumeMatches(
+        harperIssues,
+        fixture.expected,
+        fixture.original,
+      );
+      const harperKnownMiss = consumeMatches(
+        harperRequired.remaining,
+        fixture.knownMisses ?? [],
+        fixture.original,
+      );
+      const harperKnownLimitation = consumeMatches(
+        harperKnownMiss.remaining,
+        fixture.knownLimitations ?? [],
+        fixture.original,
+      );
+      const harperKeys = new Set(harperIssues.map(issueKey));
+      const axiomKeys = new Set(issues.map(issueKey));
       const observedKnown =
         (fixture.knownLimitations?.length ?? 0) - knownLimitation.missed.length;
       const status: Status = mappingFailures
@@ -703,9 +1037,36 @@ async function evaluate(cases: CorpusCase[]) {
       rows.push({
         id: fixture.id,
         source: fixture.source,
+        source_id: fixture.source_id,
+        source_case_id: fixture.source_case_id,
+        license: fixture.license,
+        provenance: fixture.provenance,
+        original: fixture.original,
+        corrected: fixture.corrected,
         category: fixture.category,
+        rule_id: fixture.rule_id,
         status,
+        robustness_group: fixture.robustness_group,
+        robustness_variant: fixture.robustness_variant,
         expected: fixture.expected,
+        harper_actual: harperIssues.map((issue) => ({
+          rule_id: issue.ruleId,
+          category: issue.category,
+          from: issue.from,
+          to: issue.to,
+          original: issue.originalText,
+          replacements: issue.suggestions.map(({ text }) => text),
+        })),
+        harper_missed: harperRequired.missed,
+        harper_false_positives: harperKnownLimitation.remaining.map(
+          ({ originalText }) => originalText,
+        ),
+        axiom_added: issues
+          .filter((issue) => !harperKeys.has(issueKey(issue)))
+          .map(issueLabel),
+        axiom_suppressed: harperIssues
+          .filter((issue) => !axiomKeys.has(issueKey(issue)))
+          .map(issueLabel),
         actual: evaluated.map((issue) => ({
           rule_id: issue.ruleId,
           category: issue.category,
@@ -735,7 +1096,134 @@ async function evaluate(cases: CorpusCase[]) {
   return rows;
 }
 
-function report(rows: EvaluationRow[], duplicates: number) {
+function robustReport(rows: EvaluationRow[]) {
+  const groups = new Map<string, EvaluationRow[]>();
+  for (const row of rows) {
+    if (!row.robustness_group) continue;
+    groups.set(row.robustness_group, [
+      ...(groups.get(row.robustness_group) ?? []),
+      row,
+    ]);
+  }
+  const details: Array<{
+    group: string;
+    status: string[];
+  }> = [];
+  let robustPass = 0;
+  let contextDrop = 0;
+  let contextFalsePositive = 0;
+  let ruleDrift = 0;
+  let replacementDrift = 0;
+  let incomplete = 0;
+  const atExpected = (row: EvaluationRow, expected: ExpectedIssue) =>
+    row.actual.filter((issue) => {
+      const equivalentCorrection =
+        expected.from !== undefined &&
+        expected.to !== undefined &&
+        expected.replacement !== undefined &&
+        issue.replacements.some(
+          (replacement) =>
+            row.original.slice(0, issue.from) +
+              replacement +
+              row.original.slice(issue.to) ===
+            row.original.slice(0, expected.from) +
+              expected.replacement +
+              row.original.slice(expected.to),
+        );
+      return (
+        equivalentCorrection ||
+        (issue.original === expected.originalText &&
+          (expected.from === undefined || issue.from === expected.from) &&
+          (expected.to === undefined || issue.to === expected.to))
+      );
+    });
+
+  for (const [group, variants] of groups) {
+    const byVariant = new Map(
+      variants.map((row) => [row.robustness_variant, row]),
+    );
+    const original = byVariant.get("O");
+    if (!original || variants.length !== 6) {
+      incomplete += 1;
+      details.push({ group, status: ["INCOMPLETE GROUP"] });
+      continue;
+    }
+    const statuses: string[] = [];
+    const clean = (row: EvaluationRow) =>
+      row.missed.length === 0 &&
+      row.false_positives.length === 0 &&
+      row.mapping_failures === 0 &&
+      row.protected_failures === 0;
+    if (variants.every(clean)) {
+      robustPass += 1;
+      statuses.push("ROBUST PASS");
+    }
+    if (
+      original.expected.length > 0 &&
+      original.missed.length === 0 &&
+      variants.some((row) =>
+        row.missed.some((expected) => atExpected(row, expected).length === 0),
+      )
+    ) {
+      contextDrop += 1;
+      statuses.push("CONTEXT DROP");
+    }
+    if (
+      original.false_positives.length === 0 &&
+      variants.some((row) => row.false_positives.length > 0)
+    ) {
+      contextFalsePositive += 1;
+      statuses.push("CONTEXT FALSE POSITIVE");
+    }
+    const ruleSignature = (row: EvaluationRow) =>
+      row.expected
+        .flatMap((expected) =>
+          atExpected(row, expected).flatMap((issue) => issue.rule_id ?? []),
+        )
+        .toSorted()
+        .join("|");
+    const originalRules = ruleSignature(original);
+    if (
+      originalRules &&
+      variants.some((row) => {
+        const signature = ruleSignature(row);
+        return signature.length > 0 && signature !== originalRules;
+      })
+    ) {
+      ruleDrift += 1;
+      statuses.push("RULE DRIFT");
+    }
+    if (
+      original.missed.length === 0 &&
+      variants.some((row) =>
+        row.missed.some(
+          (expected) =>
+            expected.replacement !== undefined &&
+            atExpected(row, expected).some(
+              (issue) =>
+                !issue.replacements.includes(expected.replacement ?? ""),
+            ),
+        ),
+      )
+    ) {
+      replacementDrift += 1;
+      statuses.push("REPLACEMENT DRIFT");
+    }
+    if (statuses.length > 0) details.push({ group, status: statuses });
+  }
+  return {
+    groups: groups.size,
+    robust_pass: robustPass,
+    context_drop: contextDrop,
+    context_false_positive: contextFalsePositive,
+    rule_drift: ruleDrift,
+    replacement_drift: replacementDrift,
+    incomplete_groups: incomplete,
+    details,
+  };
+}
+
+function report(rows: EvaluationRow[], duplicates: DuplicateRecord[]) {
   const statuses = Object.fromEntries(STATUSES.map((status) => [status, 0]));
   const categories = Object.fromEntries(
     TAXONOMY.map((category) => [
@@ -745,7 +1233,16 @@ function report(rows: EvaluationRow[], duplicates: number) {
   );
   const sources: Record<
     string,
-    { cases: number; statuses: Record<string, number> }
+    {
+      source: SourceKind;
+      cases: number;
+      expected: number;
+      harper_caught: number;
+      axiom_caught: number;
+      harper_false_positives: number;
+      axiom_false_positives: number;
+      statuses: Record<string, number>;
+    }
   > = {};
   let expected = 0;
   let caught = 0;
@@ -754,6 +1251,11 @@ function report(rows: EvaluationRow[], duplicates: number) {
   let knownLimitations = 0;
   let protectedFailures = 0;
   let mappingFailures = 0;
+  let harperCaught = 0;
+  let harperFalsePositives = 0;
+  let axiomAddedFindings = 0;
+  let axiomSuppressedIssues = 0;
+  let axiomSuppressedFalsePositives = 0;
   for (const row of rows) {
     statuses[row.status] += 1;
     const category = categories[row.category];
@@ -769,15 +1271,97 @@ function report(rows: EvaluationRow[], duplicates: number) {
     knownLimitations += row.known_limitations.length;
     protectedFailures += row.protected_failures;
     mappingFailures += row.mapping_failures;
-    sources[row.source] ??= { cases: 0, statuses: {} };
-    sources[row.source].cases += 1;
-    sources[row.source].statuses[row.status] =
-      (sources[row.source].statuses[row.status] ?? 0) + 1;
+    const rowHarperCaught = row.expected.length - row.harper_missed.length;
+    const rowAxiomCaught = row.expected.length - row.missed.length;
+    harperCaught += rowHarperCaught;
+    harperFalsePositives += row.harper_false_positives.length;
+    axiomAddedFindings += Math.max(0, rowAxiomCaught - rowHarperCaught);
+    axiomSuppressedIssues += row.axiom_suppressed.length;
+    axiomSuppressedFalsePositives += Math.max(
+      0,
+      row.harper_false_positives.length - row.false_positives.length,
+    );
+    const sourceKey =
+      row.source_id === "robustgec-2023-upstream"
+        ? `${row.source_id}/${row.source_case_id.split(":")[0]}`
+        : row.source_id;
+    sources[sourceKey] ??= {
+      source: row.source,
+      cases: 0,
+      expected: 0,
+      harper_caught: 0,
+      axiom_caught: 0,
+      harper_false_positives: 0,
+      axiom_false_positives: 0,
+      statuses: {},
+    };
+    const source = sources[sourceKey];
+    source.cases += 1;
+    source.expected += row.expected.length;
+    source.harper_caught += rowHarperCaught;
+    source.axiom_caught += rowAxiomCaught;
+    source.harper_false_positives += row.harper_false_positives.length;
+    source.axiom_false_positives += row.false_positives.length;
+    source.statuses[row.status] = (source.statuses[row.status] ?? 0) + 1;
   }
+  const duplicateSummary: Record<string, number> = {};
+  for (const duplicate of duplicates) {
+    const key = `${duplicate.kept_source_id} <- ${duplicate.removed_source_id} [${duplicate.category}]`;
+    duplicateSummary[key] = (duplicateSummary[key] ?? 0) + 1;
+  }
+  const categoryBacklog = Object.entries(categories)
+    .filter(([, metrics]) => metrics.missed > 0 || metrics.false_positives > 0)
+    .map(([category, metrics]) => ({ category, ...metrics }))
+    .toSorted(
+      (left, right) =>
+        right.missed - left.missed ||
+        right.false_positives - left.false_positives,
+    );
+  const candidates = new Map<
+    string,
+    {
+      candidate: string;
+      source_ids: string[];
+      missed_findings: number;
+      cases_with_false_positive_concerns: number;
+      example_case_ids: string[];
+    }
+  >();
+  for (const row of rows) {
+    if (row.missed.length === 0) continue;
+    const key = row.rule_id ?? row.category;
+    const candidate = candidates.get(key) ?? {
+      candidate: key,
+      source_ids: [],
+      missed_findings: 0,
+      cases_with_false_positive_concerns: 0,
+      example_case_ids: [],
+    };
+    candidate.source_ids = [
+      ...new Set([...candidate.source_ids, row.source_id]),
+    ];
+    candidate.missed_findings += row.missed.length;
+    candidate.cases_with_false_positive_concerns += Number(
+      row.false_positives.length > 0,
+    );
+    if (candidate.example_case_ids.length < 5) {
+      candidate.example_case_ids.push(row.source_case_id);
+    }
+    candidates.set(key, candidate);
+  }
+  const backlog = [...candidates.values()]
+    .toSorted(
+      (left, right) =>
+        right.missed_findings - left.missed_findings ||
+        right.cases_with_false_positive_concerns -
+          left.cases_with_false_positive_concerns,
+    )
+    .slice(0, 25);
   return {
     totals: {
       cases: rows.length,
-      duplicates_removed: duplicates,
+      duplicates_detected: duplicates.length,
+      duplicates_removed: duplicates.filter(({ removed }) => removed).length,
       expected_findings: expected,
       caught,
       required_detection_rate: expected ? caught / expected : 1,
@@ -789,9 +1373,24 @@ function report(rows: EvaluationRow[], duplicates: number) {
       protected_failures: protectedFailures,
       mapping_failures: mappingFailures,
     },
+    harper_raw: {
+      caught: harperCaught,
+      missed: expected - harperCaught,
+      false_positives: harperFalsePositives,
+    },
+    axiom_incremental: {
+      expected_findings_added: axiomAddedFindings,
+      raw_issues_suppressed: axiomSuppressedIssues,
+      false_positives_suppressed: axiomSuppressedFalsePositives,
+    },
     statuses,
     categories,
     sources,
+    robustness: robustReport(rows),
+    duplicate_summary: duplicateSummary,
+    duplicates,
+    category_backlog: categoryBacklog,
+    ranked_backlog: backlog,
     cases: rows,
   };
 }
@@ -842,7 +1441,46 @@ async function selfTest(manifests: ReadonlyMap<string, SourceManifest>) {
   assert.throws(() => parseM2("S Broken .\nA invalid", redline));
   const duplicate = deduplicate([m2[0], { ...m2[0], source_case_id: "copy" }]);
   assert.equal(duplicate.cases.length, 1);
-  assert.equal(duplicate.duplicates, 1);
+  assert.equal(duplicate.duplicates.length, 1);
+  assert.equal(duplicate.duplicates[0].removed, true);
+  const harper = manifests.get("harper-2.7.0-upstream");
+  const robustGec = manifests.get("robustgec-2023-upstream");
+  assert.ok(harper);
+  assert.ok(robustGec);
+  const weir = parseHarperWeirText(
+    'test "This is a example." "This is an example."',
+    "AnA.weir",
+    harper,
+  );
+  assert.equal(weir.length, 1);
+  assert.equal(weir[0].expected[0].replacement, " an ");
+  assert.throws(() =>
+    parseHarperWeirText('test "broken"', "Broken.weir", harper),
+  );
+  const robustBlock = [
+    "O-S This are wrong .",
+    "O-T This is wrong .",
+    "A1-S Today , this are wrong .",
+    "A1-T Today , this is wrong .",
+    "A2-S Clearly , this are wrong .",
+    "A2-T Clearly , this is wrong .",
+    "A3-S Here , this are wrong .",
+    "A3-T Here , this is wrong .",
+    "A4-S Again , this are wrong .",
+    "A4-T Again , this is wrong .",
+    "A5-S Still , this are wrong .",
+    "A5-T Still , this is wrong .",
+  ].join("\n");
+  const robust = parseRobustGec(robustBlock, robustGec, "sample/para.txt");
+  assert.equal(robust.length, 6);
+  assert.equal(robust[0].expected[0].replacement, " is ");
+  const robustDuplicates = deduplicate([
+    robust[0],
+    { ...robust[0], source_case_id: "duplicate-variant" },
+  ]);
+  assert.equal(robustDuplicates.cases.length, 2);
+  assert.equal(robustDuplicates.duplicates[0].removed, false);
+  assert.equal(robustReport(await evaluate(robust)).groups, 1);
   const native = normalizeNativeCase(
     {
       id: "self-test",
@@ -869,11 +1507,17 @@ const sourceIndex = args.indexOf("--source");
 const sourceId = sourceIndex >= 0 ? args[sourceIndex + 1] : undefined;
 const outputIndex = args.indexOf("--output");
 const outputPath = outputIndex >= 0 ? args[outputIndex + 1] : undefined;
+const adapterIndex = args.indexOf("--adapter");
+const adapter = adapterIndex >= 0 ? args[adapterIndex + 1] : undefined;
+if (adapter && adapter !== "harper-weir" && adapter !== "robustgec") {
+  throw new Error(`Unsupported corpus adapter: ${adapter}`);
+}
 const paths = args.filter(
   (arg, index) =>
     !arg.startsWith("--") &&
     index !== sourceIndex + 1 &&
-    index !== outputIndex + 1,
+    index !== outputIndex + 1 &&
+    index !== adapterIndex + 1,
 );
 const hasExternalInputs = paths.length > 0;
 let cases: CorpusCase[] = [];
@@ -888,9 +1532,22 @@ if (paths.length === 0) {
   ) as NativeCase[];
   cases = native.map((fixture) => normalizeNativeCase(fixture, manifest));
 } else {
+  const selectedManifest = sourceId ? manifests.get(sourceId) : undefined;
+  if (adapter && !selectedManifest) {
+    throw new Error(
+      "External adapters require --source with a known manifest ID",
+    );
+  }
+  if (adapter) assert.ok(selectedManifest);
   for (const path of paths) {
+    if (adapter === "harper-weir") {
+      cases.push(...(await parseHarperWeir(resolve(path), selectedManifest)));
+      continue;
+    }
     const text = await readFile(resolve(path), "utf8");
-    if (extname(path).toLowerCase() === ".m2") {
+    if (adapter === "robustgec") {
+      cases.push(...parseRobustGec(text, selectedManifest, path));
+    } else if (extname(path).toLowerCase() === ".m2") {
       const manifest = sourceId ? manifests.get(sourceId) : undefined;
       if (!manifest)
         throw new Error("M2 input requires --source with a known manifest ID");
@@ -908,7 +1565,7 @@ if (paths.length === 0) {
 // REDLINE suite keeps all 265 case identities intact.
 const deduplicated = hasExternalInputs
   ? deduplicate(cases)
-  : { cases, duplicates: 0 };
+  : { cases, duplicates: [] };
 const result = report(
   await evaluate(deduplicated.cases),
   deduplicated.duplicates,

@@ -19,16 +19,46 @@
       "id": "harper-2.7.0-upstream",
       "source": "Harper",
       "project": "Harper",
-      "version": "harper.js 2.7.0 / upstream reference",
+      "version": "v2.7.0 at dc1182cc2b33603748105df074d6bb47f0de3720",
       "author": "Elijah Potter and Harper contributors",
       "license": "Apache-2.0",
-      "retrieval_date": "2026-09-10",
+      "retrieval_date": "2026-09-11",
       "source_url": "https://github.com/Automattic/harper",
       "redistribution": "allowed",
       "bundled_with_application": false,
       "development_only": true,
-      "import_policy": "Reference upstream rules/tests by rule and commit; copy only a focused attributed fixture when it fills a measured REDLINE gap.",
-      "notes": "The installed harper.js 2.7.0 package contains compiled distribution files, not Harper's upstream rule tests."
+      "import_policy": "Use the explicit harper-weir adapter against a local v2.7.0 checkout. Do not vendor the upstream repository or bulk fixture text.",
+      "notes": "Evaluated fixture path: harper-core/src/linting/weir_rules/**/*.weir. The installed harper.js package contains compiled distribution files, not these source tests."
+    },
+    {
+      "id": "robustgec-2023-upstream",
+      "source": "External Corpus",
+      "project": "RobustGEC",
+      "version": "main at 1c5787b3c6288a45f0d99b883a501c02b54812a1",
+      "author": "Yue Zhang, Leyang Cui, Enbo Zhao, Wei Bi, and Shuming Shi",
+      "license": "Repository code MIT; benchmark data redistribution not established",
+      "retrieval_date": "2026-09-11",
+      "source_url": "https://github.com/HillZhang1999/RobustGEC",
+      "redistribution": "forbidden",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Use the explicit robustgec adapter against locally obtained benchmark/*/para.txt files. Never commit, bundle, or redistribute benchmark text.",
+      "notes": "Repository LICENSE is MIT, but benchmark text derives from CoNLL-14, BEA-19, and TEM-8. The repository does not establish that those source-data rights are replaced by its code license."
+    },
+    {
+      "id": "errant-3.0.2-taxonomy",
+      "source": "External Corpus",
+      "project": "ERRANT",
+      "version": "v3.0.2 at 2840b84cf15c6a1d3f04e9d316aea1aa716e6000",
+      "author": "Christopher Bryant, Mariano Felice, and contributors",
+      "license": "MIT",
+      "retrieval_date": "2026-09-11",
+      "source_url": "https://github.com/chrisjbryant/errant",
+      "redistribution": "allowed",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Reference the published error taxonomy only. Do not add ERRANT, Python, spaCy, or model dependencies.",
+      "notes": "REDLINE retains its small mapped taxonomy and labels uncategorized pair-only inputs OTHER."
     },
     {
       "id": "languagetool-reference",
@@ -85,6 +115,34 @@
       "bundled_with_application": false,
       "development_only": true,
       "import_policy": "User-supplied local M2 only after license acceptance; never download, vendor, or redistribute through REDLINE."
+    },
+    {
+      "id": "fce-reference",
+      "source": "External Corpus",
+      "project": "FCE Corpus",
+      "version": "BEA-2019 reference",
+      "author": "Cambridge University Press and corpus contributors",
+      "license": "Cambridge Learner Corpus research terms; REDLINE redistribution not approved",
+      "retrieval_date": "2026-09-11",
+      "source_url": "https://www.cl.cam.ac.uk/research/nl/bea2019st/",
+      "redistribution": "restricted",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Optional user-supplied local input only after accepting the source terms; never download, vendor, or redistribute in REDLINE."
+    },
+    {
+      "id": "lang8-reference",
+      "source": "External Corpus",
+      "project": "Lang-8 Learner Corpora",
+      "version": "BEA-2019 reference",
+      "author": "Lang-8 contributors and corpus maintainers",
+      "license": "Source-data redistribution rights not established for REDLINE",
+      "retrieval_date": "2026-09-11",
+      "source_url": "https://www.cl.cam.ac.uk/research/nl/bea2019st/",
+      "redistribution": "restricted",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Optional user-supplied local input only; never download, vendor, or redistribute in REDLINE."
     }
   ]
 }

@@ -60,3 +60,18 @@ Append entries; do not rewrite earlier evidence.
 - The normalized gated report preserved all 265 cases and the accepted floor: 75/75 required findings, zero unexplained false positives or misses, 22 known misses, nine known limitations, and zero protected-span or mapping failures.
 - `pnpm check`, `pnpm benchmark:axiom`, Rust formatting, Clippy with warnings denied, and `pnpm build` passed. Dictation and Transform release benchmarks were not run because neither implementation nor their shared command/editor path changed.
 - Ponytail kept the native corpus authoritative, used Node standard-library parsing, added no dependency, skipped CSV/TSV until a real source requires it, and generated no committed report or external-corpus copy.
+
+## 2026-09-11 — 0.1.1D external grammar research evaluated
+
+- Started from `c942471e0951bcee4ca13cc4e027fb9f2b9ee8f4` on `codex/redline-0.1.1-daily-use`; local and origin matched, and `probes/transform-engine/` remained the only intentional untracked path.
+- Pinned Harper `v2.7.0` at `dc1182cc2b33603748105df074d6bb47f0de3720` (Apache-2.0), parsed all 1,838 tests from 351 `.weir` files, and evaluated 1,827 unique cases after 11 duplicate removals.
+- Harper research result: raw 1,537/1,588 target edits; final AXIOM 1,476/1,588; 87 raw issues and 26 unmatched extras suppressed; zero mapping or protected-span integrity failures.
+- Pinned RobustGEC at `1c5787b3c6288a45f0d99b883a501c02b54812a1`. Kept its mixed-provenance benchmark local-only despite the repository's MIT code license.
+- Evaluated all 4,996 available groups / 29,976 variants: 1,312 CoNLL-14, 2,503 BEA-19, and 1,181 TEM-8 groups. Detected 178 duplicates without collapsing group members.
+- Robustness result: 16 strict robust passes, two context drops, 17 context false-positive signals, three rule drifts, zero replacement drifts, and zero incomplete groups. Recorded tokenized `Spaces` output as a limitation rather than a release precision claim.
+- Added source-aware raw-Harper/final-AXIOM reporting, exact provenance, duplicate evidence, a bounded candidate backlog, and explicit Harper/RobustGEC adapters using only Node standard library and existing dependencies.
+- Left JFLEG, W&I+LOCNESS, NUCLE, FCE, and Lang-8 external/local-only. Added ERRANT `v3.0.2` as an MIT taxonomy reference without Python or spaCy.
+- Re-ran the gated 265-case suite: 75/75 required findings, zero unexplained false positives or misses, 22 known misses, nine known limitations, and zero mapping/protected-span failures.
+- Made no production grammar, Harper configuration, dependency, permission, CSP, native command, user-data, release, tag, installer, or main-branch change.
+- Final gates passed: `pnpm check`, `pnpm benchmark:axiom`, Rust formatting, Clippy with warnings denied, and `pnpm build`. The established Vite chunk-size warning remained non-blocking.
+- Ponytail reused one Harper analysis per case, kept the research suite explicit/non-blocking, removed an unused accumulator, and rejected a speculative detokenizer or new dependency.
