@@ -36,6 +36,8 @@ const config = JSON.parse(configText);
 const packageJson = JSON.parse(packageText);
 
 assert.deepEqual(config.app.security.capabilities, ["documents"]);
+assert.equal(config.app.windows[0].minWidth, 720);
+assert.equal(config.app.windows[0].minHeight, 480);
 assert.equal(
   config.app.security.csp["connect-src"],
   "'self' ipc: http://ipc.localhost",

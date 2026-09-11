@@ -75,3 +75,13 @@ Append entries; do not rewrite earlier evidence.
 - Made no production grammar, Harper configuration, dependency, permission, CSP, native command, user-data, release, tag, installer, or main-branch change.
 - Final gates passed: `pnpm check`, `pnpm benchmark:axiom`, Rust formatting, Clippy with warnings denied, and `pnpm build`. The established Vite chunk-size warning remained non-blocking.
 - Ponytail reused one Harper analysis per case, kept the research suite explicit/non-blocking, removed an unused accumulator, and rejected a speculative detokenizer or new dependency.
+
+## 2026-09-11 — 0.1.1D Windows responsive caveat verified
+
+- Reproduced the fixed-width defect at 960x1000 half-screen, 800x1200 portrait, and the 911x512 logical viewport representative of a 1366x768 laptop at 150% scaling: the 1024-pixel root/window floor clipped navigation and top-right controls.
+- Lowered the justified Tauri and CSS minimum to 720x480, let the existing three-column shell contract, tightened narrow/short spacing, and removed internal horizontal pane scrolling. No component, navigation, or visual redesign was introduced.
+- Passed deterministic rendered checks at 1366x768, 1093x614 at 125%, 911x512 at 150%, 1440x900, 1920x1080, 960x1000, 960x540, 720x720, 1200x560, 800x1200, and 720x480. Essential controls and the dictionary dialog remained reachable with no page overflow or console errors.
+- Ran the Tauri/WebView2 application under a fresh `com.tyree.redline.qa20260911` identifier so no user document was touched. Typed and saved a benchmark-proven grammar case, received one AXIOM issue, preserved text across every resize plus maximize/restore, cycled Dark/Light/System, closed and reopened the application, and reloaded the saved QA document.
+- Verified native movement on the connected 3440x1440 secondary and 1080x1920 portrait displays. All three connected displays report 100% effective DPI; 125% and 150% were deterministic logical-viewport/device-scale simulations rather than physical Windows setting changes.
+- Observed zero console errors and zero external requests; local `ipc.localhost` traffic remained inside the bounded Tauri command path.
+- Recorded laptop, desktop, portrait, snapping, resizing, multi-monitor, and common-DPI coverage as a reusable Forge product requirement for a separately approved Forge checklist update.

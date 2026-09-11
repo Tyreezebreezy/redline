@@ -7,7 +7,7 @@
 - Release tag protected: `v0.1.0` -> `b775095666b45ce283d02e5875f7516bb936f83b`
 - Accepted grammar baseline: `2bccc3cdade7f560fbc79ba228af1d5efc1ab31e`
 - Research-harness baseline: `c942471e0951bcee4ca13cc4e027fb9f2b9ee8f4`
-- Status: 0.1.1D external research evaluation complete on the working branch; no grammar behavior changed; not merged or released
+- Status: 0.1.1D external research evaluation and final Windows responsive QA complete on the working branch; no grammar behavior changed; not merged or released
 
 ### Active objective
 
@@ -48,6 +48,15 @@ Priority categories:
 - RobustGEC's tokenized punctuation makes `Spaces` dominate unmatched-issue totals. Those totals are exploratory signals, not REDLINE release precision/recall.
 - Ranked Harper review leads are `SendAnEmailTo`, `IncludingButNotLimitedToPunctuation`, and `TheirToTheyre`; none is approved for product behavior. The two RobustGEC context drops are source IDs `bea19:251` and `bea19:1631`; source text remains local-only.
 - Existing findings remain the authority. The closest cross-references are RW-006 (punctuation), RW-007 (word form), RW-008 (contextual wrong word), and RW-011 (broader malformed syntax), all of which still require exact user evidence before promotion.
+
+### Final Windows responsive QA
+
+- Reproduced clipping from the old 1024-pixel root/window minimum at a 960-pixel half-screen, 800-pixel portrait viewport, and 911x512 logical laptop viewport.
+- Set 720x480 as the practical supported minimum and kept the existing sidebar, editor, and analysis regions visible through bounded CSS grid/spacing changes. Horizontal page and pane overflow is absent at the supported matrix; vertical pane scrolling remains available where content is dense.
+- Passed rendered checks at laptop, desktop, large, half-screen, quarter-screen, narrow, short, portrait, and minimum sizes. The personal dictionary dialog remained contained.
+- Passed an isolated native Tauri/WebView2 smoke: create/type/save, AXIOM detection, content preservation during resizing, maximize/restore, theme cycling, restart/reopen, and movement across this machine's 3440x1440 secondary and 1080x1920 portrait displays. No console errors or external requests occurred.
+- Physical host displays report 100% effective DPI. Deterministic logical viewport/device-scale checks passed for representative 125% and 150% laptop conditions; physical Windows 125%/150% switching was not performed.
+- Recorded responsive/resizable Windows QA as a future Forge golden-path requirement without changing The Forge repository.
 
 ### Handoff
 

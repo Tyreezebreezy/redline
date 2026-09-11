@@ -68,7 +68,7 @@ html,
 body,
 #root {
   width: 100%;
-  min-width: 1024px;
+  min-width: 720px;
   height: 100%;
   margin: 0;
 }
@@ -404,6 +404,7 @@ body {
     color-mix(in srgb, var(--sidebar-bg) 96%, var(--workspace-bg) 4%)
   );
   border-right: 1px solid var(--border);
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -620,7 +621,8 @@ body {
 .workspace {
   min-width: 0;
   padding: 28px 36px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   background:
     radial-gradient(
       circle at 50% 42%,
@@ -1438,7 +1440,7 @@ body {
   }
 
   .app-body {
-    grid-template-columns: 194px minmax(500px, 1fr) 272px;
+    grid-template-columns: 176px minmax(0, 1fr) 252px;
   }
 
   .workspace {
@@ -1461,5 +1463,87 @@ body {
 
   .status-bar .privacy-note {
     display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .top-bar {
+    grid-template-columns: auto minmax(150px, 1fr) auto;
+    gap: 10px;
+    padding-inline: 10px;
+  }
+
+  .app-state {
+    display: none;
+  }
+
+  .profile {
+    justify-self: start;
+  }
+
+  .theme-option {
+    padding-inline: 6px;
+  }
+
+  .app-body {
+    grid-template-columns: 144px minmax(0, 1fr) 232px;
+  }
+
+  .sidebar {
+    padding: 18px 8px 14px;
+  }
+
+  .workspace {
+    padding-inline: 18px;
+  }
+
+  .panel-header {
+    padding-inline: 14px;
+  }
+
+  .issue-list,
+  .transform-content {
+    padding-inline: 10px;
+  }
+
+  .status-bar {
+    gap: 8px;
+    padding-inline: 10px;
+  }
+
+  .title-control {
+    min-width: 72px;
+  }
+
+  .save-status {
+    max-width: 88px;
+  }
+
+  .editor-counts {
+    gap: 8px;
+  }
+}
+
+@media (max-height: 560px) {
+  .sidebar {
+    padding-block: 12px;
+  }
+
+  .workspace {
+    padding-block: 16px;
+  }
+
+  .editor-toolbar {
+    margin-bottom: 10px;
+  }
+
+  .tiptap {
+    min-height: 240px;
+    padding-bottom: 40px;
+  }
+
+  .panel-header {
+    min-height: 64px;
+    padding-block: 12px;
   }
 }
