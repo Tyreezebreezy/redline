@@ -49,3 +49,14 @@ Append entries; do not rewrite earlier evidence.
 - Set the active objective to collecting and classifying exact or redacted real-world grammar misses before adding rules.
 - Added a reusable findings schema, controlled statuses, the evidence-to-rule promotion path, the zero-unexplained-false-positive gate, and the advisory-only Word Tools boundary.
 - Changed documentation only; no production source, grammar behavior, dependency, native boundary, tag, installer, or release was modified.
+
+## 2026-09-10 — 0.1.1C findings and evaluation harness verified
+
+- Backfilled the current real-world findings without inventing missing sentences: Facebook Marketplace and LinkedIn Learning are fixed/benchmarked, `where we are classes` remains a known miss with controls, the approximate `propel`/`propelling` report and other unavailable observations say `Needs Exact Example`, and synonyms remain deferred Word Tools work.
+- Added a development-only grammar corpus evaluator around the existing 265-case source of truth; no production code, grammar rule, Harper configuration, dependency, native boundary, or release state changed.
+- Added validated normalized JSONL and M2 imports, ERRANT-aligned plus REDLINE product taxonomy, provenance/license manifests, external duplicate detection with retained provenance, and per-case/category/source reports.
+- Audited external sources before ingestion. Harper remains the Apache-2.0 primary reference. LanguageTool is methodology-only. JFLEG, W&I+LOCNESS, and NUCLE remain restricted optional local research inputs; no external dataset was downloaded or committed.
+- `pnpm test:grammar-corpus` passed malformed-input, JSONL, M2, duplicate, license/provenance, taxonomy, and AXIOM integration checks.
+- The normalized gated report preserved all 265 cases and the accepted floor: 75/75 required findings, zero unexplained false positives or misses, 22 known misses, nine known limitations, and zero protected-span or mapping failures.
+- `pnpm check`, `pnpm benchmark:axiom`, Rust formatting, Clippy with warnings denied, and `pnpm build` passed. Dictation and Transform release benchmarks were not run because neither implementation nor their shared command/editor path changed.
+- Ponytail kept the native corpus authoritative, used Node standard-library parsing, added no dependency, skipped CSV/TSV until a real source requires it, and generated no committed report or external-corpus copy.

@@ -30,6 +30,7 @@ Run the smallest relevant check while iterating, then the full gate before a che
 ```text
 pnpm check
 pnpm benchmark:axiom
+pnpm evaluate:grammar -- --gate
 cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 pnpm build

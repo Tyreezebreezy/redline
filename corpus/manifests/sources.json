@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "redline-axiom-0.1.1b",
+      "source": "REDLINE Corpus",
+      "project": "REDLINE AXIOM corpus",
+      "version": "0.1.1B at 2bccc3cdade7f560fbc79ba228af1d5efc1ab31e",
+      "author": "REDLINE project",
+      "license": "Private project corpus",
+      "retrieval_date": "2026-09-10",
+      "source_url": "benchmarks/axiom-corpus.json",
+      "redistribution": "restricted",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Authoritative fast suite; normalize in memory and do not duplicate cases."
+    },
+    {
+      "id": "harper-2.7.0-upstream",
+      "source": "Harper",
+      "project": "Harper",
+      "version": "harper.js 2.7.0 / upstream reference",
+      "author": "Elijah Potter and Harper contributors",
+      "license": "Apache-2.0",
+      "retrieval_date": "2026-09-10",
+      "source_url": "https://github.com/Automattic/harper",
+      "redistribution": "allowed",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Reference upstream rules/tests by rule and commit; copy only a focused attributed fixture when it fills a measured REDLINE gap.",
+      "notes": "The installed harper.js 2.7.0 package contains compiled distribution files, not Harper's upstream rule tests."
+    },
+    {
+      "id": "languagetool-reference",
+      "source": "External Corpus",
+      "project": "LanguageTool",
+      "version": "Reference only; not pinned for execution",
+      "author": "LanguageTool contributors",
+      "license": "LGPL-2.1-or-later for core; per-resource licenses may differ",
+      "retrieval_date": "2026-09-10",
+      "source_url": "https://github.com/languagetool-org/languagetool",
+      "redistribution": "restricted",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Use rule-testing methodology and taxonomy ideas only. Do not copy rules, tests, resources, Java runtime, or server code without a separate license review."
+    },
+    {
+      "id": "jfleg-reference",
+      "source": "External Corpus",
+      "project": "JFLEG",
+      "version": "Repository snapshot chosen by evaluator",
+      "author": "Courtney Napoles, Keisuke Sakaguchi, and Joel Tetreault",
+      "license": "CC-BY-NC-SA-4.0",
+      "retrieval_date": "2026-09-10",
+      "source_url": "https://github.com/keisks/jfleg",
+      "redistribution": "restricted",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Optional local research input only; do not vendor or use for commercial/product distribution without owner and license review."
+    },
+    {
+      "id": "wi-locness-reference",
+      "source": "External Corpus",
+      "project": "W&I+LOCNESS",
+      "version": "2.1 reference",
+      "author": "Cambridge English and LOCNESS contributors",
+      "license": "Non-commercial corpus terms supplied with BEA-2019 data",
+      "retrieval_date": "2026-09-10",
+      "source_url": "https://www.cl.cam.ac.uk/research/nl/bea2019st/",
+      "redistribution": "restricted",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "Optional user-supplied local M2 input after accepting source terms; never vendor or redistribute in REDLINE."
+    },
+    {
+      "id": "nucle-reference",
+      "source": "External Corpus",
+      "project": "NUCLE / CoNLL-2014",
+      "version": "3.2 reference",
+      "author": "National University of Singapore and corpus co-owners",
+      "license": "Signed NUS non-commercial research/trial corpus license required",
+      "retrieval_date": "2026-09-10",
+      "source_url": "https://www.comp.nus.edu.sg/~nlp/conll14st.html",
+      "redistribution": "forbidden",
+      "bundled_with_application": false,
+      "development_only": true,
+      "import_policy": "User-supplied local M2 only after license acceptance; never download, vendor, or redistribute through REDLINE."
+    }
+  ]
+}
