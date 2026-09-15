@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REDLINE Dictation 2.0 Live Probe</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">REDLINE Dictation 2.0 · isolated live probe</p>
+        <h1>WebView2 microphone capture</h1>
+        <p>Audio stays local and in bounded process memory. It is not written to disk or transmitted.</p>
+      </header>
+      <section>
+        <h2>Environment</h2>
+        <pre id="environment">Checking…</pre>
+      </section>
+      <section>
+        <h2>Live samples</h2>
+        <label for="slot">Scenario</label>
+        <select id="slot">
+          <option value="short">Short sentence</option>
+          <option value="paragraph">Paragraph with pauses</option>
+          <option value="terminology">Terminology</option>
+        </select>
+        <p id="prompt" class="prompt"></p>
+        <div class="buttons">
+          <button id="capture" type="button">Capture and analyze</button>
+          <button id="stop" type="button" disabled>Stop phrase</button>
+          <button id="cycles" type="button">Run 20 capture cycles</button>
+        </div>
+        <p id="status" role="status" aria-live="polite">Idle — microphone is closed.</p>
+        <pre id="result"></pre>
+      </section>
+      <section>
+        <h2>Diagnostic log</h2>
+        <pre id="log"></pre>
+      </section>
+    </main>
+  </body>
+</html>

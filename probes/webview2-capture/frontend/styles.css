@@ -1,0 +1,14 @@
+:root { color-scheme: dark; font: 16px/1.5 "Segoe UI", sans-serif; background: #11100f; color: #f3efea; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(900px, calc(100% - 40px)); margin: auto; padding: 32px 0; }
+header, section { margin-bottom: 18px; border: 1px solid #403833; border-radius: 12px; background: #1a1817; padding: 20px; }
+h1, h2, p { margin-top: 0; }
+.eyebrow { color: #d49b7c; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.prompt { min-height: 54px; margin: 14px 0; color: #dfc0ae; font-weight: 650; }
+label { display: block; margin-bottom: 6px; }
+select, button { min-height: 42px; border: 1px solid #765342; border-radius: 8px; background: #34251f; color: #fffaf6; padding: 0 12px; font: inherit; }
+button:disabled { opacity: .45; }
+button:focus-visible, select:focus-visible { outline: 3px solid #e5a888; outline-offset: 2px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+pre { max-height: 280px; overflow: auto; border-radius: 8px; background: #0c0b0b; padding: 12px; white-space: pre-wrap; }

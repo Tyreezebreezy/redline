@@ -4,6 +4,7 @@
 
 - Branch: `codex/redline-1.0-foundation`
 - Baseline: `6b0a55e149d83ad86c8104d32f83d60cc671baeb`
+- Status: **CONDITIONAL / AWAITING LAPTOP LIVE-MIC GATE**
 - Production dictation status: unchanged and still available
 - Release status: no `v0.1.1`, 0.1.1 branch remains verified but unreleased
 - Detailed evidence: `docs/engineering/1.0-foundation.md`
@@ -11,11 +12,21 @@
 
 ### Active objective
 
-Complete the foundation checkpoint without integrating experimental streaming
-ASR into production. The measured recommendation is a bounded hybrid follow-up:
-sherpa streaming partials plus one Whisper finalization per endpoint, contingent
-on final latency, combined memory, microphone, punctuation, duplicate, and
-live-edit safety evidence.
+Complete the Dictation 2.0 hybrid experiment without integrating streaming ASR
+into production. The fixture, endpoint, resource, long-session, duplicate, and
+mapped-editor gates are measured in `dictation-2-hybrid.md`. The remaining
+active gate is real WebView2 microphone testing on the laptop; until it passes,
+the experiment is not passed.
+
+Measured checkpoint evidence:
+
+- Hybrid WER: 0.221.
+- Median first partial: 1.135 seconds.
+- Median endpoint-to-final: 4.863 seconds.
+- Mapping and deterministic regressions: clean.
+- Production REDLINE: unchanged.
+- Real laptop microphone gate: **NOT YET RUN**.
+- 20-cycle live stability gate: **NOT YET RUN**.
 
 The bounded Terminology Engine seam is active in AXIOM with a 26-record local
 snapshot, dependency-free matching, paired ambiguity/protection tests, and no
@@ -34,10 +45,10 @@ snapshot generation remains a separate approval.
 
 ### Next bounded decision
 
-After this branch is reviewed, choose one: the hybrid Dictation 2.0
-endpoint/finalization experiment, a production terminology snapshot generator,
-a narrow prerequisite structural refactor, or User Profile preflight. Do not
-start them together.
+Run the prepared three-script and 20-cycle WebView2 microphone probe on the
+laptop, then update the hybrid decision. Do not begin production Dictation 2.0
+integration, terminology generation, structural refactoring, or User Profile
+work in parallel.
 
 ## Historical 0.1.1 daily-use handoff
 

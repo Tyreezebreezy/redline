@@ -756,6 +756,7 @@ dependencies = [
  "serde_json",
  "sherpa-onnx",
  "whisper-rs",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

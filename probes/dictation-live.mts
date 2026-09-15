@@ -1,43 +1,52 @@
 import assert from "node:assert/strict";
+import { history } from "@tiptap/pm/history";
+import { TextSelection } from "@tiptap/pm/state";
+import { Editor } from "@tiptap/react";
+import {
+  captureDictationTarget,
+  createDictationTargetPlugin,
+  insertDictationTranscript,
+} from "../src/dictation.ts";
+import { EDITOR_EXTENSIONS } from "../src/editor.ts";
 
-type Segment = { id: number; text: string };
+type CommitEvent = { documentId: string; segmentId: number; text: string };
 
-class LiveTranscript {
-  #nextId = 1;
+class HybridSession {
+  #committed = new Set<number>();
   #documentId = "";
   #state: "idle" | "active" | "paused" | "failed" = "idle";
   partial = "";
-  committed: Segment[] = [];
 
   start(documentId: string) {
     this.#documentId = documentId;
     this.#state = "active";
+    this.#committed.clear();
     this.partial = "";
   }
 
-  partialResult(documentId: string, text: string) {
+  updatePartial(documentId: string, text: string) {
     if (this.#state === "active" && documentId === this.#documentId) {
       this.partial = text;
     }
   }
 
-  commit(documentId: string, text: string) {
+  finalize(
+    documentId: string,
+    segmentId: number,
+    text: string,
+  ): CommitEvent | null {
     const value = text.trim();
     if (
       this.#state !== "active" ||
       documentId !== this.#documentId ||
       !value ||
-      this.committed.at(-1)?.text === value
+      this.#committed.has(segmentId)
     ) {
-      return;
+      return null;
     }
-    this.committed.push({ id: this.#nextId++, text: value });
+    this.#committed.add(segmentId);
     this.partial = "";
-  }
-
-  edit(id: number, text: string) {
-    const segment = this.committed.find((candidate) => candidate.id === id);
-    if (segment) segment.text = text;
+    return { documentId, segmentId, text: value };
   }
 
   pause() {
@@ -64,38 +73,80 @@ class LiveTranscript {
   }
 }
 
-const transcript = new LiveTranscript();
-transcript.start("document-a");
-transcript.partialResult("document-a", "first par");
-assert.equal(transcript.partial, "first par");
-transcript.commit("document-a", "first phrase");
-assert.deepEqual(transcript.committed, [{ id: 1, text: "first phrase" }]);
+function editorWith(text: string) {
+  const editor = new Editor({
+    content: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] },
+    element: null,
+    extensions: EDITOR_EXTENSIONS,
+  });
+  editor.registerPlugin(history());
+  editor.registerPlugin(createDictationTargetPlugin());
+  return editor;
+}
 
-transcript.edit(1, "user corrected phrase");
-transcript.partialResult("document-a", "second par");
-transcript.commit("document-a", "second phrase");
-assert.deepEqual(transcript.committed, [
-  { id: 1, text: "user corrected phrase" },
-  { id: 2, text: "second phrase" },
-]);
-transcript.commit("document-a", "second phrase");
-assert.equal(transcript.committed.length, 2);
+function select(editor: Editor, from: number, to = from) {
+  editor.view.dispatch(
+    editor.state.tr.setSelection(TextSelection.create(editor.state.doc, from, to)),
+  );
+}
 
-transcript.pause();
-transcript.partialResult("document-a", "ignored while paused");
-assert.equal(transcript.partial, "");
-transcript.resume();
-transcript.partialResult("document-a", "cancel me");
-transcript.cancelPartial();
-assert.equal(transcript.partial, "");
+const session = new HybridSession();
+session.start("document-a");
+session.updatePartial("document-a", "first par");
+assert.equal(session.partial, "first par");
+session.pause();
+session.updatePartial("document-a", "ignored while paused");
+assert.equal(session.partial, "first par");
+session.cancelPartial();
+assert.equal(session.partial, "");
+session.resume();
 
-transcript.partialResult("document-b", "wrong document");
-transcript.commit("document-b", "wrong document");
-assert.equal(transcript.committed.length, 2);
-transcript.microphoneLost();
-assert.equal(transcript.partial, "");
-transcript.closeDocument();
+const editor = editorWith("Start.");
+select(editor, 7);
+assert.equal(captureDictationTarget(editor, "session-a", 1).ok, true);
+const first = session.finalize("document-a", 1, "first phrase");
+assert.ok(first);
+assert.equal(insertDictationTranscript(editor, "session-a", 1, first.text).ok, true);
+assert.equal(editor.getText(), "Start. first phrase");
+assert.equal(session.finalize("document-a", 1, "first phrase"), null);
+
+select(editor, editor.state.selection.from);
+assert.equal(captureDictationTarget(editor, "session-b", 1).ok, true);
+editor.view.dispatch(editor.state.tr.insertText("opening", 8, 13));
+select(editor, 1);
+session.updatePartial("document-a", "second par");
+const second = session.finalize("document-a", 2, "second phrase");
+assert.ok(second);
+assert.equal(insertDictationTranscript(editor, "session-b", 1, second.text).ok, true);
+assert.equal(editor.getText(), "Start. opening phrase second phrase");
+assert.equal(editor.commands.undo(), true);
+assert.equal(editor.getText(), "Start. opening phrase");
+assert.equal(editor.commands.redo(), true);
+assert.equal(editor.getText(), "Start. opening phrase second phrase");
+
+select(editor, editor.state.doc.content.size - 1);
+assert.equal(captureDictationTarget(editor, "session-touched", 1).ok, true);
+editor.view.dispatch(editor.state.tr.insertText("manual", editor.state.selection.from));
+assert.equal(
+  insertDictationTranscript(editor, "session-touched", 1, "must refuse").ok,
+  false,
+);
+
+select(editor, editor.state.doc.content.size - 1);
+assert.equal(captureDictationTarget(editor, "session-document", 1).ok, true);
+assert.equal(
+  insertDictationTranscript(editor, "session-document", 2, "wrong document").ok,
+  false,
+);
+assert.equal(session.finalize("document-b", 3, "wrong document"), null);
+
+session.updatePartial("document-a", "discard me");
+session.microphoneLost();
+assert.equal(session.partial, "");
+assert.equal(session.finalize("document-a", 4, "after failure"), null);
+session.closeDocument();
+editor.destroy();
 
 console.log(
-  "PASS: partial/final transitions, duplicate prevention, user-edit ownership, pause/resume, cancel, microphone loss, and document isolation",
+  "PASS: hybrid partial/final state, one-time commits, user-edit ownership, ProseMirror mapping, cursor independence, undo/redo, touched-target refusal, pause/resume, cancel, failure, and document isolation",
 );

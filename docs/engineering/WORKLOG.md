@@ -129,3 +129,19 @@ Append entries; do not rewrite earlier evidence.
 - Verified native movement on the connected 3440x1440 secondary and 1080x1920 portrait displays. All three connected displays report 100% effective DPI; 125% and 150% were deterministic logical-viewport/device-scale simulations rather than physical Windows setting changes.
 - Observed zero console errors and zero external requests; local `ipc.localhost` traffic remained inside the bounded Tauri command path.
 - Recorded laptop, desktop, portrait, snapping, resizing, multi-monitor, and common-DPI coverage as a reusable Forge product requirement for a separately approved Forge checklist update.
+
+## 2026-09-15 — Dictation 2.0 hybrid probe measured; live laptop gate pending
+
+**STATUS: CONDITIONAL / AWAITING LAPTOP LIVE-MIC GATE**
+
+- Added a probe-only hybrid path: sherpa-onnx 1.13.8 supplies ephemeral partials and endpoints; whisper-rs 0.16.0 finalizes each bounded segment once.
+- Selected the Balanced endpoint profile after Responsive prematurely split a paragraph and Patient added about 600 ms of silence without an accuracy gain.
+- Final 26-case result: 1.135 s median first visible partial; 4.863 s median, 5.562 s p95, and 6.439 s worst endpoint-to-final latency; sherpa 0.360 WER versus Whisper/hybrid 0.221 WER; zero no-speech commits.
+- Restored punctuation from zero sherpa marks to 46 Whisper/hybrid marks against 40 references. Recorded REDLINE and AXIOM casing misses without adding terminology replacement.
+- Measured 239.1 MiB ready and 435.1 MiB peak working set with both models. Lazy Whisper saved about 147 MiB before the first endpoint but added 415 ms and did not reduce peak memory.
+- Completed two-, five-, and ten-minute replay tests. No duplicate/lost segments or retained-memory growth occurred, but the ten-minute run drifted to 8.699 s p95 / 11.249 s worst and made the desktop sluggish.
+- A 20-phrase rapid test queued five segments, with 1.268 s maximum queue delay and 7.667 s p95 endpoint-to-final latency. Duplicate commits remained zero.
+- Replaced the abstract state-only check with an actual Tiptap/ProseMirror mapping probe covering user-edit ownership, mapped targets, touched-range refusal, wrong-document refusal, cursor independence, pause/resume, cancel, failure, and one-step undo/redo.
+- Added a bounded WebView2 live-capture probe that passes PCM only through local IPC/stdin, closes tracks on normal and setup-failure paths, and never persists audio. It awaits the owner-run microphone/laptop test.
+- Kept production REDLINE unchanged. Mapping and deterministic regressions are clean. Hybrid WER is 0.221, median first partial is 1.135 seconds, and median endpoint-to-final is 4.863 seconds.
+- The real laptop microphone gate and 20-cycle live stability gate are **NOT YET RUN**. This is an experimental checkpoint, not a passed Dictation 2.0 result; do not begin production integration until those gates and the latency/backlog blockers are reviewed.
