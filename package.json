@@ -20,6 +20,7 @@
     "benchmark:axiom": "node scripts/benchmark-axiom.mts",
     "evaluate:grammar": "node scripts/grammar-corpus.mts",
     "benchmark:dictation": "cargo test --release --manifest-path src-tauri/Cargo.toml benchmark_dictation_corpus -- --ignored --nocapture",
+    "benchmark:terminology": "node scripts/benchmark-terminology.mts",
     "benchmark:transform": "cargo test --release --manifest-path src-tauri/Cargo.toml benchmark_transform_corpus -- --ignored --nocapture --test-threads=1",
     "package:transform-model": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package-transform-model.ps1",
     "notices": "node scripts/generate-third-party-notices.mjs",

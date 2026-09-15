@@ -275,6 +275,45 @@ for (const text of [
   );
 }
 
+const terminologyIssues = await analyzeText(
+  "Use youtube, github, powershell, chatgpt, microsoft 365, and visual studio code.",
+  { analyze: async () => [] },
+);
+assert.deepEqual(
+  terminologyIssues.map((issue) => issue.suggestions[0]?.text),
+  [
+    "YouTube",
+    "GitHub",
+    "PowerShell",
+    "ChatGPT",
+    "Microsoft",
+    "Visual Studio Code",
+  ],
+);
+
+const contextIssues = await analyzeText(
+  "Install microsoft windows 11, join discord server, and open edge browser.",
+  { analyze: async () => [] },
+);
+assert.deepEqual(
+  contextIssues.map((issue) => issue.suggestions[0]?.text),
+  ["Microsoft", "Windows", "Discord", "Edge"],
+);
+
+for (const text of [
+  "I cleaned the windows near the edge.",
+  "There was discord among the teams.",
+  "I ate an apple beside an android.",
+  "https://github.com/youtube",
+  "Run youtube.exe from sample_code.",
+]) {
+  assert.deepEqual(
+    await analyzeText(text, { analyze: async () => [] }),
+    [],
+    text,
+  );
+}
+
 const normalizationFixtures = JSON.parse(
   await readFile(
     new URL("../fixtures/dictionary-normalization.json", import.meta.url),

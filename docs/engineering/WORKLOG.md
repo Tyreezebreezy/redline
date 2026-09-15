@@ -2,6 +2,50 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-15  REDLINE 1.0 foundation evaluated
+
+- Created `codex/redline-1.0-foundation` from verified 0.1.1 candidate
+  `6b0a55e149d83ad86c8104d32f83d60cc671baeb`; main and `v0.1.0` remained
+  unchanged, and no `v0.1.1` release existed.
+- Preserved production dictation and added a development-only Rust comparison
+  harness using the existing 26 WAV fixtures.
+- Evaluated whisper-rs 0.16.0 cumulative two-second decoding: 0.221 WER, 6.502 s
+  median estimated first visible text, 2.72 corpus RTF, zero no-speech
+  hallucinations, and 348.9 MiB representative peak working set.
+- Its 36.975-second long-form probe took 145.493 seconds (3.94 RTF) despite
+  improving to 0.095 WER, making longer cumulative-window runs impractical.
+- Evaluated sherpa-onnx 1.13.8 with the Apache-2.0 English streaming Zipformer
+  20M int8 model: 0.360 WER, 1.147 s median first partial, 0.032 corpus RTF, zero
+  no-speech hallucinations, and 97.1 MiB representative peak working set.
+- Recorded conservative median start-to-final proxies of 18.274 seconds for
+  cumulative Whisper and 4.829 seconds for sherpa; true endpoint-to-editor
+  commit latency remains a required hybrid follow-up measurement.
+- Verified sherpa long sessions at 36.975, 147.900, and 345.100 seconds stayed
+  near 0.03-0.04 RTF. Accuracy remained weaker at approximately 0.40-0.41 WER.
+- Found the official sherpa static Windows archive incompatible with REDLINE's
+  Whisper CRT linkage (`LNK2038`/`LNK1169`); official shared mode built and
+  ran both wrappers in one process.
+- Added and passed an isolated live-transcript state prototype covering
+  partial/final separation, duplicate prevention, user-edit ownership,
+  pause/resume, cancel, microphone loss, and document isolation.
+- Replaced the two-item CanonicalTerm array with a local 26-record terminology
+  snapshot and dependency-free matcher. Added high-confidence, multiword,
+  ambiguous-word, URL, filename, identifier, and protected-span controls.
+- Measured median terminology index startup from 0.0529 ms at 100 records to 15.6558 ms at
+  50,000; median short-text lookup remained below 0.01 ms. Chose a reviewed
+  initial target of at most 10,000 aliases.
+- Confirmed Wikidata structured data is CC0 and documented a dated, offline,
+  line-streamed, curated snapshot pipeline. No full dump or runtime request was
+  added.
+- Recommended one bounded hybrid Dictation follow-up rather than replacing the
+  current engine: sherpa partials and endpointing, Whisper finalization before
+  one user-owned editor insertion.
+- Preserved the regression floor: probe tests/clippy, live-state self-check,
+  terminology benchmark, `pnpm check`, 265-case AXIOM benchmark, grammar gate,
+  production Rust fmt/clippy, production build, diff check, and redacted
+  Gitleaks scan all passed. Rendered/native UI QA was not run because production
+  UI, dictation, capabilities, and commands did not change.
+
 ## 2026-08-21 — 0.1.1 daily-use pass started
 
 - Verified local `main` and `origin/main` at `bd52aa3a4f1c796e91ac88dde10c1352ef55e7ea` after fetching Gitea.

@@ -1,5 +1,46 @@
 # REDLINE current work
 
+## 1.0 foundation research
+
+- Branch: `codex/redline-1.0-foundation`
+- Baseline: `6b0a55e149d83ad86c8104d32f83d60cc671baeb`
+- Production dictation status: unchanged and still available
+- Release status: no `v0.1.1`, 0.1.1 branch remains verified but unreleased
+- Detailed evidence: `docs/engineering/1.0-foundation.md`
+- Roadmap: `docs/engineering/1.0-roadmap.md`
+
+### Active objective
+
+Complete the foundation checkpoint without integrating experimental streaming
+ASR into production. The measured recommendation is a bounded hybrid follow-up:
+sherpa streaming partials plus one Whisper finalization per endpoint, contingent
+on final latency, combined memory, microphone, punctuation, duplicate, and
+live-edit safety evidence.
+
+The bounded Terminology Engine seam is active in AXIOM with a 26-record local
+snapshot, dependency-free matching, paired ambiguity/protection tests, and no
+runtime network access. A full Wikidata dump was not downloaded; production
+snapshot generation remains a separate approval.
+
+### Foundation guardrails
+
+- Partial transcript is ephemeral; committed text is inserted once.
+- User edits always win. ASR never rewrites committed text.
+- Keep the current record-stop-transcribe path until a replacement passes.
+- Do not add runtime Wikidata access, broad terminology imports, profiles,
+  Clarity, Humanizer/Voice, Tone, Writing Goals, Transform Studio, or snippets.
+- Do not merge, tag, release, or renumber REDLINE from this branch.
+- Preserve `probes/transform-engine/` as untouched and untracked.
+
+### Next bounded decision
+
+After this branch is reviewed, choose one: the hybrid Dictation 2.0
+endpoint/finalization experiment, a production terminology snapshot generator,
+a narrow prerequisite structural refactor, or User Profile preflight. Do not
+start them together.
+
+## Historical 0.1.1 daily-use handoff
+
 ## 0.1.1 daily-use improvement pass
 
 - Branch: `codex/redline-0.1.1-daily-use`
