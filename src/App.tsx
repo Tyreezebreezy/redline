@@ -1,6 +1,6 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import type { Transaction } from "@tiptap/pm/state";
-import { type Editor, useEditor } from "@tiptap/react";
+import type { Editor } from "@tiptap/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AnalysisPanel,
@@ -18,11 +18,7 @@ import {
   isDictionaryEligible,
   type WritingProfile,
 } from "./axiom/axiom";
-import {
-  AXIOM_DECORATIONS,
-  createAxiomDecorations,
-  updateAxiomDecorations,
-} from "./axiom/decorations";
+import { updateAxiomDecorations } from "./axiom/decorations";
 import {
   correctionPlan,
   type EditorIssue,
@@ -33,11 +29,10 @@ import {
   projectDocument,
   remapIgnoredIssues,
 } from "./axiom/projection";
+import { DocumentEditor } from "./DocumentEditor";
 import {
   captureDictationTarget,
   clearDictationTarget,
-  createDictationTargetPlugin,
-  DICTATION_TARGET,
   type DictationStatus,
   dictation,
   insertDictationTranscript,
@@ -51,21 +46,7 @@ import {
   documents,
   type RecoveryPoint,
 } from "./documents";
-import { EditorWorkspace } from "./EditorWorkspace";
-import { EDITOR_EXTENSIONS, EMPTY_DOCUMENT } from "./editor";
-import {
-  acceptTransform,
-  captureTransformTarget,
-  clearTransformTarget,
-  createTransformTargetPlugin,
-  responseAcceptBlock,
-  TRANSFORM_TARGET,
-  type TransformPreset,
-  type TransformSelection,
-  type TransformWorkflowState,
-  transformProvider,
-  transformTargetState,
-} from "./transform";
+import { useTransformWorkflow } from "./useTransformWorkflow";
 import "./styles.css";
 
 const IDLE_SAVE_MS = 1_000;
@@ -74,97 +55,6 @@ const ANALYSIS_IDLE_MS = 800;
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error);
-}
-
-type DocumentEditorProps = {
-  dictationStatus: DictationStatus;
-  document: DocumentRecord | null;
-  onCancelDictation: () => void;
-  onDirty: (editor: Editor, transaction: Transaction) => void;
-  onReady: (editor: Editor) => void;
-  onSelectIssue: (issueId: string) => void;
-  onStartDictation: () => void;
-  onStopDictation: () => void;
-  onTransform: () => void;
-  transformOpen: boolean;
-};
-
-function DocumentEditor({
-  dictationStatus,
-  document: initialDocument,
-  onCancelDictation,
-  onDirty,
-  onReady,
-  onSelectIssue,
-  onStartDictation,
-  onStopDictation,
-  onTransform,
-  transformOpen,
-}: DocumentEditorProps) {
-  const editor = useEditor({
-    autofocus: "start",
-    content: initialDocument
-      ? JSON.parse(initialDocument.contentJson)
-      : EMPTY_DOCUMENT,
-    editorProps: {
-      attributes: {
-        "aria-label": "Document editor",
-        "aria-multiline": "true",
-        class: "tiptap",
-        role: "textbox",
-        spellcheck: "false",
-      },
-      handleKeyDown: (_view, event) => {
-        if (event.altKey && event.key === "F10") {
-          const button = window.document.querySelector<HTMLButtonElement>(
-            '[data-editor-toolbar] button[tabindex="0"]:not(:disabled), [data-editor-toolbar] button:not(:disabled)',
-          );
-          button?.focus();
-          return Boolean(button);
-        }
-        return false;
-      },
-    },
-    enableContentCheck: true,
-    extensions: EDITOR_EXTENSIONS,
-    injectCSS: false,
-    onUpdate: ({ editor: current, transaction }) =>
-      onDirty(current, transaction),
-    onContentError: ({ error }) => {
-      console.error("REDLINE rejected invalid editor content.", error);
-    },
-    shouldRerenderOnTransaction: false,
-  });
-
-  useEffect(() => {
-    if (!editor || editor.isDestroyed) return;
-    editor.registerPlugin(createDictationTargetPlugin());
-    editor.registerPlugin(createTransformTargetPlugin());
-    editor.registerPlugin(createAxiomDecorations(editor, onSelectIssue));
-    return () => {
-      if (!editor.isDestroyed) {
-        editor.unregisterPlugin(AXIOM_DECORATIONS);
-        editor.unregisterPlugin(DICTATION_TARGET);
-        editor.unregisterPlugin(TRANSFORM_TARGET);
-      }
-    };
-  }, [editor, onSelectIssue]);
-
-  useEffect(() => {
-    if (editor && !editor.isDestroyed) onReady(editor);
-  }, [editor, onReady]);
-
-  return (
-    <EditorWorkspace
-      dictationStatus={dictationStatus}
-      editor={editor}
-      onCancelDictation={onCancelDictation}
-      onStartDictation={onStartDictation}
-      onStopDictation={onStopDictation}
-      onTransform={onTransform}
-      transformOpen={transformOpen}
-    />
-  );
 }
 
 function App() {
@@ -183,9 +73,6 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisState>({ status: "ready" });
   const [dictationStatus, setDictationStatus] = useState<DictationStatus>({
-    status: "idle",
-  });
-  const [transformState, setTransformState] = useState<TransformWorkflowState>({
     status: "idle",
   });
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
@@ -209,12 +96,23 @@ function App() {
   const dictationSessionRef = useRef<string | null>(null);
   const dictationDocumentSessionRef = useRef<number | null>(null);
   const dictationStopRef = useRef<string | null>(null);
-  const transformStateRef = useRef<TransformWorkflowState>({ status: "idle" });
-
-  const updateTransformState = useCallback((next: TransformWorkflowState) => {
-    transformStateRef.current = next;
-    setTransformState(next);
-  }, []);
+  const {
+    accept: acceptTransformPreview,
+    cancel: cancelActiveTransform,
+    changePreset: changeTransformPreset,
+    generate: generateTransform,
+    onEditorContentChange: updateTransformAfterEdit,
+    open: openTransform,
+    recheck: recheckTransformAvailability,
+    reset: resetTransform,
+    state: transformState,
+  } = useTransformWorkflow({
+    dictationSessionRef,
+    dictationStatus,
+    documentSessionRef,
+    editorRef,
+    onError: setSaveError,
+  });
 
   const setCurrent = useCallback(
     (document: DocumentRecord | null, analyzeOnReady = false) => {
@@ -243,10 +141,9 @@ function App() {
       setSaveState("Saved");
       setSaveError(null);
       setAnalysis({ status: "ready" });
-      transformStateRef.current = { status: "idle" };
-      setTransformState({ status: "idle" });
+      resetTransform();
     },
-    [],
+    [resetTransform],
   );
 
   const refreshLists = useCallback(async (documentId?: string) => {
@@ -438,29 +335,7 @@ function App() {
         analysisProjectionRef.current = null;
         setSelectedIssueId(null);
         scheduleAnalysis(editor);
-        const transform = transformStateRef.current;
-        if (transform.status !== "idle" && transform.status !== "generating") {
-          const target = transformTargetState(
-            editor,
-            transform.targetId,
-            documentSessionRef.current,
-          );
-          if (!target.current) {
-            updateTransformState(
-              transform.status === "preview"
-                ? {
-                    ...transform,
-                    acceptBlockedReason: target.reason,
-                    stale: true,
-                  }
-                : {
-                    ...transform,
-                    message: target.reason,
-                    status: "stale",
-                  },
-            );
-          }
-        }
+        updateTransformAfterEdit(editor);
       }
       const wasDirty = dirtyRef.current;
       dirtyRef.current = true;
@@ -479,7 +354,7 @@ function App() {
         );
       }
     },
-    [save, scheduleAnalysis, updateTransformState],
+    [save, scheduleAnalysis, updateTransformAfterEdit],
   );
 
   const ready = useCallback(
@@ -574,7 +449,7 @@ function App() {
       !editor ||
       editor.isDestroyed ||
       dictationSessionRef.current ||
-      transformStateRef.current.status !== "idle"
+      transformState.status !== "idle"
     )
       return;
     const sessionId = crypto.randomUUID();
@@ -628,239 +503,12 @@ function App() {
         });
       }
     }
-  }, [finishDictation]);
-
-  const checkTransformAvailability = useCallback(
-    async (selection: TransformSelection) => {
-      updateTransformState({ ...selection, status: "checking" });
-      try {
-        const status = await transformProvider.status();
-        const pending = transformStateRef.current;
-        if (
-          pending.status !== "checking" ||
-          pending.targetId !== selection.targetId
-        ) {
-          return;
-        }
-        updateTransformState(
-          status.available
-            ? { ...selection, status: "ready" }
-            : {
-                ...selection,
-                message:
-                  "The optional offline Transform model is not installed.",
-                status: "unavailable",
-              },
-        );
-      } catch (error) {
-        const pending = transformStateRef.current;
-        if (
-          pending.status === "checking" &&
-          pending.targetId === selection.targetId
-        ) {
-          updateTransformState({
-            ...selection,
-            message: errorMessage(error),
-            status: "error",
-          });
-        }
-      }
-    },
-    [updateTransformState],
-  );
-
-  const openTransform = useCallback(() => {
-    const editor = editorRef.current;
-    if (
-      !editor ||
-      editor.isDestroyed ||
-      dictationSessionRef.current ||
-      ["preparing", "listening", "processing"].includes(dictationStatus.status)
-    ) {
-      return;
-    }
-    clearTransformTarget(editor);
-    const targetId = crypto.randomUUID();
-    const captured = captureTransformTarget(
-      editor,
-      targetId,
-      documentSessionRef.current,
-    );
-    if (!captured.ok) return;
-    void checkTransformAvailability({
-      acceptReason: captured.acceptReason,
-      acceptSupported: captured.acceptSupported,
-      original: captured.text,
-      preset: "concise",
-      targetId,
-    });
-  }, [checkTransformAvailability, dictationStatus.status]);
-
-  const recheckTransformAvailability = useCallback(() => {
-    const current = transformStateRef.current;
-    if (current.status === "idle" || current.status === "generating") return;
-    void checkTransformAvailability({
-      acceptReason: current.acceptReason,
-      acceptSupported: current.acceptSupported,
-      original: current.original,
-      preset: current.preset,
-      targetId: current.targetId,
-    });
-  }, [checkTransformAvailability]);
-
-  const cancelActiveTransform = useCallback(async () => {
-    const current = transformStateRef.current;
-    if (current.status === "idle") return;
-    updateTransformState({ status: "idle" });
-    clearTransformTarget(editorRef.current, current.targetId);
-    if (current.status === "generating") {
-      try {
-        await transformProvider.cancel(current.requestId);
-      } catch (error) {
-        setSaveError(errorMessage(error));
-      }
-    }
-  }, [updateTransformState]);
+  }, [finishDictation, transformState.status]);
 
   const cancelInteractiveWork = useCallback(async () => {
     await cancelActiveTransform();
     await cancelActiveDictation();
   }, [cancelActiveDictation, cancelActiveTransform]);
-
-  const changeTransformPreset = useCallback(
-    (preset: TransformPreset) => {
-      const current = transformStateRef.current;
-      if (
-        current.status === "idle" ||
-        current.status === "generating" ||
-        current.status === "checking" ||
-        current.status === "unavailable"
-      )
-        return;
-      updateTransformState({
-        acceptReason: current.acceptReason,
-        acceptSupported: current.acceptSupported,
-        original: current.original,
-        preset,
-        status: "ready",
-        targetId: current.targetId,
-      });
-    },
-    [updateTransformState],
-  );
-
-  const generateTransform = useCallback(async () => {
-    const current = transformStateRef.current;
-    const editor = editorRef.current;
-    if (
-      current.status === "idle" ||
-      current.status === "generating" ||
-      current.status === "checking" ||
-      current.status === "unavailable" ||
-      !editor ||
-      editor.isDestroyed
-    ) {
-      return;
-    }
-    const target = transformTargetState(
-      editor,
-      current.targetId,
-      documentSessionRef.current,
-    );
-    if (!target.current) {
-      updateTransformState({
-        ...current,
-        message: target.reason,
-        status: "stale",
-      });
-      return;
-    }
-
-    const requestId = crypto.randomUUID();
-    const selection = {
-      acceptReason: current.acceptReason,
-      acceptSupported: current.acceptSupported,
-      original: current.original,
-      preset: current.preset,
-      targetId: current.targetId,
-    };
-    updateTransformState({ ...selection, requestId, status: "generating" });
-    try {
-      const status = await transformProvider.status();
-      if (!status.available) {
-        throw new Error(
-          "The optional offline Transform model is not installed.",
-        );
-      }
-      const stillPending = transformStateRef.current;
-      if (
-        stillPending.status !== "generating" ||
-        stillPending.requestId !== requestId
-      ) {
-        return;
-      }
-      const response = await transformProvider.generate(
-        requestId,
-        current.original,
-        current.preset,
-      );
-      const pending = transformStateRef.current;
-      if (pending.status !== "generating" || pending.requestId !== requestId) {
-        return;
-      }
-      const mapped = transformTargetState(
-        editor,
-        current.targetId,
-        documentSessionRef.current,
-      );
-      const sourceBlocked = mapped.current ? null : mapped.reason;
-      updateTransformState({
-        ...selection,
-        acceptBlockedReason:
-          sourceBlocked ?? responseAcceptBlock(response, selection),
-        response,
-        stale: !mapped.current,
-        status: "preview",
-      });
-    } catch (error) {
-      const pending = transformStateRef.current;
-      if (pending.status === "generating" && pending.requestId === requestId) {
-        updateTransformState({
-          ...selection,
-          message: errorMessage(error),
-          status: "error",
-        });
-      }
-    }
-  }, [updateTransformState]);
-
-  const acceptTransformPreview = useCallback(() => {
-    const current = transformStateRef.current;
-    const editor = editorRef.current;
-    if (
-      current.status !== "preview" ||
-      current.acceptBlockedReason ||
-      !editor ||
-      editor.isDestroyed
-    ) {
-      return;
-    }
-    const accepted = acceptTransform(
-      editor,
-      current.targetId,
-      documentSessionRef.current,
-      current.response.text,
-    );
-    if (!accepted.ok) {
-      updateTransformState({
-        ...current,
-        acceptBlockedReason: accepted.message,
-        stale: true,
-      });
-      return;
-    }
-    updateTransformState({ status: "idle" });
-  }, [updateTransformState]);
 
   useEffect(() => {
     let cancelled = false;
@@ -897,7 +545,7 @@ function App() {
         if (
           !dirtyRef.current &&
           !dictationSessionRef.current &&
-          transformStateRef.current.status === "idle"
+          transformState.status === "idle"
         )
           return;
         event.preventDefault();
@@ -916,7 +564,7 @@ function App() {
         unlisten = stop;
       });
     return () => unlisten?.();
-  }, [cancelInteractiveWork, save]);
+  }, [cancelInteractiveWork, save, transformState.status]);
 
   useEffect(() => {
     const handleSave = (event: KeyboardEvent) => {

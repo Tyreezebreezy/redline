@@ -20,7 +20,7 @@ const [
   readFile(new URL("../src/dictation.ts", import.meta.url), "utf8"),
   readFile(new URL("../src/EditorWorkspace.tsx", import.meta.url), "utf8"),
   readFile(new URL("../src-tauri/src/dictation.rs", import.meta.url), "utf8"),
-  readFile(new URL("../src-tauri/src/lib.rs", import.meta.url), "utf8"),
+  readFile(new URL("../src-tauri/src/app.rs", import.meta.url), "utf8"),
   readFile(new URL("../public/dictation-capture.js", import.meta.url), "utf8"),
 ]);
 assert.match(
