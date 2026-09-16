@@ -2,6 +2,35 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-16 — single-owner My Voice implementation validated
+
+- Created `codex/redline-1.0-humanizer` from exact accepted baseline
+  `d6243a71fd53f91e1954c139104bd3a20c474c08`; multi-user Profile experiments
+  remain separate research history and were not merged.
+- Confirmed the product model is one implicit local owner with no Guest,
+  accounts, named profiles, switching UX, or profile-owned documents.
+- Renamed the user-facing AXIOM selector to Writing Context while preserving its
+  General, Professional, and Academic behavior and internal persistence.
+- Added My Voice with exactly Natural, Professional, and Academic lanes using
+  the existing local llama.cpp/Qwen service, preview, cancellation, mapped
+  target, stale-source, invariant, formatting, undo, autosave, and AXIOM paths.
+- Added one bounded SQLite singleton for enabled state, default lane, and voice
+  specification version; no user IDs, new dependency, network authority, or CSP
+  expansion was introduced.
+- Added exact built-in/personal terminology preservation, high-confidence
+  instruction-like source refusal, and an evidence-backed Academic grandiosity
+  refusal. Every refusal leaves the document unchanged.
+- Verified the 24-case CPU corpus: 20 usable local suggestions, three prompt
+  injection inputs safely refused, one repeatedly grandiose Academic result
+  safely refused, and zero deterministic/protected-term mutations. Cold load
+  was about 2.3 seconds and warm cases about 2.1–2.8 seconds at 22–29 tokens/s.
+- `pnpm check` passed TypeScript, Biome, foundation, editor, production
+  dictation, Transform, Humanizer, AXIOM, 377-record terminology, grammar-corpus,
+  persistence, and 16 native tests. Four heavyweight benchmarks remained
+  explicitly ignored by that fast suite.
+- Rendered/native QA, complete release gates, packaging, and private release are
+  the remaining active work. Live Dictation 2.0 remains deferred.
+
 ## 2026-09-15 — REDLINE 1.0 refactor and terminology production pass
 
 - Created `codex/redline-1.0-refactor-terminology` from foundation checkpoint

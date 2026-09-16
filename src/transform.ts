@@ -8,8 +8,12 @@ import {
 } from "@tiptap/pm/state";
 import type { Editor } from "@tiptap/react";
 import { marksForTextSelection } from "./editor.ts";
+import { changedHumanizerTerm } from "./humanizer.ts";
 
 export type TransformPreset = "concise" | "professional" | "academic";
+export type VoicePreset = "natural" | "professional" | "academic";
+export type RewritePreset = TransformPreset | VoicePreset;
+export type RewriteMode = "transform" | "humanizer";
 
 export type TransformStatus = {
   available: boolean;
@@ -44,8 +48,10 @@ export type TransformResponse = {
 export type TransformSelection = {
   acceptReason: string | null;
   acceptSupported: boolean;
+  mode: RewriteMode;
   original: string;
-  preset: TransformPreset;
+  preset: RewritePreset;
+  protectedTerms: string[];
   targetId: string;
 };
 
@@ -94,10 +100,15 @@ export const transformProvider = {
           modelId: "qwen2.5-1.5b-q4_k_m",
           verified: false,
         } satisfies TransformStatus),
-  generate: (requestId: string, text: string, preset: TransformPreset) =>
+  generate: (
+    requestId: string,
+    text: string,
+    preset: RewritePreset,
+    mode: RewriteMode,
+  ) =>
     isTauri()
       ? invoke<TransformResponse>("generate_transform", {
-          request: { preset, requestId, text },
+          request: { mode, preset, requestId, text },
         })
       : Promise.reject(
           new Error(
@@ -286,6 +297,14 @@ export function responseAcceptBlock(
   if (!selection.acceptSupported) return selection.acceptReason;
   if (response.invariants.protectedTokenMutations > 0) {
     return "Protected factual or technical tokens changed. Accept is blocked.";
+  }
+  const changedTerm = changedHumanizerTerm(
+    selection.original,
+    response.text,
+    selection.protectedTerms,
+  );
+  if (changedTerm) {
+    return `Protected terminology changed: ${changedTerm}. Accept is blocked.`;
   }
   if (response.identicalOutput) {
     return "The generated text is identical to the original.";

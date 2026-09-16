@@ -103,7 +103,7 @@ assert.match(
 );
 assert.match(
   nativeSource,
-  /PROMPT_CONTRACT_VERSION: &str = "redline-transform-v1"/,
+  /TRANSFORM_PROMPT_CONTRACT_VERSION: &str = "redline-transform-v1"/,
 );
 assert.match(nativeSource, /MAX_INPUT_SCALARS: usize = 4_?000/);
 assert.doesNotMatch(nativeSource, /https?:\/\/|reqwest|ureq/);
@@ -293,8 +293,10 @@ for (const content of [
 const selection: TransformSelection = {
   acceptReason: null,
   acceptSupported: true,
+  mode: "transform",
   original: "Version 2.0 costs $40.",
   preset: "concise",
+  protectedTerms: [],
   targetId: "invariants",
 };
 assert.match(

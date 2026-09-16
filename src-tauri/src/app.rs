@@ -116,6 +116,7 @@ pub(crate) fn run() {
             crate::restore_document_revision,
             crate::add_dictionary_term,
             crate::remove_dictionary_term,
+            crate::update_voice_settings,
             start_dictation,
             stop_dictation,
             cancel_dictation,

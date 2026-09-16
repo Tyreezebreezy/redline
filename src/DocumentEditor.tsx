@@ -10,19 +10,25 @@ import {
 import type { DocumentRecord } from "./documents";
 import { EditorWorkspace } from "./EditorWorkspace";
 import { EDITOR_EXTENSIONS, EMPTY_DOCUMENT } from "./editor";
-import { createTransformTargetPlugin, TRANSFORM_TARGET } from "./transform";
+import {
+  createTransformTargetPlugin,
+  type RewriteMode,
+  TRANSFORM_TARGET,
+} from "./transform";
 
 type DocumentEditorProps = {
   dictationStatus: DictationStatus;
   document: DocumentRecord | null;
   onCancelDictation: () => void;
   onDirty: (editor: Editor, transaction: Transaction) => void;
+  onHumanize: () => void;
   onReady: (editor: Editor) => void;
   onSelectIssue: (issueId: string) => void;
   onStartDictation: () => void;
   onStopDictation: () => void;
   onTransform: () => void;
-  transformOpen: boolean;
+  rewriteMode: RewriteMode | null;
+  voiceEnabled: boolean;
 };
 
 export function DocumentEditor({
@@ -30,12 +36,14 @@ export function DocumentEditor({
   document: initialDocument,
   onCancelDictation,
   onDirty,
+  onHumanize,
   onReady,
   onSelectIssue,
   onStartDictation,
   onStopDictation,
   onTransform,
-  transformOpen,
+  rewriteMode,
+  voiceEnabled,
 }: DocumentEditorProps) {
   const editor = useEditor({
     autofocus: "start",
@@ -95,10 +103,12 @@ export function DocumentEditor({
       dictationStatus={dictationStatus}
       editor={editor}
       onCancelDictation={onCancelDictation}
+      onHumanize={onHumanize}
       onStartDictation={onStartDictation}
       onStopDictation={onStopDictation}
       onTransform={onTransform}
-      transformOpen={transformOpen}
+      rewriteMode={rewriteMode}
+      voiceEnabled={voiceEnabled}
     />
   );
 }

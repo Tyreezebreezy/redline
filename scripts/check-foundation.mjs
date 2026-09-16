@@ -138,6 +138,7 @@ for (const command of [
   "restore_document_revision",
   "add_dictionary_term",
   "remove_dictionary_term",
+  "update_voice_settings",
 ]) {
   assert.match(permissionText, new RegExp(`"${command}"`));
 }

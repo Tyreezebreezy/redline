@@ -10,10 +10,17 @@ import type {
   DictionaryEntry,
   DocumentSummary,
   RecoveryPoint,
+  VoiceLane,
+  VoiceSettings,
 } from "./documents";
 import { countText } from "./editor";
+import { VOICE_LANES } from "./humanizer";
 import { ThemeControl } from "./ThemeControl";
-import type { TransformPreset, TransformWorkflowState } from "./transform";
+import type {
+  RewritePreset,
+  TransformPreset,
+  TransformWorkflowState,
+} from "./transform";
 
 export type SaveState = "Saved" | "Saving" | "Unsaved" | "Save failed";
 
@@ -65,14 +72,21 @@ export function TopBar({
   dictionary,
   onProfileChange,
   onRemoveDictionaryTerm,
+  onVoiceSettingsChange,
   profile,
   saveState,
+  voiceSettings,
 }: {
   dictionary: DictionaryEntry[];
   onProfileChange: (profile: WritingProfile) => void;
   onRemoveDictionaryTerm: (normalizedTerm: string) => Promise<void>;
+  onVoiceSettingsChange: (
+    enabled: boolean,
+    defaultLane: VoiceLane,
+  ) => Promise<void>;
   profile: WritingProfile;
   saveState: SaveState;
+  voiceSettings: VoiceSettings;
 }) {
   const dictionaryDialog = useRef<HTMLDialogElement>(null);
   const dictionaryButton = useRef<HTMLButtonElement>(null);
@@ -98,9 +112,9 @@ export function TopBar({
         <span className="brand-version">0.1.1</span>
       </div>
       <label className="profile">
-        <span>Profile</span>
+        <span>Writing Context</span>
         <select
-          aria-label="Writing profile"
+          aria-label="Writing Context"
           onChange={(event) =>
             onProfileChange(event.target.value as WritingProfile)
           }
@@ -124,33 +138,30 @@ export function TopBar({
       <div className="top-actions">
         <ThemeControl />
         <button
-          aria-label="Personal dictionary"
+          aria-label="Settings"
           className="dictionary-button"
           onClick={() => dictionaryDialog.current?.showModal()}
           ref={dictionaryButton}
           type="button"
         >
           <Icon name="settings" />
-          <span>Dictionary</span>
+          <span>Settings</span>
         </button>
       </div>
       <dialog
-        aria-describedby="dictionary-description"
-        aria-labelledby="dictionary-title"
+        aria-describedby="settings-description"
+        aria-labelledby="settings-title"
         className="dictionary-dialog"
         onClose={() => dictionaryButton.current?.focus()}
         ref={dictionaryDialog}
       >
         <header>
           <div>
-            <p className="section-label">Proofreading</p>
-            <h2 id="dictionary-title">Personal dictionary</h2>
-            <p className="dictionary-count">
-              {dictionary.length} {dictionary.length === 1 ? "term" : "terms"}
-            </p>
+            <p className="section-label">Local preferences</p>
+            <h2 id="settings-title">Settings</h2>
           </div>
           <button
-            aria-label="Close personal dictionary"
+            aria-label="Close settings"
             onClick={() => dictionaryDialog.current?.close()}
             ref={dictionaryCloseButton}
             type="button"
@@ -158,37 +169,99 @@ export function TopBar({
             Close
           </button>
         </header>
-        <p className="dictionary-description" id="dictionary-description">
-          Words here are always allowed in spelling checks on this device.
+        <p className="dictionary-description" id="settings-description">
+          These preferences stay on this device.
         </p>
-        {dictionary.length ? (
-          <ul className="dictionary-list">
-            {dictionary.map((entry) => (
-              <li key={entry.normalizedTerm}>
-                <span>{entry.term}</span>
-                <button
-                  aria-label={`Remove ${entry.term} from personal dictionary`}
-                  data-dictionary-remove
-                  onClick={async () => {
-                    const index = dictionary.findIndex(
-                      ({ normalizedTerm }) =>
-                        normalizedTerm === entry.normalizedTerm,
-                    );
-                    await onRemoveDictionaryTerm(entry.normalizedTerm);
-                    focusDictionaryIndex(index);
-                  }}
-                  type="button"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="dictionary-empty">
-            Allow eligible spelling words from an issue card.
+        <section
+          className="voice-settings"
+          aria-labelledby="voice-settings-title"
+        >
+          <div>
+            <p className="section-label">Personalization</p>
+            <h3 id="voice-settings-title">My Voice</h3>
+          </div>
+          <label className="voice-enabled">
+            <input
+              checked={voiceSettings.enabled}
+              onChange={(event) =>
+                void onVoiceSettingsChange(
+                  event.target.checked,
+                  voiceSettings.defaultLane,
+                )
+              }
+              type="checkbox"
+            />
+            Enable My Voice
+          </label>
+          <label className="voice-default">
+            <span>Default Voice</span>
+            <select
+              aria-label="Default Voice"
+              disabled={!voiceSettings.enabled}
+              onChange={(event) =>
+                void onVoiceSettingsChange(
+                  voiceSettings.enabled,
+                  event.target.value as VoiceLane,
+                )
+              }
+              value={voiceSettings.defaultLane}
+            >
+              {VOICE_LANES.map((lane) => (
+                <option key={lane.id} value={lane.id}>
+                  {lane.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="voice-summary">
+            {
+              VOICE_LANES.find(({ id }) => id === voiceSettings.defaultLane)
+                ?.summary
+            }
           </p>
-        )}
+        </section>
+        <section aria-labelledby="dictionary-title">
+          <div className="settings-section-heading">
+            <div>
+              <p className="section-label">Proofreading</p>
+              <h3 id="dictionary-title">Personal dictionary</h3>
+            </div>
+            <p className="dictionary-count">
+              {dictionary.length} {dictionary.length === 1 ? "term" : "terms"}
+            </p>
+          </div>
+          <p className="dictionary-description" id="dictionary-description">
+            Words here are always allowed in spelling checks on this device.
+          </p>
+          {dictionary.length ? (
+            <ul className="dictionary-list">
+              {dictionary.map((entry) => (
+                <li key={entry.normalizedTerm}>
+                  <span>{entry.term}</span>
+                  <button
+                    aria-label={`Remove ${entry.term} from personal dictionary`}
+                    data-dictionary-remove
+                    onClick={async () => {
+                      const index = dictionary.findIndex(
+                        ({ normalizedTerm }) =>
+                          normalizedTerm === entry.normalizedTerm,
+                      );
+                      await onRemoveDictionaryTerm(entry.normalizedTerm);
+                      focusDictionaryIndex(index);
+                    }}
+                    type="button"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="dictionary-empty">
+              Allow eligible spelling words from an issue card.
+            </p>
+          )}
+        </section>
       </dialog>
     </header>
   );
@@ -724,6 +797,10 @@ const TRANSFORM_LABELS: Record<TransformPreset, string> = {
   professional: "Professional",
 };
 
+const VOICE_LABELS = Object.fromEntries(
+  VOICE_LANES.map(({ id, label }) => [id, label]),
+) as Record<VoiceLane, string>;
+
 export function TransformPanel({
   onAccept,
   onCancel,
@@ -737,7 +814,7 @@ export function TransformPanel({
   onCancel: () => void;
   onCheckAgain: () => void;
   onGenerate: () => void;
-  onPresetChange: (preset: TransformPreset) => void;
+  onPresetChange: (preset: RewritePreset) => void;
   onRefreshSelection: () => void;
   state: Exclude<TransformWorkflowState, { status: "idle" }>;
 }) {
@@ -746,6 +823,9 @@ export function TransformPanel({
   const regenerateButton = useRef<HTMLButtonElement>(null);
   const acceptBlockedReason =
     state.status === "preview" ? state.acceptBlockedReason : null;
+  const humanizer = state.mode === "humanizer";
+  const title = humanizer ? "My Voice" : "Transform";
+  const toolbarId = humanizer ? "humanize" : "transform";
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -765,7 +845,7 @@ export function TransformPanel({
     onCancel();
     window.requestAnimationFrame(() => {
       document
-        .querySelector<HTMLButtonElement>('[data-toolbar-id="transform"]')
+        .querySelector<HTMLButtonElement>(`[data-toolbar-id="${toolbarId}"]`)
         ?.focus();
     });
   };
@@ -787,28 +867,30 @@ export function TransformPanel({
                 : "Ready";
   const announcement =
     state.status === "unavailable"
-      ? `Transform unavailable. ${state.message}`
+      ? `${title} unavailable. ${state.message}`
       : state.status === "preview"
         ? state.acceptBlockedReason
-          ? `Transform preview ready. ${state.acceptBlockedReason}`
-          : "Transform preview ready. Review it before accepting."
+          ? `${title} preview ready. ${state.acceptBlockedReason}`
+          : `${title} preview ready. Review it before accepting.`
         : state.status === "error"
-          ? `Transform failed. ${state.message}`
+          ? `${title} failed. ${state.message}`
           : state.status === "stale"
-            ? `Transform source changed. ${state.message}`
+            ? `${title} source changed. ${state.message}`
             : "";
 
   return (
     <aside
       aria-busy={state.status === "generating"}
-      aria-labelledby="transform-title"
+      aria-labelledby="rewrite-title"
       className="analysis-panel transform-panel"
     >
       <header className="panel-header">
         <div>
-          <p className="section-label">Rewrite</p>
-          <h2 id="transform-title" ref={heading} tabIndex={-1}>
-            Transform
+          <p className="section-label">
+            {humanizer ? "Voice suggestion" : "Rewrite"}
+          </p>
+          <h2 id="rewrite-title" ref={heading} tabIndex={-1}>
+            {title}
           </h2>
         </div>
         <span className="panel-state">{panelState}</span>
@@ -818,7 +900,7 @@ export function TransformPanel({
       </span>
       <div className="analysis-content transform-content">
         <label className="transform-preset">
-          <span>Preset</span>
+          <span>{humanizer ? "Voice" : "Preset"}</span>
           <select
             disabled={
               state.status === "generating" ||
@@ -826,16 +908,30 @@ export function TransformPanel({
               state.status === "unavailable"
             }
             onChange={(event) =>
-              onPresetChange(event.target.value as TransformPreset)
+              onPresetChange(event.target.value as RewritePreset)
             }
             value={state.preset}
           >
-            <option value="concise">Concise</option>
-            <option value="professional">Professional</option>
-            <option value="academic">Academic</option>
+            {humanizer ? (
+              VOICE_LANES.map((lane) => (
+                <option key={lane.id} value={lane.id}>
+                  {lane.label}
+                </option>
+              ))
+            ) : (
+              <>
+                <option value="concise">Concise</option>
+                <option value="professional">Professional</option>
+                <option value="academic">Academic</option>
+              </>
+            )}
           </select>
         </label>
-        {state.preset === "professional" ? (
+        {humanizer ? (
+          <p className="transform-guidance">
+            {VOICE_LANES.find(({ id }) => id === state.preset)?.summary}
+          </p>
+        ) : state.preset === "professional" ? (
           <p className="transform-guidance">
             Conservative workplace rewrite · meaning over formality
           </p>
@@ -852,7 +948,10 @@ export function TransformPanel({
             aria-labelledby="transformed-title"
           >
             <h3 id="transformed-title">
-              {TRANSFORM_LABELS[state.preset]} preview
+              {humanizer
+                ? VOICE_LABELS[state.preset as VoiceLane]
+                : TRANSFORM_LABELS[state.preset as TransformPreset]}{" "}
+              preview
             </h3>
             <p>{state.response.text}</p>
           </section>
@@ -861,14 +960,16 @@ export function TransformPanel({
         {state.status === "generating" ? (
           <div className="transform-progress" role="status">
             <span aria-hidden="true" />
-            Loading and rewriting on this device…
+            {humanizer
+              ? "Applying your Voice on this device…"
+              : "Loading and rewriting on this device…"}
           </div>
         ) : null}
 
         {state.status === "checking" ? (
           <div className="transform-progress" role="status">
             <span aria-hidden="true" />
-            Checking the local Transform model…
+            Checking the local rewrite model…
           </div>
         ) : null}
 
@@ -921,7 +1022,7 @@ export function TransformPanel({
               onClick={onGenerate}
               type="button"
             >
-              Generate
+              Generate preview
             </button>
           ) : null}
           {state.status === "unavailable" ? (

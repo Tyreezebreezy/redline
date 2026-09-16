@@ -84,7 +84,7 @@ bulk-import an unreviewed source.
 Future precedence is deliberately simple:
 
 1. generated REDLINE built-in snapshot;
-2. User Profile terminology overrides;
+2. local-owner terminology overrides;
 3. project or document Style Guide overrides.
 
 Later layers may replace or suppress earlier terms. The current matcher already

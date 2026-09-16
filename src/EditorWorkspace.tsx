@@ -1,7 +1,7 @@
 import { type Editor, EditorContent, useEditorState } from "@tiptap/react";
 import { type KeyboardEvent, type ReactNode, useEffect, useState } from "react";
 import type { DictationStatus } from "./dictation";
-import { transformSelection } from "./transform";
+import { type RewriteMode, transformSelection } from "./transform";
 
 type ToolbarButtonProps = {
   active?: boolean;
@@ -49,18 +49,22 @@ export function EditorToolbar({
   dictationStatus,
   editor,
   onCancelDictation,
+  onHumanize,
   onStartDictation,
   onStopDictation,
   onTransform,
-  transformOpen,
+  rewriteMode,
+  voiceEnabled,
 }: {
   dictationStatus: DictationStatus;
   editor: Editor;
   onCancelDictation: () => void;
+  onHumanize: () => void;
   onStartDictation: () => void;
   onStopDictation: () => void;
   onTransform: () => void;
-  transformOpen: boolean;
+  rewriteMode: RewriteMode | null;
+  voiceEnabled: boolean;
 }) {
   const [tabStop, setTabStop] = useState("paragraph");
   const state = useEditorState({
@@ -102,7 +106,10 @@ export function EditorToolbar({
   }, [dictationStatus.status, tabStop]);
 
   useEffect(() => {
-    if (tabStop === "transform" && !state.transformSelection.ok) {
+    if (
+      ["humanize", "transform"].includes(tabStop) &&
+      !state.transformSelection.ok
+    ) {
       setTabStop("paragraph");
     }
   }, [state.transformSelection.ok, tabStop]);
@@ -264,7 +271,7 @@ export function EditorToolbar({
         <ToolbarButton
           active={dictationStatus.status === "listening"}
           disabled={
-            transformOpen ||
+            rewriteMode !== null ||
             dictationStatus.status === "preparing" ||
             dictationStatus.status === "processing"
           }
@@ -312,11 +319,36 @@ export function EditorToolbar({
       </fieldset>
 
       <fieldset className="toolbar-group transform-group">
-        <legend className="sr-only">Transform</legend>
+        <legend className="sr-only">Local rewriting</legend>
         <ToolbarButton
-          active={transformOpen}
+          active={rewriteMode === "humanizer"}
+          disabled={
+            !voiceEnabled ||
+            !state.transformSelection.ok ||
+            rewriteMode === "transform" ||
+            ["preparing", "listening", "processing"].includes(
+              dictationStatus.status,
+            )
+          }
+          id="humanize"
+          label={
+            !voiceEnabled
+              ? "My Voice is disabled in Settings"
+              : state.transformSelection.ok
+                ? "Preview selected text in My Voice"
+                : state.transformSelection.reason
+          }
+          onClick={onHumanize}
+          onFocus={() => setTabStop("humanize")}
+          tabIndex={tabIndex("humanize")}
+        >
+          My Voice
+        </ToolbarButton>
+        <ToolbarButton
+          active={rewriteMode === "transform"}
           disabled={
             !state.transformSelection.ok ||
+            rewriteMode === "humanizer" ||
             ["preparing", "listening", "processing"].includes(
               dictationStatus.status,
             )
@@ -342,18 +374,22 @@ export function EditorWorkspace({
   dictationStatus,
   editor,
   onCancelDictation,
+  onHumanize,
   onStartDictation,
   onStopDictation,
   onTransform,
-  transformOpen,
+  rewriteMode,
+  voiceEnabled,
 }: {
   dictationStatus: DictationStatus;
   editor: Editor | null;
   onCancelDictation: () => void;
+  onHumanize: () => void;
   onStartDictation: () => void;
   onStopDictation: () => void;
   onTransform: () => void;
-  transformOpen: boolean;
+  rewriteMode: RewriteMode | null;
+  voiceEnabled: boolean;
 }) {
   return (
     <main className="workspace" id="workspace" tabIndex={-1}>
@@ -364,10 +400,12 @@ export function EditorWorkspace({
               dictationStatus={dictationStatus}
               editor={editor}
               onCancelDictation={onCancelDictation}
+              onHumanize={onHumanize}
               onStartDictation={onStartDictation}
               onStopDictation={onStopDictation}
               onTransform={onTransform}
-              transformOpen={transformOpen}
+              rewriteMode={rewriteMode}
+              voiceEnabled={voiceEnabled}
             />
             <div
               aria-atomic="true"

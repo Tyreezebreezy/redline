@@ -5,8 +5,9 @@ import {
   acceptTransform,
   captureTransformTarget,
   clearTransformTarget,
+  type RewriteMode,
+  type RewritePreset,
   responseAcceptBlock,
-  type TransformPreset,
   type TransformSelection,
   type TransformWorkflowState,
   transformProvider,
@@ -19,6 +20,7 @@ type Options = {
   documentSessionRef: MutableRefObject<number>;
   editorRef: MutableRefObject<Editor | null>;
   onError: (message: string) => void;
+  protectedTermsForHumanizer: (text: string) => string[];
 };
 
 function errorMessage(error: unknown) {
@@ -31,6 +33,7 @@ export function useTransformWorkflow({
   documentSessionRef,
   editorRef,
   onError,
+  protectedTermsForHumanizer,
 }: Options) {
   const [state, setState] = useState<TransformWorkflowState>({
     status: "idle",
@@ -85,38 +88,47 @@ export function useTransformWorkflow({
     [updateState],
   );
 
-  const open = useCallback(() => {
-    const editor = editorRef.current;
-    if (
-      !editor ||
-      editor.isDestroyed ||
-      dictationSessionRef.current ||
-      ["preparing", "listening", "processing"].includes(dictationStatus.status)
-    ) {
-      return;
-    }
-    clearTransformTarget(editor);
-    const targetId = crypto.randomUUID();
-    const captured = captureTransformTarget(
-      editor,
-      targetId,
-      documentSessionRef.current,
-    );
-    if (!captured.ok) return;
-    void checkAvailability({
-      acceptReason: captured.acceptReason,
-      acceptSupported: captured.acceptSupported,
-      original: captured.text,
-      preset: "concise",
-      targetId,
-    });
-  }, [
-    checkAvailability,
-    dictationSessionRef,
-    dictationStatus.status,
-    documentSessionRef,
-    editorRef,
-  ]);
+  const open = useCallback(
+    (mode: RewriteMode, preset: RewritePreset) => {
+      const editor = editorRef.current;
+      if (
+        !editor ||
+        editor.isDestroyed ||
+        dictationSessionRef.current ||
+        ["preparing", "listening", "processing"].includes(
+          dictationStatus.status,
+        )
+      ) {
+        return;
+      }
+      clearTransformTarget(editor);
+      const targetId = crypto.randomUUID();
+      const captured = captureTransformTarget(
+        editor,
+        targetId,
+        documentSessionRef.current,
+      );
+      if (!captured.ok) return;
+      void checkAvailability({
+        acceptReason: captured.acceptReason,
+        acceptSupported: captured.acceptSupported,
+        mode,
+        original: captured.text,
+        preset,
+        protectedTerms:
+          mode === "humanizer" ? protectedTermsForHumanizer(captured.text) : [],
+        targetId,
+      });
+    },
+    [
+      checkAvailability,
+      dictationSessionRef,
+      dictationStatus.status,
+      documentSessionRef,
+      editorRef,
+      protectedTermsForHumanizer,
+    ],
+  );
 
   const recheck = useCallback(() => {
     const current = stateRef.current;
@@ -124,8 +136,10 @@ export function useTransformWorkflow({
     void checkAvailability({
       acceptReason: current.acceptReason,
       acceptSupported: current.acceptSupported,
+      mode: current.mode,
       original: current.original,
       preset: current.preset,
+      protectedTerms: current.protectedTerms,
       targetId: current.targetId,
     });
   }, [checkAvailability]);
@@ -145,7 +159,7 @@ export function useTransformWorkflow({
   }, [editorRef, onError, updateState]);
 
   const changePreset = useCallback(
-    (preset: TransformPreset) => {
+    (preset: RewritePreset) => {
       const current = stateRef.current;
       if (
         current.status === "idle" ||
@@ -157,8 +171,10 @@ export function useTransformWorkflow({
       updateState({
         acceptReason: current.acceptReason,
         acceptSupported: current.acceptSupported,
+        mode: current.mode,
         original: current.original,
         preset,
+        protectedTerms: current.protectedTerms,
         status: "ready",
         targetId: current.targetId,
       });
@@ -193,8 +209,10 @@ export function useTransformWorkflow({
     const selection = {
       acceptReason: current.acceptReason,
       acceptSupported: current.acceptSupported,
+      mode: current.mode,
       original: current.original,
       preset: current.preset,
+      protectedTerms: current.protectedTerms,
       targetId: current.targetId,
     };
     updateState({ ...selection, requestId, status: "generating" });
@@ -216,6 +234,7 @@ export function useTransformWorkflow({
         requestId,
         current.original,
         current.preset,
+        current.mode,
       );
       const pending = stateRef.current;
       if (pending.status !== "generating" || pending.requestId !== requestId) {

@@ -12,4 +12,5 @@ commands.allow = [
   "restore_document_revision",
   "add_dictionary_term",
   "remove_dictionary_term",
+  "update_voice_settings",
 ]

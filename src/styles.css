@@ -307,6 +307,7 @@ body {
   border: 1px solid var(--border-strong);
   border-radius: 10px;
   box-shadow: var(--shadow);
+  overflow: auto;
 }
 
 .dictionary-dialog::backdrop {
@@ -331,6 +332,48 @@ body {
   font-size: 18px;
 }
 
+.dictionary-dialog h3 {
+  margin: 3px 0 0;
+  font-size: 15px;
+}
+
+.voice-settings,
+.dictionary-dialog > section {
+  padding: 16px 20px;
+}
+
+.voice-settings {
+  display: grid;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.voice-enabled,
+.voice-default,
+.settings-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.voice-enabled,
+.voice-default {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.voice-default select {
+  min-width: 150px;
+}
+
+.voice-summary {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .dictionary-count,
 .dictionary-description {
   color: var(--text-muted);
@@ -346,6 +389,10 @@ body {
   margin: 0;
 }
 
+.dictionary-dialog > section .dictionary-description {
+  padding-inline: 0;
+}
+
 .dictionary-dialog button,
 .issue-secondary-actions button {
   min-height: 30px;
@@ -358,7 +405,7 @@ body {
 }
 
 .dictionary-list {
-  padding: 8px 20px 18px;
+  padding: 8px 0 0;
   margin: 0;
   overflow: auto;
   list-style: none;
@@ -370,7 +417,7 @@ body {
 }
 
 .dictionary-empty {
-  padding: 24px 20px;
+  padding: 18px 0 8px;
   margin: 0;
   color: var(--text-secondary);
 }
@@ -1398,6 +1445,8 @@ body {
 .issue-secondary-actions button:focus-visible,
 .dictionary-button:focus-visible,
 .dictionary-dialog button:focus-visible,
+.dictionary-dialog input:focus-visible,
+.dictionary-dialog select:focus-visible,
 .profile select:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;

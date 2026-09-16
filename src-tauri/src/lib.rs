@@ -21,6 +21,7 @@ const RECOVERY_INTERVAL_MS: i64 = 15 * 60 * 1_000;
 const RECOVERY_LIMIT: i64 = 10;
 const MIGRATION_1: &str = include_str!("../migrations/0001_documents.sql");
 const MIGRATION_2: &str = include_str!("../migrations/0002_proofreading_controls.sql");
+const MIGRATION_3: &str = include_str!("../migrations/0003_voice_settings.sql");
 
 type CommandResult<T> = Result<T, String>;
 
@@ -57,6 +58,33 @@ enum WritingProfile {
     General,
     Academic,
     Professional,
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+enum VoiceLane {
+    #[default]
+    Natural,
+    Professional,
+    Academic,
+}
+
+impl VoiceLane {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Natural => "natural",
+            Self::Professional => "professional",
+            Self::Academic => "academic",
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct VoiceSettings {
+    enabled: bool,
+    default_lane: VoiceLane,
+    schema_version: i64,
 }
 
 impl WritingProfile {
@@ -104,6 +132,7 @@ struct Workspace {
     trash: Vec<DocumentSummary>,
     revisions: Vec<DocumentRevision>,
     dictionary: Vec<DictionaryEntry>,
+    voice_settings: VoiceSettings,
 }
 
 #[derive(Deserialize)]
@@ -235,7 +264,7 @@ fn migrate(connection: &mut Connection) -> CommandResult<()> {
     let version: i64 = connection
         .query_row("PRAGMA user_version", [], |row| row.get(0))
         .map_err(|error| error.to_string())?;
-    if version > 2 {
+    if version > 3 {
         return Err(format!(
             "Database version {version} is newer than this REDLINE build."
         ));
@@ -261,6 +290,18 @@ fn migrate(connection: &mut Connection) -> CommandResult<()> {
             .map_err(|error| error.to_string())?;
         transaction
             .pragma_update(None, "user_version", 2)
+            .map_err(|error| error.to_string())?;
+        transaction.commit().map_err(|error| error.to_string())?;
+    }
+    if version < 3 {
+        let transaction = connection
+            .transaction()
+            .map_err(|error| error.to_string())?;
+        transaction
+            .execute_batch(MIGRATION_3)
+            .map_err(|error| error.to_string())?;
+        transaction
+            .pragma_update(None, "user_version", 3)
             .map_err(|error| error.to_string())?;
         transaction.commit().map_err(|error| error.to_string())?;
     }
@@ -392,6 +433,41 @@ fn remove_dictionary_impl(connection: &Connection, term: &str) -> CommandResult<
         )
         .map_err(|error| error.to_string())?;
     Ok(())
+}
+
+fn voice_settings(connection: &Connection) -> CommandResult<VoiceSettings> {
+    connection
+        .query_row(
+            "SELECT enabled, default_lane, schema_version FROM voice_settings WHERE id = 1",
+            [],
+            |row| {
+                let lane: String = row.get(1)?;
+                Ok(VoiceSettings {
+                    enabled: row.get::<_, i64>(0)? == 1,
+                    default_lane: match lane.as_str() {
+                        "professional" => VoiceLane::Professional,
+                        "academic" => VoiceLane::Academic,
+                        _ => VoiceLane::Natural,
+                    },
+                    schema_version: row.get(2)?,
+                })
+            },
+        )
+        .map_err(|error| error.to_string())
+}
+
+fn update_voice_settings_impl(
+    connection: &Connection,
+    enabled: bool,
+    default_lane: VoiceLane,
+) -> CommandResult<VoiceSettings> {
+    connection
+        .execute(
+            "UPDATE voice_settings SET enabled = ?1, default_lane = ?2 WHERE id = 1",
+            params![i64::from(enabled), default_lane.as_str()],
+        )
+        .map_err(|error| error.to_string())?;
+    voice_settings(connection)
 }
 
 fn load_document(connection: &Connection, id: &str) -> CommandResult<Document> {
@@ -538,6 +614,7 @@ fn workspace_impl(connection: &Connection) -> CommandResult<Workspace> {
         trash,
         revisions,
         dictionary: list_dictionary(connection)?,
+        voice_settings: voice_settings(connection)?,
     })
 }
 
@@ -581,6 +658,16 @@ fn remove_dictionary_term(
     store: State<'_, DocumentStore>,
 ) -> CommandResult<()> {
     store.with_connection(|connection| remove_dictionary_impl(connection, &normalized_term))
+}
+
+#[tauri::command]
+fn update_voice_settings(
+    enabled: bool,
+    default_lane: VoiceLane,
+    store: State<'_, DocumentStore>,
+) -> CommandResult<VoiceSettings> {
+    store
+        .with_connection(|connection| update_voice_settings_impl(connection, enabled, default_lane))
 }
 
 #[tauri::command]
@@ -825,9 +912,38 @@ mod tests {
             connection
                 .query_row("PRAGMA user_version", [], |row| row.get::<_, i64>(0))
                 .unwrap(),
-            2
+            3
         );
         assert_eq!(list_dictionary(&connection).unwrap(), Vec::new());
+        assert_eq!(
+            voice_settings(&connection).unwrap(),
+            VoiceSettings {
+                enabled: true,
+                default_lane: VoiceLane::Natural,
+                schema_version: 1,
+            }
+        );
+    }
+
+    #[test]
+    fn voice_settings_are_single_owner_and_bounded() {
+        let connection = connection();
+        assert_eq!(
+            update_voice_settings_impl(&connection, false, VoiceLane::Academic).unwrap(),
+            VoiceSettings {
+                enabled: false,
+                default_lane: VoiceLane::Academic,
+                schema_version: 1,
+            }
+        );
+        assert_eq!(
+            connection
+                .query_row("SELECT COUNT(*) FROM voice_settings", [], |row| {
+                    row.get::<_, i64>(0)
+                })
+                .unwrap(),
+            1
+        );
     }
 
     #[test]

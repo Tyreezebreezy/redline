@@ -22,6 +22,14 @@ export type DictionaryEntry = {
   createdAt: number;
 };
 
+export type VoiceLane = "natural" | "professional" | "academic";
+
+export type VoiceSettings = {
+  enabled: boolean;
+  defaultLane: VoiceLane;
+  schemaVersion: number;
+};
+
 export type RecoveryPoint = {
   id: number;
   documentId: string;
@@ -37,6 +45,7 @@ export type WorkspaceData = {
   trash: DocumentSummary[];
   revisions: RecoveryPoint[];
   dictionary: DictionaryEntry[];
+  voiceSettings: VoiceSettings;
 };
 
 export type SaveInput = {
@@ -55,6 +64,11 @@ const EMPTY_WORKSPACE: WorkspaceData = {
   trash: [],
   revisions: [],
   dictionary: [],
+  voiceSettings: {
+    enabled: true,
+    defaultLane: "natural",
+    schemaVersion: 1,
+  },
 };
 
 export const desktopAvailable = isTauri();
@@ -95,4 +109,11 @@ export const documents = {
     desktopAvailable
       ? invoke<void>("remove_dictionary_term", { normalizedTerm })
       : Promise.resolve(),
+  updateVoiceSettings: (enabled: boolean, defaultLane: VoiceLane) =>
+    desktopAvailable
+      ? invoke<VoiceSettings>("update_voice_settings", {
+          enabled,
+          defaultLane,
+        })
+      : Promise.resolve({ enabled, defaultLane, schemaVersion: 1 }),
 };

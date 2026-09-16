@@ -45,7 +45,10 @@ import {
   desktopAvailable,
   documents,
   type RecoveryPoint,
+  type VoiceLane,
+  type VoiceSettings,
 } from "./documents";
+import { humanizerProtectedTerms } from "./humanizer";
 import { useTransformWorkflow } from "./useTransformWorkflow";
 import "./styles.css";
 
@@ -65,6 +68,11 @@ function App() {
   const [revisions, setRevisions] = useState<RecoveryPoint[]>([]);
   const [dictionary, setDictionary] = useState<DictionaryEntry[]>([]);
   const [profile, setProfile] = useState<WritingProfile>("general");
+  const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
+    enabled: true,
+    defaultLane: "natural",
+    schemaVersion: 1,
+  });
   const [title, setTitle] = useState("Untitled");
   const [saveState, setSaveState] = useState<SaveState>("Saved");
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -96,6 +104,10 @@ function App() {
   const dictationSessionRef = useRef<string | null>(null);
   const dictationDocumentSessionRef = useRef<number | null>(null);
   const dictationStopRef = useRef<string | null>(null);
+  const protectedTermsForHumanizer = useCallback(
+    (text: string) => humanizerProtectedTerms(text, dictionary),
+    [dictionary],
+  );
   const {
     accept: acceptTransformPreview,
     cancel: cancelActiveTransform,
@@ -112,6 +124,7 @@ function App() {
     documentSessionRef,
     editorRef,
     onError: setSaveError,
+    protectedTermsForHumanizer,
   });
 
   const setCurrent = useCallback(
@@ -524,6 +537,7 @@ function App() {
           workspace.dictionary.map(({ normalizedTerm }) => normalizedTerm),
         );
         setDictionary(workspace.dictionary);
+        setVoiceSettings(workspace.voiceSettings);
         setCurrent(workspace.activeDocument, Boolean(workspace.activeDocument));
         setLoaded(true);
       })
@@ -737,6 +751,26 @@ function App() {
     }
   };
 
+  const changeVoiceSettings = async (
+    enabled: boolean,
+    defaultLane: VoiceLane,
+  ) => {
+    try {
+      if (
+        !enabled &&
+        transformState.status !== "idle" &&
+        transformState.mode === "humanizer"
+      ) {
+        await cancelActiveTransform();
+      }
+      const saved = await documents.updateVoiceSettings(enabled, defaultLane);
+      setVoiceSettings(saved);
+      setSaveError(null);
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
   const canApplySuggestion = useCallback(
     (issue: EditorIssue, suggestion: AxiomSuggestion) => {
       const editor = editorRef.current;
@@ -841,8 +875,10 @@ function App() {
         dictionary={dictionary}
         onProfileChange={changeProfile}
         onRemoveDictionaryTerm={removeFromDictionary}
+        onVoiceSettingsChange={changeVoiceSettings}
         profile={profile}
         saveState={saveState}
+        voiceSettings={voiceSettings}
       />
       <div className="app-body">
         <Sidebar
@@ -864,6 +900,9 @@ function App() {
             key={`${active?.id ?? "new"}-${editorEpoch}`}
             onCancelDictation={() => void cancelActiveDictation()}
             onDirty={markDirty}
+            onHumanize={() =>
+              openTransform("humanizer", voiceSettings.defaultLane)
+            }
             onReady={ready}
             onSelectIssue={selectIssue}
             onStartDictation={() => void startDictation()}
@@ -871,8 +910,11 @@ function App() {
               const sessionId = dictationSessionRef.current;
               if (sessionId) void finishDictation(sessionId);
             }}
-            onTransform={openTransform}
-            transformOpen={transformState.status !== "idle"}
+            onTransform={() => openTransform("transform", "concise")}
+            rewriteMode={
+              transformState.status === "idle" ? null : transformState.mode
+            }
+            voiceEnabled={voiceSettings.enabled}
           />
         ) : (
           <main className="workspace" id="workspace" tabIndex={-1} />
@@ -896,7 +938,9 @@ function App() {
             onGenerate={() => void generateTransform()}
             onPresetChange={changeTransformPreset}
             onCheckAgain={recheckTransformAvailability}
-            onRefreshSelection={openTransform}
+            onRefreshSelection={() =>
+              openTransform(transformState.mode, transformState.preset)
+            }
             state={transformState}
           />
         )}

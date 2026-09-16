@@ -1,31 +1,31 @@
 # REDLINE current work
 
-## REDLINE 1.0 refactor and Terminology Engine
+## REDLINE single-owner Humanizer checkpoint
 
-- Branch: `codex/redline-1.0-refactor-terminology`
-- Foundation baseline: `fe519ac9d70761e8c40fade1459743ad88a65ed5`
-- Structural checkpoint: `739b2f739357c20b0b467c8dffe097a7258afaca`
-- Status: structural refactor verified; production Terminology Engine complete
-  pending final checkpoint verification
+- Branch: `codex/redline-1.0-humanizer`
+- Exact baseline: `d6243a71fd53f91e1954c139104bd3a20c474c08`
+- Status: Humanizer implementation and deterministic/model validation complete;
+  rendered/native release QA remains in progress
+- Product owner model: one implicit local owner; no Guest, accounts, named User
+  Profiles, profile switching, or profile-owned documents
 - Production dictation status: unchanged and still available
-- Release status: no merge, tag, release, or version change
-- Detailed evidence: `docs/engineering/1.0-foundation.md` and
-  `docs/engineering/terminology-engine.md`
+- Detailed evidence: `docs/engineering/humanizer.md`
 - Roadmap: `docs/engineering/1.0-roadmap.md`
 
 ### Active objective
 
-Checkpoint the behavior-preserving coordination refactor and the production
-Terminology Engine, then stop. The terminology snapshot contains 377 reviewed
-records: 203 high-confidence, 158 multiword-high-confidence, and 16
-context-required entries. It is generated offline from a reviewed local
-manifest, validated during `pnpm check`, and never queried or updated at
-runtime.
+Finish rendered/native QA, full release regression, packaging, and a private
+downloadable stable release. My Voice is an optional, preview-first local
+rewrite with exactly Natural, Professional, and Academic lanes. Writing Context
+is the independent General/Professional/Academic AXIOM configuration.
 
-The AXIOM fast corpus now contains 290 cases with 94/94 required findings, zero
-unexplained false positives or misses, zero mapping failures, and zero
-protected-span failures. Existing 22 known misses and nine known limitations
-remain documented.
+The abandoned multi-user Profile branches remain research history only. They
+must not be merged into the product branch. Personalization belongs to the
+single local owner and is stored without user IDs.
+
+The current regression floors remain 290 AXIOM cases with 94/94 required
+findings, zero unexplained false positives or misses, zero mapping failures,
+zero protected-span failures, and 377 reviewed terminology records.
 
 ### Dictation 2.0 pause
 
@@ -47,12 +47,12 @@ in this pass.
 
 - Preserve offline operation, existing CSP and Permissions Policy, bounded
   Tauri commands, SQLite ownership, model hashes, and editor safety.
-- Do not add runtime Wikidata access, User Profiles, Clarity, Humanizer/Voice,
-  Tone, Writing Goals, Transform Studio, Style Guides, or snippets.
-- Do not merge, tag, release, renumber REDLINE, or move `v0.1.0`.
+- Do not add runtime Wikidata access, User Profiles, Guest/account UX, Clarity,
+  Tone, Writing Goals, Transform Studio, Style Guides, or snippets before the
+  stable Humanizer release exists.
+- Do not move or recreate `v0.1.0`.
 - Preserve `probes/transform-engine/` as untouched and untracked.
-- Next approved product preflight is User Profile foundation. Resume Dictation
-  2.0 only through its explicit laptop live-microphone gate.
+- Resume Dictation 2.0 only through its explicit laptop live-microphone gate.
 
 ## Historical 0.1.1 daily-use handoff
 
