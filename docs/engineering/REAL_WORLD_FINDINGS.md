@@ -108,7 +108,9 @@ Dates below say `Not recorded` when the original observation date is unavailable
 - **Rule/class candidate:** `ORTH` / `CanonicalTerm`.
 - **False-positive concerns:** Standalone ordinary uses of “marketplace” and technical identifiers.
 - **Resolution / status:** Fixed
-- **Notes:** Paired exact-name, generic-word, and technical controls pass.
+- **Notes:** Paired exact-name, generic-word, and technical controls pass. The
+  production 377-record generated snapshot retains this finding and supersedes
+  the original two-term seed without changing its expected behavior.
 
 ### RW-010 — general noun subject-verb agreement
 
@@ -176,7 +178,9 @@ Dates below say `Not recorded` when the original observation date is unavailable
 - **Rule/class candidate:** `ORTH` / `CanonicalTerm`.
 - **False-positive concerns:** Standalone ordinary uses of “learning” and technical identifiers.
 - **Resolution / status:** Fixed
-- **Notes:** Paired exact-name, generic-word, and technical controls pass.
+- **Notes:** Paired exact-name, generic-word, and technical controls pass. The
+  production 377-record generated snapshot retains this finding and supersedes
+  the original two-term seed without changing its expected behavior.
 
 ### RW-014 — approximate propel / propelling report
 
@@ -230,4 +234,9 @@ The release gate remains **zero unexplained false positives**. Never add a phras
 
 ## Canonical terminology
 
-`CanonicalTerm` may later support established names such as `ICARUS`, `REDLINE`, `The Forge`, and user- or project-specific preferred capitalization. Do not add them automatically: each term needs confirmed canonical ownership and safe paired controls. This pass adds no terminology-management UI.
+`CanonicalTerm` now consumes a generated 377-record built-in snapshot with
+high-confidence, multiword-high-confidence, and context-required entries.
+It may later support established names such as `ICARUS`, `REDLINE`, `The
+Forge`, and user- or project-specific preferred capitalization. Do not add
+them automatically: each term needs confirmed canonical ownership and safe
+paired controls. This pass adds no terminology-management UI.

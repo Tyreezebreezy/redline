@@ -2,6 +2,32 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-15 — REDLINE 1.0 refactor and terminology production pass
+
+- Created `codex/redline-1.0-refactor-terminology` from foundation checkpoint
+  `fe519ac9d70761e8c40fade1459743ad88a65ed5` without changing main or tags.
+- Extracted editor construction, Transform workflow coordination, and Tauri
+  startup/command registration without changing product behavior. The verified
+  structural checkpoint is `739b2f739357c20b0b467c8dffe097a7258afaca`.
+- Replaced the 26-record terminology seed with a dependency-free offline
+  generator, reviewed source manifest, and 377-record runtime snapshot: 203
+  high-confidence, 158 multiword-high-confidence, and 16 context-required.
+- Added deterministic snapshot/source hashing, collision rejection, required
+  coverage checks, all-record canonical/lowercase checks, paired ambiguity
+  controls, protected-span tests, longest-match tests, and bounded performance
+  checks to `pnpm check`.
+- Expanded the AXIOM fast corpus from 265 to 290 cases. The current gate is
+  94/94 required findings, zero unexplained false positives or misses, zero
+  mapping failures, and zero protected-span failures; 22 known misses and nine
+  known limitations remain documented.
+- Suppressed provider spelling/orthography duplicates only when they overlap a
+  canonical terminology issue; other grammar overlaps remain intact.
+- Added no package, runtime networking, Tauri authority, CSP change, database
+  change, terminology UI, User Profile, Humanizer, or Dictation production
+  change.
+- Dictation 2.0 remains **PAUSED / CONDITIONAL / AWAITING LAPTOP LIVE-MIC
+  GATE**. Its probe evidence and outstanding 20-cycle live gate are unchanged.
+
 ## 2026-09-15  REDLINE 1.0 foundation evaluated
 
 - Created `codex/redline-1.0-foundation` from verified 0.1.1 candidate

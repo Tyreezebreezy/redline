@@ -6,7 +6,7 @@ export type TerminologyRecord = {
   entity_type: string;
   source: string;
   source_id: string | null;
-  confidence: "high" | "context-required";
+  confidence: "high" | "multiword-high" | "context-required";
   ambiguity: string | null;
   case_sensitive: boolean;
   multiword: boolean;
@@ -23,7 +23,8 @@ export type TerminologyMatch = {
   to: number;
 };
 
-const WORD = /[\p{L}\p{M}\p{N}]+(?:[.'\u2019-][\p{L}\p{M}\p{N}]+)*/gu;
+const WORD =
+  /[\p{L}\p{M}\p{N}]+(?:[.'\u2019-][\p{L}\p{M}\p{N}]+)*(?:\+{1,2})?/gu;
 
 export function createTerminologyMatcher(
   records: readonly TerminologyRecord[],
@@ -32,17 +33,29 @@ export function createTerminologyMatcher(
   let maximumWords = 1;
   for (const record of records) {
     for (const alias of record.aliases) {
-      aliases.set(normalize(alias), record);
+      const key = normalize(alias);
+      const existing = aliases.get(key);
+      if (existing && existing.canonical_name !== record.canonical_name) {
+        throw new Error(
+          `Terminology alias “${alias}” maps to both “${existing.canonical_name}” and “${record.canonical_name}”.`,
+        );
+      }
+      aliases.set(key, record);
       maximumWords = Math.max(maximumWords, alias.split(" ").length);
     }
   }
 
   return (text: string): TerminologyMatch[] => {
-    const tokens = [...text.matchAll(WORD)].map((match) => ({
-      from: match.index,
-      to: match.index + match[0].length,
-      text: match[0],
-    }));
+    const tokens = [...text.matchAll(WORD)].map((match) => {
+      const raw = match[0];
+      const possessiveLength =
+        /['\u2019]s$/iu.test(raw) && !aliases.has(normalize(raw)) ? 2 : 0;
+      return {
+        from: match.index,
+        to: match.index + raw.length - possessiveLength,
+        text: raw.slice(0, raw.length - possessiveLength),
+      };
+    });
     const matches: TerminologyMatch[] = [];
     for (let start = 0; start < tokens.length; start += 1) {
       for (
@@ -83,7 +96,7 @@ function contextAllows(
   start: number,
   end: number,
 ) {
-  if (record.confidence === "high") return true;
+  if (record.confidence !== "context-required") return true;
   const before = normalize(tokens[start - 1]?.text ?? "");
   const after = normalize(tokens[end]?.text ?? "");
   return (

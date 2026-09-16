@@ -1664,5 +1664,242 @@
     "id": "coverage-malformed-infinitive-control",
     "text": "We need to decide the schedule.",
     "expected": []
+  },
+  {
+    "id": "terminology-youtube",
+    "text": "Use youtube.",
+    "expected": [
+      {
+        "originalText": "youtube",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-github",
+    "text": "Open github.",
+    "expected": [
+      {
+        "originalText": "github",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-linkedin-learning",
+    "text": "Use linkedin learning.",
+    "expected": [
+      {
+        "originalText": "linkedin learning",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-facebook-marketplace",
+    "text": "Use facebook marketplace.",
+    "expected": [
+      {
+        "originalText": "facebook marketplace",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-powershell",
+    "text": "Run powershell.",
+    "expected": [
+      {
+        "originalText": "powershell",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-chatgpt",
+    "text": "Open chatgpt.",
+    "expected": [
+      {
+        "originalText": "chatgpt",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-microsoft-365",
+    "text": "Use microsoft 365.",
+    "expected": [
+      {
+        "originalText": "microsoft",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-visual-studio-code",
+    "text": "Open visual studio code.",
+    "expected": [
+      {
+        "originalText": "visual studio code",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-windows-context",
+    "text": "I installed windows.",
+    "expected": [
+      {
+        "originalText": "windows",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-google-drive",
+    "text": "Open google drive.",
+    "expected": [
+      {
+        "originalText": "google drive",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-google-docs",
+    "text": "Open google docs.",
+    "expected": [
+      {
+        "originalText": "google docs",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-google-sheets",
+    "text": "Open google sheets.",
+    "expected": [
+      {
+        "originalText": "google sheets",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-google-chrome",
+    "text": "Open google chrome.",
+    "expected": [
+      {
+        "originalText": "google chrome",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-onedrive",
+    "text": "Open onedrive.",
+    "expected": [
+      {
+        "originalText": "onedrive",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-apple-products",
+    "text": "Use iphone, ipad, and macos.",
+    "expected": [
+      {
+        "originalText": "iphone",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      },
+      {
+        "originalText": "ipad",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      },
+      {
+        "originalText": "macos",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-possessive",
+    "text": "Use youtube's interface.",
+    "expected": [
+      {
+        "originalText": "youtube",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-quoted-multiword",
+    "text": "Open \"linkedin learning\".",
+    "expected": [
+      {
+        "originalText": "linkedin learning",
+        "category": "formatting",
+        "ruleId": "CanonicalTerm"
+      }
+    ]
+  },
+  {
+    "id": "terminology-apple-ordinary-control",
+    "text": "I ate an apple.",
+    "expected": []
+  },
+  {
+    "id": "terminology-windows-ordinary-control",
+    "text": "I cleaned the windows.",
+    "expected": []
+  },
+  {
+    "id": "terminology-discord-ordinary-control",
+    "text": "There was discord between the groups.",
+    "expected": []
+  },
+  {
+    "id": "terminology-edge-ordinary-control",
+    "text": "Move toward the edge.",
+    "expected": []
+  },
+  {
+    "id": "terminology-teams-ordinary-control",
+    "text": "Both teams played well.",
+    "expected": []
+  },
+  {
+    "id": "terminology-android-ordinary-control",
+    "text": "The story featured an android.",
+    "expected": []
+  },
+  {
+    "id": "terminology-url-protected-control",
+    "text": "Open https://youtube.com/watch?v=1.",
+    "expected": []
+  },
+  {
+    "id": "terminology-identifier-protected-control",
+    "text": "Keep youtube_path unchanged.",
+    "expected": []
   }
 ]

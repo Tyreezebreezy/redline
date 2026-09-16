@@ -193,7 +193,12 @@ export async function analyzeText(
       (issue) =>
         !canonicalIssues.some(
           (canonical) =>
-            issue.from >= canonical.from && issue.to <= canonical.to,
+            (issue.from >= canonical.from && issue.to <= canonical.to) ||
+            (["SpellCheck", "OrthographicConsistency"].includes(
+              issue.ruleId ?? "",
+            ) &&
+              issue.from < canonical.to &&
+              issue.to > canonical.from),
         ),
     )
     .concat(canonicalIssues)

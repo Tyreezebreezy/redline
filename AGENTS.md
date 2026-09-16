@@ -9,7 +9,7 @@ Do not add cloud services, telemetry, broad filesystem/network/shell authority, 
 ## Current cycle
 
 - Released baseline: `v0.1.0` at `b775095666b45ce283d02e5875f7516bb936f83b`.
-- Working branch: `codex/redline-0.1.1-daily-use`.
+- Working branch: `codex/redline-1.0-refactor-terminology`.
 - Current plan and handoff: `docs/engineering/CURRENT_WORK.md`.
 - Append-only activity log: `docs/engineering/WORKLOG.md`.
 - User-observed evidence: `docs/engineering/REAL_WORLD_FINDINGS.md`.

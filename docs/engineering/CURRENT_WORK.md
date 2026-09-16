@@ -1,24 +1,39 @@
 # REDLINE current work
 
-## 1.0 foundation research
+## REDLINE 1.0 refactor and Terminology Engine
 
-- Branch: `codex/redline-1.0-foundation`
-- Baseline: `6b0a55e149d83ad86c8104d32f83d60cc671baeb`
-- Status: **CONDITIONAL / AWAITING LAPTOP LIVE-MIC GATE**
+- Branch: `codex/redline-1.0-refactor-terminology`
+- Foundation baseline: `fe519ac9d70761e8c40fade1459743ad88a65ed5`
+- Structural checkpoint: `739b2f739357c20b0b467c8dffe097a7258afaca`
+- Status: structural refactor verified; production Terminology Engine complete
+  pending final checkpoint verification
 - Production dictation status: unchanged and still available
-- Release status: no `v0.1.1`, 0.1.1 branch remains verified but unreleased
-- Detailed evidence: `docs/engineering/1.0-foundation.md`
+- Release status: no merge, tag, release, or version change
+- Detailed evidence: `docs/engineering/1.0-foundation.md` and
+  `docs/engineering/terminology-engine.md`
 - Roadmap: `docs/engineering/1.0-roadmap.md`
 
 ### Active objective
 
-Complete the Dictation 2.0 hybrid experiment without integrating streaming ASR
-into production. The fixture, endpoint, resource, long-session, duplicate, and
-mapped-editor gates are measured in `dictation-2-hybrid.md`. The remaining
-active gate is real WebView2 microphone testing on the laptop; until it passes,
-the experiment is not passed.
+Checkpoint the behavior-preserving coordination refactor and the production
+Terminology Engine, then stop. The terminology snapshot contains 377 reviewed
+records: 203 high-confidence, 158 multiword-high-confidence, and 16
+context-required entries. It is generated offline from a reviewed local
+manifest, validated during `pnpm check`, and never queried or updated at
+runtime.
 
-Measured checkpoint evidence:
+The AXIOM fast corpus now contains 290 cases with 94/94 required findings, zero
+unexplained false positives or misses, zero mapping failures, and zero
+protected-span failures. Existing 22 known misses and nine known limitations
+remain documented.
+
+### Dictation 2.0 pause
+
+**STATUS: PAUSED / CONDITIONAL / AWAITING LAPTOP LIVE-MIC GATE**
+
+Preserve the existing probe and documentation exactly. Do not continue ASR,
+microphone, laptop, sherpa, Whisper, endpoint, or production integration work
+in this pass.
 
 - Hybrid WER: 0.221.
 - Median first partial: 1.135 seconds.
@@ -28,27 +43,16 @@ Measured checkpoint evidence:
 - Real laptop microphone gate: **NOT YET RUN**.
 - 20-cycle live stability gate: **NOT YET RUN**.
 
-The bounded Terminology Engine seam is active in AXIOM with a 26-record local
-snapshot, dependency-free matching, paired ambiguity/protection tests, and no
-runtime network access. A full Wikidata dump was not downloaded; production
-snapshot generation remains a separate approval.
+### Guardrails and handoff
 
-### Foundation guardrails
-
-- Partial transcript is ephemeral; committed text is inserted once.
-- User edits always win. ASR never rewrites committed text.
-- Keep the current record-stop-transcribe path until a replacement passes.
-- Do not add runtime Wikidata access, broad terminology imports, profiles,
-  Clarity, Humanizer/Voice, Tone, Writing Goals, Transform Studio, or snippets.
-- Do not merge, tag, release, or renumber REDLINE from this branch.
+- Preserve offline operation, existing CSP and Permissions Policy, bounded
+  Tauri commands, SQLite ownership, model hashes, and editor safety.
+- Do not add runtime Wikidata access, User Profiles, Clarity, Humanizer/Voice,
+  Tone, Writing Goals, Transform Studio, Style Guides, or snippets.
+- Do not merge, tag, release, renumber REDLINE, or move `v0.1.0`.
 - Preserve `probes/transform-engine/` as untouched and untracked.
-
-### Next bounded decision
-
-Run the prepared three-script and 20-cycle WebView2 microphone probe on the
-laptop, then update the hybrid decision. Do not begin production Dictation 2.0
-integration, terminology generation, structural refactoring, or User Profile
-work in parallel.
+- Next approved product preflight is User Profile foundation. Resume Dictation
+  2.0 only through its explicit laptop live-microphone gate.
 
 ## Historical 0.1.1 daily-use handoff
 

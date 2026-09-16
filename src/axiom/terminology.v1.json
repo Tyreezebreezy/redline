@@ -1,15 +1,22 @@
 {
   "schema_version": 1,
-  "snapshot_version": "2026-09-15",
+  "snapshot_version": "2026-09-15.1",
   "license": "CC0-1.0 and REDLINE-curated factual metadata",
   "retrieved": "2026-09-15",
+  "source": {
+    "kind": "bounded reviewed candidate set",
+    "file": "data/terminology/curated.v1.json",
+    "sha256": "e0434515c86f71ab20368108b1d5174c97b781f82e49566cada6b15599ad755f"
+  },
   "records": [
     {
-      "canonical_name": "YouTube",
-      "aliases": ["youtube"],
-      "entity_type": "online service",
-      "source": "Wikidata",
-      "source_id": "Q866",
+      "canonical_name": "Adobe",
+      "aliases": [
+        "adobe"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
       "confidence": "high",
       "ambiguity": null,
       "case_sensitive": false,
@@ -18,9 +25,1778 @@
       "notes": null
     },
     {
+      "canonical_name": "Adobe Acrobat",
+      "aliases": [
+        "adobe acrobat"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Adobe After Effects",
+      "aliases": [
+        "adobe after effects"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Adobe Illustrator",
+      "aliases": [
+        "adobe illustrator"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Adobe InDesign",
+      "aliases": [
+        "adobe indesign"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Adobe Photoshop",
+      "aliases": [
+        "adobe photoshop"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Adobe Premiere Pro",
+      "aliases": [
+        "adobe premiere pro"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Airbnb",
+      "aliases": [
+        "airbnb"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "AirPods",
+      "aliases": [
+        "airpods"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "AirPods Pro",
+      "aliases": [
+        "airpods pro"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Airtable",
+      "aliases": [
+        "airtable"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Akamai",
+      "aliases": [
+        "akamai"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "AlmaLinux",
+      "aliases": [
+        "almalinux"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Amazon EC2",
+      "aliases": [
+        "amazon ec2"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Amazon Echo",
+      "aliases": [
+        "amazon echo"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Amazon S3",
+      "aliases": [
+        "amazon s3"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Amazon Web Services",
+      "aliases": [
+        "amazon web services"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "AMD",
+      "aliases": [
+        "amd"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Android",
+      "aliases": [
+        "android"
+      ],
+      "entity_type": "operating system",
+      "source": "Wikidata",
+      "source_id": "Q94",
+      "confidence": "context-required",
+      "ambiguity": "humanoid robot/common noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent platform context.",
+      "context_after": [
+        "phone",
+        "app",
+        "device",
+        "tablet"
+      ]
+    },
+    {
+      "canonical_name": "Android Studio",
+      "aliases": [
+        "android studio"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Ansible",
+      "aliases": [
+        "ansible"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apache Hadoop",
+      "aliases": [
+        "apache hadoop"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apache Kafka",
+      "aliases": [
+        "apache kafka"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apache Maven",
+      "aliases": [
+        "apache maven"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apache NetBeans",
+      "aliases": [
+        "apache netbeans"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apache Spark",
+      "aliases": [
+        "apache spark"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apache Subversion",
+      "aliases": [
+        "apache subversion"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apple",
+      "aliases": [
+        "apple"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "Wikidata",
+      "source_id": "Q312",
+      "confidence": "context-required",
+      "ambiguity": "fruit/common noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent product/company context.",
+      "context_after": [
+        "product",
+        "device",
+        "computer",
+        "iphone",
+        "ipad",
+        "mac",
+        "watch",
+        "music"
+      ]
+    },
+    {
+      "canonical_name": "Apple TV",
+      "aliases": [
+        "apple tv"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apple TV+",
+      "aliases": [
+        "apple tv+"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Apple Watch",
+      "aliases": [
+        "apple watch"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Arch Linux",
+      "aliases": [
+        "arch linux"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Arduino Nano",
+      "aliases": [
+        "arduino nano"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Arduino Uno",
+      "aliases": [
+        "arduino uno"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Asana",
+      "aliases": [
+        "asana"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "ASP.NET",
+      "aliases": [
+        "asp.net"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Atlassian",
+      "aliases": [
+        "atlassian"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Audible",
+      "aliases": [
+        "audible"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary adjective",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent audio-service context.",
+      "context_before": [
+        "on",
+        "listen",
+        "listened",
+        "open",
+        "opened"
+      ],
+      "context_after": [
+        "app",
+        "audiobook",
+        "account"
+      ]
+    },
+    {
+      "canonical_name": "AutoCAD",
+      "aliases": [
+        "autocad"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Automattic",
+      "aliases": [
+        "automattic"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "AWS",
+      "aliases": [
+        "aws"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Azure DevOps",
+      "aliases": [
+        "azure devops"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Azure Functions",
+      "aliases": [
+        "azure functions"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Azure Kubernetes Service",
+      "aliases": [
+        "azure kubernetes service"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Azure Pipelines",
+      "aliases": [
+        "azure pipelines"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Bandcamp",
+      "aliases": [
+        "bandcamp"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Basecamp",
+      "aliases": [
+        "basecamp"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary location noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent software context.",
+      "context_before": [
+        "in",
+        "open",
+        "opened",
+        "use",
+        "using"
+      ],
+      "context_after": [
+        "app",
+        "project",
+        "account"
+      ]
+    },
+    {
+      "canonical_name": "Bazel",
+      "aliases": [
+        "bazel"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Binance",
+      "aliases": [
+        "binance"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Bitbucket",
+      "aliases": [
+        "bitbucket"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Blackboard Learn",
+      "aliases": [
+        "blackboard learn"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Brave Browser",
+      "aliases": [
+        "brave browser"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Calendly",
+      "aliases": [
+        "calendly"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Canva",
+      "aliases": [
+        "canva"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Canvas LMS",
+      "aliases": [
+        "canvas lms"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Cash App",
+      "aliases": [
+        "cash app"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "ChatGPT",
+      "aliases": [
+        "chatgpt"
+      ],
+      "entity_type": "online service",
+      "source": "Wikidata",
+      "source_id": "Q115564437",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Chegg",
+      "aliases": [
+        "chegg"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Chocolatey",
+      "aliases": [
+        "chocolatey"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Chrome DevTools",
+      "aliases": [
+        "chrome devtools"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Chromecast",
+      "aliases": [
+        "chromecast"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "ChromeOS",
+      "aliases": [
+        "chromeos"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "CircleCI",
+      "aliases": [
+        "circleci"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Clang",
+      "aliases": [
+        "clang"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "CLion",
+      "aliases": [
+        "clion"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Cloudflare",
+      "aliases": [
+        "cloudflare"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Cloudflare Pages",
+      "aliases": [
+        "cloudflare pages"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Cloudflare Workers",
+      "aliases": [
+        "cloudflare workers"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "CMake",
+      "aliases": [
+        "cmake"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Codecademy",
+      "aliases": [
+        "codecademy"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Coinbase",
+      "aliases": [
+        "coinbase"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Confluence",
+      "aliases": [
+        "confluence"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Coursera",
+      "aliases": [
+        "coursera"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Craigslist",
+      "aliases": [
+        "craigslist"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Databricks",
+      "aliases": [
+        "databricks"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "DaVinci Resolve",
+      "aliases": [
+        "davinci resolve"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Debian",
+      "aliases": [
+        "debian"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Deliveroo",
+      "aliases": [
+        "deliveroo"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Deno",
+      "aliases": [
+        "deno"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "DigitalOcean",
+      "aliases": [
+        "digitalocean"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Discord",
+      "aliases": [
+        "discord"
+      ],
+      "entity_type": "online service",
+      "source": "Wikidata",
+      "source_id": "Q22907849",
+      "confidence": "context-required",
+      "ambiguity": "ordinary noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent service context.",
+      "context_before": [
+        "on",
+        "through",
+        "via",
+        "join",
+        "joined",
+        "open",
+        "opened"
+      ],
+      "context_after": [
+        "app",
+        "server",
+        "channel"
+      ]
+    },
+    {
+      "canonical_name": "Disney+",
+      "aliases": [
+        "disney+"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Django",
+      "aliases": [
+        "django"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Docker",
+      "aliases": [
+        "docker"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Docker Compose",
+      "aliases": [
+        "docker compose"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Docker Desktop",
+      "aliases": [
+        "docker desktop"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "DocuSign",
+      "aliases": [
+        "docusign"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "DoorDash",
+      "aliases": [
+        "doordash"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Dropbox",
+      "aliases": [
+        "dropbox"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Duolingo",
+      "aliases": [
+        "duolingo"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "eBay",
+      "aliases": [
+        "ebay"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Eclipse IDE",
+      "aliases": [
+        "eclipse ide"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Edge",
+      "aliases": [
+        "edge"
+      ],
+      "entity_type": "web browser",
+      "source": "Wikidata",
+      "source_id": "Q18698690",
+      "confidence": "context-required",
+      "ambiguity": "ordinary noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent browser context.",
+      "context_before": [
+        "microsoft"
+      ],
+      "context_after": [
+        "browser"
+      ]
+    },
+    {
+      "canonical_name": "edX",
+      "aliases": [
+        "edx"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Elastic Cloud",
+      "aliases": [
+        "elastic cloud"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Elasticsearch",
+      "aliases": [
+        "elasticsearch"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Emacs",
+      "aliases": [
+        "emacs"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "ESLint",
+      "aliases": [
+        "eslint"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Etsy",
+      "aliases": [
+        "etsy"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Evernote",
+      "aliases": [
+        "evernote"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Facebook",
+      "aliases": [
+        "facebook"
+      ],
+      "entity_type": "online service",
+      "source": "Wikidata",
+      "source_id": "Q355",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Facebook Marketplace",
+      "aliases": [
+        "facebook marketplace"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "FastAPI",
+      "aliases": [
+        "fastapi"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Fastly",
+      "aliases": [
+        "fastly"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Fedora",
+      "aliases": [
+        "fedora"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "hat/common noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent operating-system context.",
+      "context_before": [
+        "install",
+        "installed",
+        "use",
+        "using",
+        "run",
+        "running"
+      ],
+      "context_after": [
+        "linux",
+        "system"
+      ]
+    },
+    {
+      "canonical_name": "Figma",
+      "aliases": [
+        "figma"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Final Cut Pro",
+      "aliases": [
+        "final cut pro"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Firebase",
+      "aliases": [
+        "firebase"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "FreeBSD",
+      "aliases": [
+        "freebsd"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "freeCodeCamp",
+      "aliases": [
+        "freecodecamp"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GameMaker",
+      "aliases": [
+        "gamemaker"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GarageBand",
+      "aliases": [
+        "garageband"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GCC",
+      "aliases": [
+        "gcc"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Git LFS",
+      "aliases": [
+        "git lfs"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
       "canonical_name": "GitHub",
-      "aliases": ["github"],
-      "entity_type": "software service",
+      "aliases": [
+        "github"
+      ],
+      "entity_type": "online service",
       "source": "Wikidata",
       "source_id": "Q364",
       "confidence": "high",
@@ -31,9 +1807,1190 @@
       "notes": null
     },
     {
+      "canonical_name": "GitHub Actions",
+      "aliases": [
+        "github actions"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitHub CLI",
+      "aliases": [
+        "github cli"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitHub Codespaces",
+      "aliases": [
+        "github codespaces"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitHub Copilot",
+      "aliases": [
+        "github copilot"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitHub Desktop",
+      "aliases": [
+        "github desktop"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitHub Pages",
+      "aliases": [
+        "github pages"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitLab",
+      "aliases": [
+        "gitlab"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitLab Duo",
+      "aliases": [
+        "gitlab duo"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GitLab Runner",
+      "aliases": [
+        "gitlab runner"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Gmail",
+      "aliases": [
+        "gmail"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Godot Engine",
+      "aliases": [
+        "godot engine"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GoFundMe",
+      "aliases": [
+        "gofundme"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Goodreads",
+      "aliases": [
+        "goodreads"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google",
+      "aliases": [
+        "google"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Analytics",
+      "aliases": [
+        "google analytics"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google App Engine",
+      "aliases": [
+        "google app engine"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google BigQuery",
+      "aliases": [
+        "google bigquery"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Calendar",
+      "aliases": [
+        "google calendar"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Chrome",
+      "aliases": [
+        "google chrome"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Classroom",
+      "aliases": [
+        "google classroom"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Cloud",
+      "aliases": [
+        "google cloud"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Cloud Platform",
+      "aliases": [
+        "google cloud platform"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Colab",
+      "aliases": [
+        "google colab"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Docs",
+      "aliases": [
+        "google docs"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Drive",
+      "aliases": [
+        "google drive"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Keep",
+      "aliases": [
+        "google keep"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Kubernetes Engine",
+      "aliases": [
+        "google kubernetes engine"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Maps",
+      "aliases": [
+        "google maps"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Meet",
+      "aliases": [
+        "google meet"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Nest",
+      "aliases": [
+        "google nest"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Photos",
+      "aliases": [
+        "google photos"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Pixel",
+      "aliases": [
+        "google pixel"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Play",
+      "aliases": [
+        "google play"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Search Console",
+      "aliases": [
+        "google search console"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Sheets",
+      "aliases": [
+        "google sheets"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Google Workspace",
+      "aliases": [
+        "google workspace"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Gradle",
+      "aliases": [
+        "gradle"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Grafana",
+      "aliases": [
+        "grafana"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Grafana Cloud",
+      "aliases": [
+        "grafana cloud"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Grammarly",
+      "aliases": [
+        "grammarly"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "GraphQL",
+      "aliases": [
+        "graphql"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Grubhub",
+      "aliases": [
+        "grubhub"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "HackerRank",
+      "aliases": [
+        "hackerrank"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "HashiCorp",
+      "aliases": [
+        "hashicorp"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "HashiCorp Terraform",
+      "aliases": [
+        "hashicorp terraform"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Heroku",
+      "aliases": [
+        "heroku"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Homebrew",
+      "aliases": [
+        "homebrew"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary noun or adjective",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent package-manager context.",
+      "context_before": [
+        "with",
+        "install",
+        "installed",
+        "use",
+        "using"
+      ],
+      "context_after": [
+        "package",
+        "formula"
+      ]
+    },
+    {
+      "canonical_name": "HomePod",
+      "aliases": [
+        "homepod"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "HubSpot",
+      "aliases": [
+        "hubspot"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Hulu",
+      "aliases": [
+        "hulu"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Hyper-V",
+      "aliases": [
+        "hyper-v"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "IBM",
+      "aliases": [
+        "ibm"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "IBM Cloud",
+      "aliases": [
+        "ibm cloud"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "iMac",
+      "aliases": [
+        "imac"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Instacart",
+      "aliases": [
+        "instacart"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Instagram",
+      "aliases": [
+        "instagram"
+      ],
+      "entity_type": "online service",
+      "source": "Wikidata",
+      "source_id": "Q209330",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Intel",
+      "aliases": [
+        "intel"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "IntelliJ IDEA",
+      "aliases": [
+        "intellij idea"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "iOS",
+      "aliases": [
+        "ios"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "iPad",
+      "aliases": [
+        "ipad"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "iPadOS",
+      "aliases": [
+        "ipados"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "iPhone",
+      "aliases": [
+        "iphone"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "Wikidata",
+      "source_id": "Q2766",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Jenkins",
+      "aliases": [
+        "jenkins"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "JetBrains",
+      "aliases": [
+        "jetbrains"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "JetBrains Rider",
+      "aliases": [
+        "jetbrains rider"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Jira",
+      "aliases": [
+        "jira"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Jupyter Notebook",
+      "aliases": [
+        "jupyter notebook"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "JupyterLab",
+      "aliases": [
+        "jupyterlab"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Kali Linux",
+      "aliases": [
+        "kali linux"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Khan Academy",
+      "aliases": [
+        "khan academy"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Kibana",
+      "aliases": [
+        "kibana"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Kickstarter",
+      "aliases": [
+        "kickstarter"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Kindle",
+      "aliases": [
+        "kindle"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary verb",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent reader/service context.",
+      "context_before": [
+        "on",
+        "read",
+        "open",
+        "opened",
+        "use",
+        "using"
+      ],
+      "context_after": [
+        "book",
+        "app",
+        "library"
+      ]
+    },
+    {
+      "canonical_name": "Kindle Paperwhite",
+      "aliases": [
+        "kindle paperwhite"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Kubernetes",
+      "aliases": [
+        "kubernetes"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Laravel",
+      "aliases": [
+        "laravel"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "LeetCode",
+      "aliases": [
+        "leetcode"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
       "canonical_name": "LinkedIn",
-      "aliases": ["linkedin"],
-      "entity_type": "social network",
+      "aliases": [
+        "linkedin"
+      ],
+      "entity_type": "online service",
       "source": "Wikidata",
       "source_id": "Q213660",
       "confidence": "high",
@@ -45,111 +3002,309 @@
     },
     {
       "canonical_name": "LinkedIn Learning",
-      "aliases": ["linkedin learning"],
+      "aliases": [
+        "linkedin learning"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Linode",
+      "aliases": [
+        "linode"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Linux Mint",
+      "aliases": [
+        "linux mint"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "LLVM",
+      "aliases": [
+        "llvm"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Logic Pro",
+      "aliases": [
+        "logic pro"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mac mini",
+      "aliases": [
+        "mac mini"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mac Pro",
+      "aliases": [
+        "mac pro"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mac Studio",
+      "aliases": [
+        "mac studio"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MacBook",
+      "aliases": [
+        "macbook"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MacBook Air",
+      "aliases": [
+        "macbook air"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MacBook Pro",
+      "aliases": [
+        "macbook pro"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "macOS",
+      "aliases": [
+        "macos"
+      ],
+      "entity_type": "operating system",
+      "source": "Wikidata",
+      "source_id": "Q14116",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mailchimp",
+      "aliases": [
+        "mailchimp"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MariaDB",
+      "aliases": [
+        "mariadb"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MasterClass",
+      "aliases": [
+        "masterclass"
+      ],
       "entity_type": "educational service",
       "source": "REDLINE curated",
       "source_id": null,
       "confidence": "high",
       "ambiguity": null,
       "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Material UI",
+      "aliases": [
+        "material ui"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
       "multiword": true,
       "version": 1,
       "notes": null
     },
     {
-      "canonical_name": "Facebook Marketplace",
-      "aliases": ["facebook marketplace"],
-      "entity_type": "online marketplace",
+      "canonical_name": "Maven Central",
+      "aliases": [
+        "maven central"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mendeley",
+      "aliases": [
+        "mendeley"
+      ],
+      "entity_type": "educational service",
       "source": "REDLINE curated",
       "source_id": null,
       "confidence": "high",
       "ambiguity": null,
       "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mercurial",
+      "aliases": [
+        "mercurial"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Meta Quest",
+      "aliases": [
+        "meta quest"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
       "multiword": true,
       "version": 1,
       "notes": null
     },
     {
-      "canonical_name": "Facebook",
-      "aliases": ["facebook"],
-      "entity_type": "social network",
-      "source": "Wikidata",
-      "source_id": "Q355",
-      "confidence": "high",
-      "ambiguity": null,
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": null
-    },
-    {
-      "canonical_name": "Instagram",
-      "aliases": ["instagram"],
-      "entity_type": "social network",
-      "source": "Wikidata",
-      "source_id": "Q209330",
-      "confidence": "high",
-      "ambiguity": null,
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": null
-    },
-    {
-      "canonical_name": "TikTok",
-      "aliases": ["tiktok"],
-      "entity_type": "online service",
-      "source": "Wikidata",
-      "source_id": "Q48938223",
-      "confidence": "high",
-      "ambiguity": null,
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": null
-    },
-    {
-      "canonical_name": "Reddit",
-      "aliases": ["reddit"],
-      "entity_type": "social network",
-      "source": "Wikidata",
-      "source_id": "Q1136",
-      "confidence": "high",
-      "ambiguity": null,
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": null
-    },
-    {
-      "canonical_name": "ChatGPT",
-      "aliases": ["chatgpt"],
-      "entity_type": "software service",
-      "source": "Wikidata",
-      "source_id": "Q115564437",
-      "confidence": "high",
-      "ambiguity": null,
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": null
-    },
-    {
-      "canonical_name": "OpenAI",
-      "aliases": ["openai"],
-      "entity_type": "technology company",
-      "source": "Wikidata",
-      "source_id": "Q21708200",
-      "confidence": "high",
-      "ambiguity": null,
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": null
-    },
-    {
       "canonical_name": "Microsoft",
-      "aliases": ["microsoft"],
+      "aliases": [
+        "microsoft"
+      ],
       "entity_type": "technology company",
       "source": "Wikidata",
       "source_id": "Q2283",
@@ -162,11 +3317,924 @@
     },
     {
       "canonical_name": "Microsoft 365",
-      "aliases": ["microsoft 365"],
-      "entity_type": "software service",
+      "aliases": [
+        "microsoft 365"
+      ],
+      "entity_type": "productivity software",
       "source": "Wikidata",
       "source_id": "Q775811",
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Access",
+      "aliases": [
+        "microsoft access"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Azure",
+      "aliases": [
+        "microsoft azure"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Edge",
+      "aliases": [
+        "microsoft edge"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Excel",
+      "aliases": [
+        "microsoft excel"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Learn",
+      "aliases": [
+        "microsoft learn"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Outlook",
+      "aliases": [
+        "microsoft outlook"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Project",
+      "aliases": [
+        "microsoft project"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Publisher",
+      "aliases": [
+        "microsoft publisher"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Surface",
+      "aliases": [
+        "microsoft surface"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Teams",
+      "aliases": [
+        "microsoft teams"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Visio",
+      "aliases": [
+        "microsoft visio"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Microsoft Word",
+      "aliases": [
+        "microsoft word"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Miro",
+      "aliases": [
+        "miro"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
       "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MongoDB",
+      "aliases": [
+        "mongodb"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MongoDB Atlas",
+      "aliases": [
+        "mongodb atlas"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Moodle",
+      "aliases": [
+        "moodle"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mozilla",
+      "aliases": [
+        "mozilla"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Mozilla Firefox",
+      "aliases": [
+        "mozilla firefox"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "MySQL",
+      "aliases": [
+        "mysql"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Neovim",
+      "aliases": [
+        "neovim"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "NetBSD",
+      "aliases": [
+        "netbsd"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Netflix",
+      "aliases": [
+        "netflix"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Netlify",
+      "aliases": [
+        "netlify"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "New Relic",
+      "aliases": [
+        "new relic"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Next.js",
+      "aliases": [
+        "next.js"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Nintendo 3DS",
+      "aliases": [
+        "nintendo 3ds"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Nintendo Switch",
+      "aliases": [
+        "nintendo switch"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Node.js",
+      "aliases": [
+        "node.js"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Notepad++",
+      "aliases": [
+        "notepad++"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "npm",
+      "aliases": [
+        "npm"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Nuxt",
+      "aliases": [
+        "nuxt"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "NVIDIA",
+      "aliases": [
+        "nvidia"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OneDrive",
+      "aliases": [
+        "onedrive"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OneNote",
+      "aliases": [
+        "onenote"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OpenAI",
+      "aliases": [
+        "openai"
+      ],
+      "entity_type": "technology company",
+      "source": "Wikidata",
+      "source_id": "Q21708200",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OpenAPI",
+      "aliases": [
+        "openapi"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OpenBSD",
+      "aliases": [
+        "openbsd"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OpenShift",
+      "aliases": [
+        "openshift"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "openSUSE",
+      "aliases": [
+        "opensuse"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "OpenWrt",
+      "aliases": [
+        "openwrt"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Oracle",
+      "aliases": [
+        "oracle"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Oracle Cloud",
+      "aliases": [
+        "oracle cloud"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Oracle VM VirtualBox",
+      "aliases": [
+        "oracle vm virtualbox"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Overleaf",
+      "aliases": [
+        "overleaf"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Paramount+",
+      "aliases": [
+        "paramount+"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Patreon",
+      "aliases": [
+        "patreon"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "PayPal",
+      "aliases": [
+        "paypal"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Peacock",
+      "aliases": [
+        "peacock"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "bird/common noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent streaming-service context.",
+      "context_before": [
+        "on",
+        "watch",
+        "watched",
+        "open",
+        "opened"
+      ],
+      "context_after": [
+        "app",
+        "account"
+      ]
+    },
+    {
+      "canonical_name": "pfSense",
+      "aliases": [
+        "pfsense"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Pinterest",
+      "aliases": [
+        "pinterest"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Pixel Tablet",
+      "aliases": [
+        "pixel tablet"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Pixel Watch",
+      "aliases": [
+        "pixel watch"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "PlayStation",
+      "aliases": [
+        "playstation"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "Wikidata",
+      "source_id": "Q10677",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Pluralsight",
+      "aliases": [
+        "pluralsight"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "pnpm",
+      "aliases": [
+        "pnpm"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "PostgreSQL",
+      "aliases": [
+        "postgresql"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Power Apps",
+      "aliases": [
+        "power apps"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Power Automate",
+      "aliases": [
+        "power automate"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Power BI",
+      "aliases": [
+        "power bi"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Power Platform",
+      "aliases": [
+        "power platform"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
       "ambiguity": null,
       "case_sensitive": false,
       "multiword": true,
@@ -175,7 +4243,9 @@
     },
     {
       "canonical_name": "PowerShell",
-      "aliases": ["powershell"],
+      "aliases": [
+        "powershell"
+      ],
       "entity_type": "development tool",
       "source": "Wikidata",
       "source_id": "Q840410",
@@ -187,12 +4257,1116 @@
       "notes": null
     },
     {
+      "canonical_name": "Prime Video",
+      "aliases": [
+        "prime video"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Prometheus",
+      "aliases": [
+        "prometheus"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Proxmox VE",
+      "aliases": [
+        "proxmox ve"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "PyCharm",
+      "aliases": [
+        "pycharm"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "PyPI",
+      "aliases": [
+        "pypi"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "QuickBooks",
+      "aliases": [
+        "quickbooks"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Quizlet",
+      "aliases": [
+        "quizlet"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Quora",
+      "aliases": [
+        "quora"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "RabbitMQ",
+      "aliases": [
+        "rabbitmq"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Raspberry Pi",
+      "aliases": [
+        "raspberry pi"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Raspberry Pi OS",
+      "aliases": [
+        "raspberry pi os"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "React Native",
+      "aliases": [
+        "react native"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Red Hat",
+      "aliases": [
+        "red hat"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Red Hat Enterprise Linux",
+      "aliases": [
+        "red hat enterprise linux"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Reddit",
+      "aliases": [
+        "reddit"
+      ],
+      "entity_type": "online service",
+      "source": "Wikidata",
+      "source_id": "Q1136",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Redis",
+      "aliases": [
+        "redis"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Robinhood",
+      "aliases": [
+        "robinhood"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Roblox Studio",
+      "aliases": [
+        "roblox studio"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Rocky Linux",
+      "aliases": [
+        "rocky linux"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Rosetta Stone",
+      "aliases": [
+        "rosetta stone"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Ruby on Rails",
+      "aliases": [
+        "ruby on rails"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "RubyGems",
+      "aliases": [
+        "rubygems"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Salesforce",
+      "aliases": [
+        "salesforce"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Samsung",
+      "aliases": [
+        "samsung"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Samsung Galaxy",
+      "aliases": [
+        "samsung galaxy"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "ServiceNow",
+      "aliases": [
+        "servicenow"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "SharePoint",
+      "aliases": [
+        "sharepoint"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Shopify",
+      "aliases": [
+        "shopify"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Skillshare",
+      "aliases": [
+        "skillshare"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Snapchat",
+      "aliases": [
+        "snapchat"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "SolidWorks",
+      "aliases": [
+        "solidworks"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Sonos",
+      "aliases": [
+        "sonos"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Sony",
+      "aliases": [
+        "sony"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "SoundCloud",
+      "aliases": [
+        "soundcloud"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Spotify",
+      "aliases": [
+        "spotify"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "SQLite",
+      "aliases": [
+        "sqlite"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Stack Exchange",
+      "aliases": [
+        "stack exchange"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Stack Overflow",
+      "aliases": [
+        "stack overflow"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Steam",
+      "aliases": [
+        "steam"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent gaming-service context.",
+      "context_before": [
+        "on",
+        "open",
+        "opened",
+        "launch",
+        "launched",
+        "play",
+        "played",
+        "use",
+        "using"
+      ],
+      "context_after": [
+        "client",
+        "store",
+        "library",
+        "game",
+        "deck"
+      ]
+    },
+    {
+      "canonical_name": "Steam Deck",
+      "aliases": [
+        "steam deck"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Sublime Text",
+      "aliases": [
+        "sublime text"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Substack",
+      "aliases": [
+        "substack"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Supabase",
+      "aliases": [
+        "supabase"
+      ],
+      "entity_type": "cloud service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Surface Laptop",
+      "aliases": [
+        "surface laptop"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Surface Pro",
+      "aliases": [
+        "surface pro"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Surface Studio",
+      "aliases": [
+        "surface studio"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "SurveyMonkey",
+      "aliases": [
+        "surveymonkey"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Tailwind CSS",
+      "aliases": [
+        "tailwind css"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Tauri",
+      "aliases": [
+        "tauri"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "TeamCity",
+      "aliases": [
+        "teamcity"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Teams",
+      "aliases": [
+        "teams"
+      ],
+      "entity_type": "software service",
+      "source": "Wikidata",
+      "source_id": "Q28406404",
+      "confidence": "context-required",
+      "ambiguity": "ordinary plural noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent service context.",
+      "context_before": [
+        "microsoft"
+      ],
+      "context_after": [
+        "meeting",
+        "app"
+      ]
+    },
+    {
+      "canonical_name": "Telegram",
+      "aliases": [
+        "telegram"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent messaging-service context.",
+      "context_before": [
+        "on",
+        "via",
+        "send",
+        "sent",
+        "open",
+        "opened"
+      ],
+      "context_after": [
+        "app",
+        "channel",
+        "group"
+      ]
+    },
+    {
+      "canonical_name": "Terraform",
+      "aliases": [
+        "terraform"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "The Odin Project",
+      "aliases": [
+        "the odin project"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "TikTok",
+      "aliases": [
+        "tiktok"
+      ],
+      "entity_type": "online service",
+      "source": "Wikidata",
+      "source_id": "Q48938223",
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Tor Browser",
+      "aliases": [
+        "tor browser"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Travis CI",
+      "aliases": [
+        "travis ci"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Trello",
+      "aliases": [
+        "trello"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "TrueNAS",
+      "aliases": [
+        "truenas"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Tumblr",
+      "aliases": [
+        "tumblr"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "TurboTax",
+      "aliases": [
+        "turbotax"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "tvOS",
+      "aliases": [
+        "tvos"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Twitch",
+      "aliases": [
+        "twitch"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary verb or noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent streaming-service context.",
+      "context_before": [
+        "on",
+        "watch",
+        "watched",
+        "stream",
+        "streamed",
+        "open",
+        "opened"
+      ],
+      "context_after": [
+        "stream",
+        "channel",
+        "chat"
+      ]
+    },
+    {
+      "canonical_name": "Ubuntu",
+      "aliases": [
+        "ubuntu"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Udemy",
+      "aliases": [
+        "udemy"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Unity Editor",
+      "aliases": [
+        "unity editor"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Unreal Engine",
+      "aliases": [
+        "unreal engine"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Venmo",
+      "aliases": [
+        "venmo"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Vercel",
+      "aliases": [
+        "vercel"
+      ],
+      "entity_type": "technology company",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Vimeo",
+      "aliases": [
+        "vimeo"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
       "canonical_name": "Visual Studio",
-      "aliases": ["visual studio"],
+      "aliases": [
+        "visual studio"
+      ],
       "entity_type": "development tool",
       "source": "Wikidata",
       "source_id": "Q134067",
-      "confidence": "high",
+      "confidence": "multiword-high",
       "ambiguity": null,
       "case_sensitive": false,
       "multiword": true,
@@ -201,11 +5375,13 @@
     },
     {
       "canonical_name": "Visual Studio Code",
-      "aliases": ["visual studio code"],
+      "aliases": [
+        "visual studio code"
+      ],
       "entity_type": "development tool",
       "source": "Wikidata",
       "source_id": "Q19841877",
-      "confidence": "high",
+      "confidence": "multiword-high",
       "ambiguity": null,
       "case_sensitive": false,
       "multiword": true,
@@ -213,11 +5389,13 @@
       "notes": null
     },
     {
-      "canonical_name": "iPhone",
-      "aliases": ["iphone"],
-      "entity_type": "product",
-      "source": "Wikidata",
-      "source_id": "Q2766",
+      "canonical_name": "Vite",
+      "aliases": [
+        "vite"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
       "confidence": "high",
       "ambiguity": null,
       "case_sensitive": false,
@@ -226,22 +5404,341 @@
       "notes": null
     },
     {
-      "canonical_name": "macOS",
-      "aliases": ["macos"],
+      "canonical_name": "VLC media player",
+      "aliases": [
+        "vlc media player"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "VMware Fusion",
+      "aliases": [
+        "vmware fusion"
+      ],
       "entity_type": "operating system",
-      "source": "Wikidata",
-      "source_id": "Q14116",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "VMware Workstation",
+      "aliases": [
+        "vmware workstation"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Vue.js",
+      "aliases": [
+        "vue.js"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
       "confidence": "high",
       "ambiguity": null,
       "case_sensitive": false,
       "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "watchOS",
+      "aliases": [
+        "watchos"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Webflow",
+      "aliases": [
+        "webflow"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Webpack",
+      "aliases": [
+        "webpack"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "WebStorm",
+      "aliases": [
+        "webstorm"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "WhatsApp",
+      "aliases": [
+        "whatsapp"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Windows",
+      "aliases": [
+        "windows"
+      ],
+      "entity_type": "operating system",
+      "source": "Wikidata",
+      "source_id": "Q1406",
+      "confidence": "context-required",
+      "ambiguity": "ordinary plural noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent operating-system context.",
+      "context_before": [
+        "microsoft",
+        "install",
+        "installed",
+        "update",
+        "updated",
+        "run",
+        "running",
+        "use",
+        "using",
+        "upgrade",
+        "upgraded"
+      ],
+      "context_after": [
+        "10",
+        "11",
+        "server",
+        "pc"
+      ]
+    },
+    {
+      "canonical_name": "Windows 10",
+      "aliases": [
+        "windows 10"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Windows 11",
+      "aliases": [
+        "windows 11"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Windows Server",
+      "aliases": [
+        "windows server"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Windows Subsystem for Linux",
+      "aliases": [
+        "windows subsystem for linux"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "WinGet",
+      "aliases": [
+        "winget"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Wolfram Alpha",
+      "aliases": [
+        "wolfram alpha"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "WooCommerce",
+      "aliases": [
+        "woocommerce"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "WordPress",
+      "aliases": [
+        "wordpress"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
+    },
+    {
+      "canonical_name": "Workday",
+      "aliases": [
+        "workday"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "context-required",
+      "ambiguity": "ordinary noun",
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": "Requires adjacent software context.",
+      "context_before": [
+        "in",
+        "open",
+        "opened",
+        "use",
+        "using"
+      ],
+      "context_after": [
+        "app",
+        "account"
+      ]
+    },
+    {
+      "canonical_name": "WSL 2",
+      "aliases": [
+        "wsl 2"
+      ],
+      "entity_type": "operating system",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": true,
       "version": 1,
       "notes": null
     },
     {
       "canonical_name": "Xbox",
-      "aliases": ["xbox"],
-      "entity_type": "product",
+      "aliases": [
+        "xbox"
+      ],
+      "entity_type": "consumer product or service",
       "source": "Wikidata",
       "source_id": "Q132020",
       "confidence": "high",
@@ -252,11 +5749,13 @@
       "notes": null
     },
     {
-      "canonical_name": "PlayStation",
-      "aliases": ["playstation"],
-      "entity_type": "product",
-      "source": "Wikidata",
-      "source_id": "Q10677",
+      "canonical_name": "Xcode",
+      "aliases": [
+        "xcode"
+      ],
+      "entity_type": "development tool",
+      "source": "REDLINE curated",
+      "source_id": null,
       "confidence": "high",
       "ambiguity": null,
       "case_sensitive": false,
@@ -265,91 +5764,94 @@
       "notes": null
     },
     {
-      "canonical_name": "Windows",
-      "aliases": ["windows"],
-      "entity_type": "operating system",
-      "source": "Wikidata",
-      "source_id": "Q1406",
-      "confidence": "context-required",
-      "ambiguity": "ordinary plural noun",
-      "case_sensitive": false,
-      "multiword": false,
-      "version": 1,
-      "notes": "Requires adjacent product context.",
-      "context_before": ["microsoft"],
-      "context_after": ["10", "11", "server", "pc"]
-    },
-    {
-      "canonical_name": "Discord",
-      "aliases": ["discord"],
+      "canonical_name": "YouTube",
+      "aliases": [
+        "youtube"
+      ],
       "entity_type": "online service",
       "source": "Wikidata",
-      "source_id": "Q22907849",
-      "confidence": "context-required",
-      "ambiguity": "ordinary noun",
+      "source_id": "Q866",
+      "confidence": "high",
+      "ambiguity": null,
       "case_sensitive": false,
       "multiword": false,
       "version": 1,
-      "notes": "Requires adjacent service context.",
-      "context_after": ["app", "server", "channel"]
+      "notes": null
     },
     {
-      "canonical_name": "Apple",
-      "aliases": ["apple"],
-      "entity_type": "technology company",
-      "source": "Wikidata",
-      "source_id": "Q312",
-      "confidence": "context-required",
-      "ambiguity": "fruit/common noun",
+      "canonical_name": "YouTube Music",
+      "aliases": [
+        "youtube music"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
       "case_sensitive": false,
-      "multiword": false,
+      "multiword": true,
       "version": 1,
-      "notes": "Requires adjacent product/company context.",
-      "context_after": ["iphone", "ipad", "mac", "watch", "music"]
+      "notes": null
     },
     {
-      "canonical_name": "Edge",
-      "aliases": ["edge"],
-      "entity_type": "web browser",
-      "source": "Wikidata",
-      "source_id": "Q18698690",
-      "confidence": "context-required",
-      "ambiguity": "ordinary noun",
+      "canonical_name": "YouTube Studio",
+      "aliases": [
+        "youtube studio"
+      ],
+      "entity_type": "online service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "multiword-high",
+      "ambiguity": null,
       "case_sensitive": false,
-      "multiword": false,
+      "multiword": true,
       "version": 1,
-      "notes": "Requires adjacent browser context.",
-      "context_before": ["microsoft"],
-      "context_after": ["browser"]
+      "notes": null
     },
     {
-      "canonical_name": "Teams",
-      "aliases": ["teams"],
-      "entity_type": "software service",
-      "source": "Wikidata",
-      "source_id": "Q28406404",
-      "confidence": "context-required",
-      "ambiguity": "ordinary plural noun",
+      "canonical_name": "Zelle",
+      "aliases": [
+        "zelle"
+      ],
+      "entity_type": "consumer product or service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
       "case_sensitive": false,
       "multiword": false,
       "version": 1,
-      "notes": "Requires adjacent service context.",
-      "context_before": ["microsoft"],
-      "context_after": ["meeting", "app"]
+      "notes": null
     },
     {
-      "canonical_name": "Android",
-      "aliases": ["android"],
-      "entity_type": "operating system",
-      "source": "Wikidata",
-      "source_id": "Q94",
-      "confidence": "context-required",
-      "ambiguity": "humanoid robot/common noun",
+      "canonical_name": "Zendesk",
+      "aliases": [
+        "zendesk"
+      ],
+      "entity_type": "productivity software",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
       "case_sensitive": false,
       "multiword": false,
       "version": 1,
-      "notes": "Requires adjacent platform context.",
-      "context_after": ["phone", "app", "device"]
+      "notes": null
+    },
+    {
+      "canonical_name": "Zotero",
+      "aliases": [
+        "zotero"
+      ],
+      "entity_type": "educational service",
+      "source": "REDLINE curated",
+      "source_id": null,
+      "confidence": "high",
+      "ambiguity": null,
+      "case_sensitive": false,
+      "multiword": false,
+      "version": 1,
+      "notes": null
     }
   ]
 }
