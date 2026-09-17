@@ -30,9 +30,23 @@ Status values: **PASS**, **FAIL**, **NOT TESTED**, or **REQUIRES MANUAL VERIFICA
   GHSA-j95f-988m-3j2f; peer checks and production pnpm audit report no issues.
 - **PASS** — Ponytail review found no removable abstraction without weakening
   single-owner storage, editor mapping, validation, accessibility, or safety.
-- **NOT TESTED** — clean tagged-commit secret scan and exact-tag artifact build.
-- **NOT TESTED** — 0.2.0 installer artifacts, hashes, install/reopen smoke, and
-  private Gitea release download verification.
+- **PASS** — clean `b8ba8999ce8b6777a6adab743c95fa70e65d7c72`
+  release-commit secret scan and exact-tag artifact builds.
+- **PASS** — both NSIS archives pass 7-Zip integrity checks. The lightweight
+  installer excludes Qwen, the bundled installer contains the pinned
+  1,117,320,736-byte Qwen resource, and the offline package contains the same
+  model plus its installation instructions.
+- **PASS** — exact release artifact identities:
+  - `REDLINE_0.2.0_optional-model-setup.exe` — 142,438,144 bytes — SHA-256
+    `78EF5FC5ACEEE8CF295F5C4A5FC75BE5DB14FC111AABC2478DA358E898CE0F1F`
+  - `REDLINE_0.2.0_bundled-model-setup.exe` — 1,237,141,723 bytes — SHA-256
+    `94624A9FCCE781849BCD6D1853B1CB59CD5B60DC170373CD7E2CD2ECA8B85E5C`
+  - `REDLINE_Transform_Model_0.2.0_offline.zip` — 1,092,943,883 bytes —
+    SHA-256
+    `7290A7F209226001E50ACDAF52F3DC1E9CF766632BDAA4B954F6951F03017406`
+- **BLOCKED** — private Gitea push, release creation, attachment upload, and
+  download/hash readback require a fresh explicit owner authorization after
+  the environment blocked the external write.
 
 ## Manual boundaries
 
@@ -41,6 +55,10 @@ Status values: **PASS**, **FAIL**, **NOT TESTED**, or **REQUIRES MANUAL VERIFICA
 - **REQUIRES MANUAL VERIFICATION** — screen-reader behavior beyond the verified
   semantic names, live regions, keyboard flow, focus restoration, and visible
   focus states.
+- **NOT TESTED** — an exact production-identifier installer launch/reopen was
+  intentionally not run because this machine already contains real REDLINE
+  application data. The same source passed isolated native launch/reopen QA;
+  the exact installers passed non-installing archive and resource verification.
 
 ## Known limitations
 

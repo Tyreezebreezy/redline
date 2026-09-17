@@ -233,3 +233,31 @@ Append entries; do not rewrite earlier evidence.
 - Added a bounded WebView2 live-capture probe that passes PCM only through local IPC/stdin, closes tracks on normal and setup-failure paths, and never persists audio. It awaits the owner-run microphone/laptop test.
 - Kept production REDLINE unchanged. Mapping and deterministic regressions are clean. Hybrid WER is 0.221, median first partial is 1.135 seconds, and median endpoint-to-final is 4.863 seconds.
 - The real laptop microphone gate and 20-cycle live stability gate are **NOT YET RUN**. This is an experimental checkpoint, not a passed Dictation 2.0 result; do not begin production integration until those gates and the latency/backlog blockers are reviewed.
+
+## 2026-09-17 — 0.2.0 release artifacts built; publication authorization pending
+
+- Fast-forwarded local `main` to the verified release commit
+  `b8ba8999ce8b6777a6adab743c95fa70e65d7c72` and created annotated tag
+  `v0.2.0` at that exact commit. Protected `v0.1.0` remains unchanged.
+- Passed the exact release-commit Gitleaks scan and built both NSIS variants plus
+  the offline Transform/My Voice model package from the tagged source.
+- Recorded SHA-256 identities: optional-model installer
+  `78EF5FC5ACEEE8CF295F5C4A5FC75BE5DB14FC111AABC2478DA358E898CE0F1F`,
+  bundled-model installer
+  `94624A9FCCE781849BCD6D1853B1CB59CD5B60DC170373CD7E2CD2ECA8B85E5C`,
+  and offline model package
+  `7290A7F209226001E50ACDAF52F3DC1E9CF766632BDAA4B954F6951F03017406`.
+- Both NSIS archives passed non-installing integrity checks. The lightweight
+  package excludes Qwen; the all-in-one package and offline ZIP contain the
+  exact pinned 1,117,320,736-byte Qwen model. Qwen and Whisper source resources
+  match their runtime-pinned hashes.
+- Did not launch the production-identifier artifact because this workstation
+  contains real REDLINE app data. The same source already passed isolated
+  native launch/reopen QA, and the exact artifacts passed archive/resource
+  checks.
+- Private Gitea push/release/upload was blocked by the execution environment as
+  an external write. Do not retry until the owner gives fresh explicit
+  authorization after being informed. No force-push, retag, release mutation,
+  or artifact upload occurred.
+- Live Dictation 2.0 remains deferred; the laptop live-microphone and 20-cycle
+  stability gates remain outstanding.

@@ -5,8 +5,10 @@
 - Branch: `codex/redline-1.0-humanizer`
 - Exact baseline: `d6243a71fd53f91e1954c139104bd3a20c474c08`
 - Status: Humanizer implementation, rendered/native QA, full regressions,
-  security audit, and production NSIS preflight complete; clean release
-  checkpoint/tag and exact-tag artifacts remain
+  security audit, clean release checkpoint/tag, and exact-tag artifacts are
+  complete locally; private Gitea publication is blocked pending a fresh
+  explicit owner authorization after the environment rejected the external
+  write
 - Product owner model: one implicit local owner; no Guest, accounts, named User
   Profiles, profile switching, or profile-owned documents
 - Production dictation status: unchanged and still available
@@ -15,10 +17,13 @@
 
 ### Active objective
 
-Create the clean release checkpoint, build exact-tag artifacts, and publish the
-private downloadable stable release. My Voice is an optional, preview-first local
-rewrite with exactly Natural, Professional, and Academic lanes. Writing Context
-is the independent General/Professional/Academic AXIOM configuration.
+Publish the already-built exact-tag artifacts as the private downloadable stable
+release once the owner explicitly reauthorizes that external write. Local
+`main` and annotated `v0.2.0` resolve to
+`b8ba8999ce8b6777a6adab743c95fa70e65d7c72`. My Voice is an optional,
+preview-first local rewrite with exactly Natural, Professional, and Academic
+lanes. Writing Context is the independent General/Professional/Academic AXIOM
+configuration.
 
 The abandoned multi-user Profile branches remain research history only. They
 must not be merged into the product branch. Personalization belongs to the
