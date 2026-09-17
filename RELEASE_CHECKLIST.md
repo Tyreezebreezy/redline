@@ -1,38 +1,54 @@
-# REDLINE 0.1.0 release checklist
+# REDLINE 0.2.0 release checklist
 
 Status values: **PASS**, **FAIL**, **NOT TESTED**, or **REQUIRES MANUAL VERIFICATION**.
 
 ## Automated release gates
 
-- **PASS** — version is `0.1.0` in `package.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`.
-- **PASS** — `pnpm install --frozen-lockfile` with pinned pnpm 11.16.0.
-- **PASS** — TypeScript, Biome, frontend production build, Rust formatting, Clippy with warnings denied, and Tauri release build.
-- **PASS** — current-source NSIS package generated in an isolated temporary target (142,425,036 bytes), verified, then removed; published artifacts were not overwritten.
-- **PASS** — foundation, editor, dictation mapping, Transform mapping/safety, AXIOM mapping, SQLite lifecycle, autosave, profile, dictionary, and migration tests.
-- **PASS** — 183-case AXIOM corpus: 47/47 expected findings; zero unexplained false positives, misses, protected-span failures, or mapping failures.
-- **PASS** — 26-case dictation corpus: WER 0.215; silence/no-speech produced no insertion.
-- **PASS** — 40-case Transform corpus: all surviving presets completed with zero protected-token mutations or prompt-injection escapes.
-- **PASS** — rendered desktop checks at 1024×720, 1366×768, 1440×900, and 1920×1080; no horizontal overflow or console/runtime errors.
-- **PASS** — bounded Tauri command allowlist, production/development CSP, Permissions Policy, local model hashes, SQLite input bounds, ephemeral audio handling, and zero-network architecture reviewed.
-- **PASS** — Git-history secret scan found no leaks. Current dependency scan found no pnpm advisories; its one Cargo advisory is an inactive Linux-only `glib` dependency and is absent from the Windows target graph.
-- **PASS** — release artifacts match their published SHA-256 hashes:
-  - `REDLINE_0.1.0_bundled-model-setup.exe`: `12E436CD928C40E36002D098CF490BE9213BF3B0ABFC023E676A48CD41216CD6`
-  - `REDLINE_0.1.0_optional-model-setup.exe`: `1D9E45183BF1318392D8E5C0516DE5E9C53423C626B9E002B4679813F8EE811F`
-  - `REDLINE_Transform_Model_0.1.0_offline.zip`: `73AE6DAD5729F69001A2CB1124C717D6E8FB515EF67DF80F11FA2B911BE60C5B`
+- **PASS** — package, Rust, Tauri, lockfile, and visible versions are `0.2.0`.
+- **PASS** — fast TypeScript, Biome, editor, persistence, dictation, Transform,
+  Humanizer, AXIOM, grammar-harness, terminology, and native unit checks.
+- **PASS** — 24-case Humanizer corpus: 20 usable local suggestions, three safe
+  prompt-injection refusals, one safe Academic grandiosity refusal, and zero
+  deterministic or terminology mutations.
+- **PASS** — rendered checks at 720×480, 800×540, 800×1200, 960×540, 960×1000,
+  1024×720, 1366×768, 1440×900, and 1920×1080 with no application overflow,
+  panel escape, console error, or external request.
+- **PASS** — isolated native WebView2 smoke for all three My Voice lanes,
+  source-untouched Cancel, explicit Accept, one-step undo/redo, stale-source
+  refusal, independent Writing Context, persistence, and zero external requests.
+- **PASS** — 290-case AXIOM benchmark and grammar release gate: 94/94 required
+  findings, zero unexplained false positives or misses, 22 documented known
+  misses, nine documented limitations, and zero mapping/protection failures.
+- **PASS** — 40-case Transform corpus: zero protected-token mutations or
+  prompt-injection escapes. The exact accepted Transform v1 prompt shape is
+  regression-locked separately from the Humanizer contract.
+- **PASS** — 26-case production dictation corpus: WER 0.215; silence,
+  background-noise, and no-speech controls produced no insertion.
+- **PASS** — Rust formatting, Clippy with warnings denied, frontend production
+  build, and Tauri/NSIS production preflight build.
+- **PASS** — Tiptap packages patched together from 3.30.0 to exact 3.30.5 for
+  GHSA-j95f-988m-3j2f; peer checks and production pnpm audit report no issues.
+- **PASS** — Ponytail review found no removable abstraction without weakening
+  single-owner storage, editor mapping, validation, accessibility, or safety.
+- **NOT TESTED** — clean tagged-commit secret scan and exact-tag artifact build.
+- **NOT TESTED** — 0.2.0 installer artifacts, hashes, install/reopen smoke, and
+  private Gitea release download verification.
 
-## Manual smoke tests
+## Manual boundaries
 
-- **REQUIRES MANUAL VERIFICATION** — clean Windows install, Start Menu launch, upgrade, uninstall choices, and unsigned SmartScreen presentation.
-- **REQUIRES MANUAL VERIFICATION** — physical microphone permission allow/deny/recovery, repeated capture, cancellation, and idle microphone release.
-- **REQUIRES MANUAL VERIFICATION** — final keyboard-only and screen-reader pass in the packaged WebView2 application.
-
-## Release blockers
-
-None identified.
+- **REQUIRES MANUAL VERIFICATION** — physical microphone allow/deny/recovery and
+  live capture on the owner's actual target laptop hardware.
+- **REQUIRES MANUAL VERIFICATION** — screen-reader behavior beyond the verified
+  semantic names, live regions, keyboard flow, focus restoration, and visible
+  focus states.
 
 ## Known limitations
 
-- The SQLite database is not encrypted at rest, and local recovery history is not an off-device backup.
+- The SQLite database is not encrypted at rest, and local recovery history is
+  not an off-device backup.
 - The unsigned private-use release may trigger SmartScreen.
-- The historical 0.0.9 installer predates downgrade protection and can overwrite 0.1.0 if deliberately rerun. Installers produced for 0.1.0 and later retain downgrade protection.
-- Transform requires the separately verified optional offline model unless the bundled-model installer is used.
+- The historical 0.0.9 installer predates downgrade protection; 0.1.0 and later
+  installers retain the guard.
+- Transform and My Voice require the optional offline Qwen model unless the
+  bundled-model installer is used.
+- Live Dictation 2.0 remains deferred.

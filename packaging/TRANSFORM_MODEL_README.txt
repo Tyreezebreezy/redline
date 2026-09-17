@@ -1,6 +1,7 @@
-REDLINE optional offline Transform model — 0.1.0
+REDLINE optional offline Transform model — 0.2.0
 
-This package enables the Concise, Professional, and Academic Transform presets.
+This package enables the Concise, Professional, and Academic Transform presets
+and the Natural, Professional, and Academic My Voice lanes.
 REDLINE performs all rewriting on this computer. It does not use a cloud service
 and it does not include a model downloader.
 

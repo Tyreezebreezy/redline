@@ -4,8 +4,9 @@
 
 - Branch: `codex/redline-1.0-humanizer`
 - Exact baseline: `d6243a71fd53f91e1954c139104bd3a20c474c08`
-- Status: Humanizer implementation and deterministic/model validation complete;
-  rendered/native release QA remains in progress
+- Status: Humanizer implementation, rendered/native QA, full regressions,
+  security audit, and production NSIS preflight complete; clean release
+  checkpoint/tag and exact-tag artifacts remain
 - Product owner model: one implicit local owner; no Guest, accounts, named User
   Profiles, profile switching, or profile-owned documents
 - Production dictation status: unchanged and still available
@@ -14,8 +15,8 @@
 
 ### Active objective
 
-Finish rendered/native QA, full release regression, packaging, and a private
-downloadable stable release. My Voice is an optional, preview-first local
+Create the clean release checkpoint, build exact-tag artifacts, and publish the
+private downloadable stable release. My Voice is an optional, preview-first local
 rewrite with exactly Natural, Professional, and Academic lanes. Writing Context
 is the independent General/Professional/Academic AXIOM configuration.
 

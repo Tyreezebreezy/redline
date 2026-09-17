@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-09-17
 
 ### Changed
 
@@ -12,6 +12,8 @@
   Guests, profile switching, or user-scoped data.
 - Protected canonical/personal terminology during My Voice acceptance and
   retained existing stale-range, invariant, undo, autosave, and AXIOM safety.
+- Updated the existing Tiptap editor packages together to the security-patched
+  3.30.5 release without changing the approved schema or feature scope.
 - Clarified the persistent personal-dictionary action as **Always allow word**.
 - Added shared engineering handoff and real-world finding records.
 - Extended AXIOM benchmark reporting to separate documented grammar-engine misses from unexplained regressions.

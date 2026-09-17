@@ -322,13 +322,7 @@ impl Engine {
         model_load_ms: u128,
         cancelled: &AtomicBool,
     ) -> TransformResult<TransformResponse> {
-        let user = serde_json::to_string(&json!({
-            "mode": request.mode.as_str(),
-            "preset": request.preset.as_str(),
-            "presetContract": request.preset.contract(request.mode),
-            "source": request.text,
-        }))
-        .map_err(|error| error.to_string())?;
+        let user = request_prompt(&request)?;
         let template = self
             .model
             .chat_template(None)
@@ -470,6 +464,23 @@ impl Engine {
             text,
         })
     }
+}
+
+fn request_prompt(request: &TransformRequest) -> TransformResult<String> {
+    let payload = match request.mode {
+        RewriteMode::Transform => json!({
+            "preset": request.preset.as_str(),
+            "presetContract": request.preset.contract(request.mode),
+            "source": request.text,
+        }),
+        RewriteMode::Humanizer => json!({
+            "mode": request.mode.as_str(),
+            "preset": request.preset.as_str(),
+            "presetContract": request.preset.contract(request.mode),
+            "source": request.text,
+        }),
+    };
+    serde_json::to_string(&payload).map_err(|error| error.to_string())
 }
 
 fn validate_request(request: &TransformRequest) -> TransformResult<()> {
@@ -748,6 +759,20 @@ mod tests {
         assert!(!contains_prompt_injection(
             "I ignored the prior warning because it was outdated."
         ));
+        assert_eq!(
+            request_prompt(&request("text", TransformPreset::Concise)).unwrap(),
+            r#"{"preset":"concise","presetContract":"Make the writing clearer and shorter. Remove redundancy, not details. Do not summarize.","source":"text"}"#
+        );
+        assert!(
+            request_prompt(&TransformRequest {
+                request_id: "voice-prompt".into(),
+                text: "text".into(),
+                mode: RewriteMode::Humanizer,
+                preset: TransformPreset::Natural,
+            })
+            .unwrap()
+            .contains(r#""mode":"humanizer""#)
+        );
         assert!(has_academic_style_drift(
             "I explain why the character changes after seeing the consequences.",
             "I elucidate why the character changes after seeing the repercussions."
@@ -813,8 +838,11 @@ mod tests {
             assert!(!response.text.trim().is_empty(), "{} was empty", case.id);
             assert!(
                 response.invariants.protected_token_mutations == 0,
-                "{} mutated protected tokens",
-                case.id
+                "{} mutated protected tokens in {:?}: missing={:?}, invented={:?}",
+                case.id,
+                response.text,
+                response.invariants.missing,
+                response.invariants.invented,
             );
             if let Some(forbidden) = case.forbidden_exact_output {
                 assert_ne!(

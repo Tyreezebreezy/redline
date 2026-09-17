@@ -2,6 +2,39 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-17 — 0.2.0 Humanizer release candidate verified
+
+- Aligned package, Rust, Tauri, lockfile, visible UI, model-package copy, and
+  release documentation at `0.2.0`; preserved `v0.1.0` unchanged.
+- Passed rendered checks at 720×480, 800×540, 800×1200, 960×540, 960×1000,
+  1024×720, 1366×768, 1440×900, and 1920×1080 with contained internal scroll,
+  focus restoration, all themes, no application overflow, no console errors,
+  and no external requests.
+- Passed isolated native WebView2/Qwen smoke for Natural, Professional, and
+  Academic previews, source-untouched Cancel, explicit Accept, one-step
+  undo/redo, touched-source refusal, settings/document reload persistence, and
+  independent Writing Context.
+- Restored the exact accepted Transform v1 prompt payload after its new
+  redundant mode field changed the deterministic stream and exposed a
+  protected-version mutation. Added a regression assertion and reran the full
+  40-case corpus with zero protected-token or injection failures.
+- Passed the 24-case Humanizer corpus again and the unchanged 26-case production
+  dictation corpus at WER 0.215 with safe silence/noise/no-speech behavior.
+- Passed the 290-case AXIOM/grammar gates at 94/94 with zero unexplained false
+  positives/misses and the 377-record terminology tests/benchmark.
+- The production audit found GHSA-j95f-988m-3j2f in Tiptap 3.30.0. Updated only
+  the existing approved Tiptap set and its two menu transitive packages to exact
+  3.30.5. Peer checks and the production pnpm audit are now clean; notices were
+  regenerated and the full editor/rendered regression passed afterward.
+- Verified one bounded new Tauri command, unchanged CSP/Permissions Policy, no
+  new dependency or network authority, Rust fmt/Clippy, production frontend,
+  and a successful 0.2.0 NSIS preflight build.
+- Ponytail review retained the two small editor-neutral workflow types and the
+  singleton settings row because removing them would weaken required safety or
+  conflate Transform with My Voice. No speculative profile/trait system exists.
+- Exact-tag artifact builds, hashes, install smoke, private Gitea publication,
+  and download readback remain. Live Dictation 2.0 remains deferred.
+
 ## 2026-09-16 — single-owner My Voice implementation validated
 
 - Created `codex/redline-1.0-humanizer` from exact accepted baseline
