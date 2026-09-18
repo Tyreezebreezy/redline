@@ -1,5 +1,41 @@
 # REDLINE current work
 
+## AXIOM 2.0 American English foundation + contextual GEC research
+
+- Branch: `opencode/redline-axiom-2-research`
+- Baseline: `a172d006decece1b72e5ffbc2a9b7f1c75877019` (`main`, post-0.2.0)
+- Status: Stage A (contracts) complete; Writing Context width fix committed;
+  Stages B-F (lexical/semantic prototypes, evaluation/corpus, contextual GEC
+  bakeoff, resolver prototype, recommendation) are pending and evidence-gated
+- Contracts: `docs/engineering/axiom-2/` (architecture, American English
+  standard, source registry, evaluation, contextual GEC, licensing, planning
+  gate)
+- Product model unchanged: single-user, local-first, offline-capable,
+  precision over nagging; Writing Context is General/Professional/Academic
+  (not profiles); My Voice is Natural/Professional/Academic
+
+### Active objective
+
+Produce the evidence required to decide whether a local contextual GEC layer
+should join Harper + deterministic AXIOM, without regressing the 290-case
+AXIOM floor (94/94, zero unexplained false positives/misses), the 377-record
+terminology floor, privacy, speed, or voice preservation.
+
+### Stage exit summary
+
+- Stage A complete: contracts written and internally consistent.
+- Next: Stage B (Harper lexical audit, ESDB/SCOWL experiment, Open English
+  WordNet prototype), then Stage C (ERRANT/corpus expansion), Stage D
+  (contextual GEC bakeoff), Stage E (resolver prototype), Stage F
+  (recommendation only).
+
+### Hard stops
+
+No production contextual-GEC integration, no Harper replacement, no new model
+in the installer, no broad correction-behavior change, no Clarity/Tone, no
+Dictation 2.0 resume, no multi-user resurrection, without explicit owner
+instruction. Return evidence first.
+
 ## REDLINE single-owner Humanizer checkpoint
 
 - Branch: `codex/redline-1.0-humanizer`

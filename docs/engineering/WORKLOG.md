@@ -2,6 +2,39 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-18 — AXIOM 2.0 Stage A: contracts + Writing Context fix
+
+- Verified repository pre-flight against Gitea: `origin` is
+  `[private-git-server]`; local and remote `main` are
+  `a172d006decece1b72e5ffbc2a9b7f1c75877019`; annotated `v0.2.0` resolves to
+  `b8ba8999ce8b6777a6adab743c95fa70e65d7c72` and `v0.1.0` to
+  `b775095666b45ce283d02e5875f7516bb936f83b`, both present on origin.
+- Confirmed the previously blocked 0.2.0 release publication is now reflected
+  remotely (tags and all `codex/*` branches exist on origin); did not mutate
+  any release or artifact.
+- Created `opencode/redline-axiom-2-research` from `main`.
+- Fixed the bounded Writing Context width defect: the `.profile` control
+  stacked the "Writing Context" caption above the selector and made the
+  selector fill its column (`width: 100%`), so General/Professional/Academic
+  no longer clip. CSS-only; no top-bar grid change, no redesign. Committed
+  separately.
+- Stage A contracts written under `docs/engineering/axiom-2/`: architecture,
+  American English standard, source registry, evaluation, contextual GEC,
+  licensing, and a compact pre-build planning gate. Covers the rule provenance
+  schema, Finding contract, Correction/Suggestion/Hidden classes, Writing
+  Context contract, and evaluation taxonomy.
+- Validation: `tsc --noEmit` and `vite build` pass; CSS lint passes; the
+  existing AXIOM/terminology/corpus behavior is untouched (CSS-only UI change).
+- Environment note: global git `core.autocrlf=true` yields CRLF working-tree
+  files, so `biome check`'s formatter reports line-ending differences on every
+  file (including untouched sources); this is a pre-existing environment
+  artifact, not a code regression. Live rendered/responsive QA of the Writing
+  Context fix at the full matrix is a pending follow-up (no browser harness in
+  this environment).
+- No production grammar, Harper configuration, dependency, Tauri authority,
+  CSP, model asset, or release-package change. Live Dictation 2.0 remains
+  deferred. REDLINE remains single-user.
+
 ## 2026-09-17 — 0.2.0 Humanizer release candidate verified
 
 - Aligned package, Rust, Tauri, lockfile, visible UI, model-package copy, and
