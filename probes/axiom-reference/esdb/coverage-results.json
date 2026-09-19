@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "file": "probes/axiom-reference/esdb/data/en_US.txt",
+      "totalLines": 109140,
+      "capitalized": 20941,
+      "lowercaseUnique": 88199,
+      "flagged": 1233,
+      "coveragePct": 98.6,
+      "elapsedMs": 144228
+    },
+    {
+      "file": "probes/axiom-reference/esdb/data/en_US-large.txt",
+      "totalLines": 168608,
+      "capitalized": 28401,
+      "lowercaseUnique": 140188,
+      "flagged": 42232,
+      "coveragePct": 69.87,
+      "elapsedMs": 357168
+    }
+  ],
+  "missCounts": {
+    "en_US.txt": 1233,
+    "en_US-large.txt": 42232
+  }
+}

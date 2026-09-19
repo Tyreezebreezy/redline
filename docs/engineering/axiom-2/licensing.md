@@ -25,14 +25,27 @@ restricted corpus text into Gitea.
 | RESEARCH-EVALUATION | May be used for research/testing subject to license; not automatically redistributed. |
 | REFERENCE-ONLY | Human/software research reference; do not copy protected content into REDLINE. |
 
-## 3. Known/reported status (reverify before use)
+## 3. Verified status (Stage B)
 
-- **Harper** — Apache-2.0; already pinned and embedded (v2.7.0). Safe to keep.
+- **Harper** — Apache-2.0 (verified from pinned `harper.js` 2.7.0 LICENSE);
+  already embedded. Safe to keep.
 - **ERRANT** — MIT; development/evaluation tooling.
-- **ESDB / SCOWL** — permissive; exact terms to verify before any derived
-  runtime asset ships.
-- **Open English WordNet** — CC BY 4.0 reported; verify attribution terms
-  before embedding.
+- **ESDB (formerly SCOWLv2)** — **VERIFIED** MIT-like: "Copyright 2000-2026 by
+  Kevin Atkinson. Permission to use, copy, modify, distribute, and sell any
+  part of the English Speller Database ... provided that the above copyright
+  notice appears in all copies and that both [notices] appear in supporting
+  documentation." Derived from mostly public-domain sources (12dicts,
+  ENABLE2K). Caveats: (a) COCA 3-gram data was used under a signed NDA — the
+  *frequency ranking* derives from non-redistributable COCA data, but the
+  ESDB combined work itself is MIT-like; (b) Australian (`D`/`AU`) data adds a
+  Benjamin Titze notice; (c) size >80 adds the UK Advanced Cryptics Dictionary
+  notice; (d) non-speller reuse of the full database may trigger the Princeton
+  WordNet notice. Practical rule for REDLINE: an American speller wordlist at
+  size <=70 requires only the Kevin Atkinson notice.
+- **Open English WordNet (2025)** — **VERIFIED** CC-BY 4.0 (README and
+  LICENSE.md); fork of Princeton WordNet 3.1 under open methodology.
+  Attribution required; redistribution and modification allowed; commercial
+  use allowed under CC BY.
 - **JFLEG** — restricted / noncommercial considerations; research only.
 - **W&I+LOCNESS** — licensing restrictions; research only.
 - **NUCLE** — licensed/restricted; research only.

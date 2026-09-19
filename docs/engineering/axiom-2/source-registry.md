@@ -38,9 +38,9 @@ Each source records, as applicable:
 
 | Source | Purpose | License (status) | Distribution | Recommendation |
 | --- | --- | --- | --- | --- |
-| Harper (v2.7.0) | Tier-1 deterministic infrastructure | Apache-2.0 (verified) | EMBEDDABLE | Keep; audit coverage (Stage B) |
-| ESDB / SCOWL | American spelling, commonness tiers, inflections | VERIFY (permissive; confirm exact) | EMBEDDABLE candidate | Build-time validation + possible small generated supplement; do not ship a second huge runtime dictionary |
-| Open English WordNet | Semantic/Word Tools (definitions, synonyms, antonyms, senses) | VERIFY (CC BY 4.0 reported) | EMBEDDABLE candidate | Prototype; on-demand lookup only; keep out of keystroke path |
+| Harper (v2.7.0) | Tier-1 deterministic infrastructure | Apache-2.0 (verified) | EMBEDDABLE | Keep; Stage B audit done (98.6% of ESDB-60; gaps = short-typo detection, compound possessives, rare vocab) |
+| ESDB (formerly SCOWLv2) | American spelling, commonness tiers (size 35-85), dialect variants, POS, inflections | MIT-like (Kevin Atkinson 2000-2026, verified); sources mostly public-domain; COCA 3-gram caveat; UKACD only >size 80; WordNet caveat for non-speller use | EMBEDDABLE (generated speller wordlist) | **Research/build-time only**; small generated supplement if a real gap is shown; do not ship the full database |
+| Open English WordNet (2025) | Semantic/Word Tools (definitions, synonyms, antonyms, hypernyms, senses) | CC-BY 4.0 (verified); derives from Princeton WordNet 3.1 | EMBEDDABLE (with attribution) | Future on-demand semantic layer via compact snapshot (~5-19 MB); keep out of keystroke path |
 
 ### Corpora
 

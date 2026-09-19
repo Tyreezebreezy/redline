@@ -18,6 +18,8 @@ src-tauri/resources/models/qwen2.5-1.5b-instruct-q4_k_m.gguf
 /corpus/external/
 /corpus/reports/
 /probes/dictation-2/target/
+/probes/axiom-reference/esdb/data/
+/probes/axiom-reference/oewn/data/
 
 # Editor directories and files
 .vscode/*

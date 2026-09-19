@@ -2,6 +2,44 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-18 — AXIOM 2.0 Stage B: lexical + semantic foundation
+
+- Pre-flight verified: branch `opencode/redline-axiom-2-research` at
+  `9d20928` matches origin; only `probes/transform-engine/` untracked.
+- Audited Harper 2.7.0 (Apache-2.0) by probing its `SpellCheck` rule against
+  the ESDB wordlists. Harper's curated dictionary (embedded ~15 MB WASM,
+  hunspell-like `dictionary.dict` + `annotations.json`) covers 98.6% of ESDB
+  size 60 (1,233 misses of 88,199 lowercase unique) and 69.9% of size 70. It
+  correctly rejects 98.8% of British-only spellings. The size-60 misses are
+  mostly compound possessives (`airmen's`), rare/cultural vocabulary, and a few
+  British forms. Notable Harper misses: `teh` and `alot` (short/common typo
+  classes its SpellCheck heuristic skips), a deterministic-rule opportunity,
+  not a dictionary gap.
+- Verified ESDB (formerly SCOWLv2) license: MIT-like (Kevin Atkinson 2000-2026;
+  mostly public-domain sources; COCA 3-gram NDA caveat; UKACD only >size 80;
+  WordNet notice only for non-speller reuse). An American speller wordlist at
+  size <=70 needs only the Kevin Atkinson notice.
+- Verified Open English WordNet 2025 license: CC-BY 4.0 (fork of Princeton
+  WordNet 3.1).
+- Lexical corpus (96 cases): Harper 91.7%, ESDB-60 92.7%, ESDB-70 94.8%
+  overall. ESDB-70 gains rare-word recall but reintroduces `calender` and
+  `nad` (typo-collision risk), demonstrating the precision/recall tradeoff.
+- OEWN prototype (JSON 2025): 128,009 lemmas, 185,129 senses, 107,519 synsets,
+  72.4 MB raw; ~995 ms load; ~0.010 ms/lookup; compact snapshot 5.3 MB
+  (word->synset) or 19.2 MB (with definitions). Sense structure verified
+  (`bank` n:10 v:8; `run` n:16 v:41).
+- Decisions: ESDB = BUILD-TIME ONLY (validation + small targeted supplement,
+  not a runtime second dictionary); OEWN = INTEGRATE LATER as a generated
+  compact snapshot for on-demand Word Tools/semantic lookup.
+- Added isolated probes under `probes/axiom-reference/` (harper-probe,
+  lexical-corpus + runner, esdb/coverage, oewn/prototype). Datasets are
+  gitignored; only ~21 KB of scripts + a small summary are committed.
+- Regression gates re-run and unchanged: AXIOM 290 cases 94/94 with zero
+  unexplained false positives/misses and zero mapping/protected failures;
+  terminology 377 records verified. No production grammar, Harper config,
+  dependency, Tauri authority, CSP, model asset, or release change.
+- Live Dictation 2.0 remains deferred. REDLINE remains single-user.
+
 ## 2026-09-18 — AXIOM 2.0 Stage A: contracts + Writing Context fix
 
 - Verified repository pre-flight against Gitea: `origin` is

@@ -4,12 +4,13 @@
 
 - Branch: `opencode/redline-axiom-2-research`
 - Baseline: `a172d006decece1b72e5ffbc2a9b7f1c75877019` (`main`, post-0.2.0)
-- Status: Stage A (contracts) complete; Writing Context width fix committed;
-  Stages B-F (lexical/semantic prototypes, evaluation/corpus, contextual GEC
-  bakeoff, resolver prototype, recommendation) are pending and evidence-gated
+- Status: Stage A (contracts) and Stage B (lexical/semantic foundation)
+  complete; Writing Context width fix committed; Stages C-F (evaluation/corpus
+  expansion, contextual GEC bakeoff, resolver prototype, recommendation) are
+  pending and evidence-gated
 - Contracts: `docs/engineering/axiom-2/` (architecture, American English
   standard, source registry, evaluation, contextual GEC, licensing, planning
-  gate)
+  gate, stage-b-lexical-semantic)
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic
   (not profiles); My Voice is Natural/Professional/Academic
@@ -24,8 +25,14 @@ terminology floor, privacy, speed, or voice preservation.
 ### Stage exit summary
 
 - Stage A complete: contracts written and internally consistent.
-- Next: Stage B (Harper lexical audit, ESDB/SCOWL experiment, Open English
-  WordNet prototype), then Stage C (ERRANT/corpus expansion), Stage D
+- Stage B complete: Harper lexical audit; ESDB/SCOWL and OEWN licenses
+  verified; coverage/noise/dialect measured; OEWN prototype measured; lexical
+  corpus added. Decisions recorded in
+  `docs/engineering/axiom-2/stage-b-lexical-semantic.md`:
+  - Harper: keep as Tier-1 base.
+  - ESDB/SCOWL: build-time only (validation + small targeted supplement).
+  - OEWN: integrate later as a generated compact snapshot (on-demand).
+- Next: Stage C (ERRANT integration + corpus expansion), then Stage D
   (contextual GEC bakeoff), Stage E (resolver prototype), Stage F
   (recommendation only).
 
