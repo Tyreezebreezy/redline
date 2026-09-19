@@ -22,6 +22,7 @@ const RECOVERY_LIMIT: i64 = 10;
 const MIGRATION_1: &str = include_str!("../migrations/0001_documents.sql");
 const MIGRATION_2: &str = include_str!("../migrations/0002_proofreading_controls.sql");
 const MIGRATION_3: &str = include_str!("../migrations/0003_voice_settings.sql");
+const MIGRATION_4: &str = include_str!("../migrations/0004_style_guide.sql");
 
 type CommandResult<T> = Result<T, String>;
 
@@ -113,6 +114,121 @@ struct DictionaryEntry {
     created_at: i64,
 }
 
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+enum StyleRuleType {
+    #[default]
+    PreferredTerm,
+    PreferredCapitalization,
+}
+
+impl StyleRuleType {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::PreferredTerm => "preferred-term",
+            Self::PreferredCapitalization => "preferred-capitalization",
+        }
+    }
+
+    fn from_db(value: &str) -> Self {
+        match value {
+            "preferred-capitalization" => Self::PreferredCapitalization,
+            _ => Self::PreferredTerm,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StyleRule {
+    id: i64,
+    rule_type: StyleRuleType,
+    from_text: String,
+    to_text: String,
+    enabled: bool,
+    created_at: i64,
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+enum Audience {
+    #[default]
+    General,
+    Friend,
+    Coworker,
+    Instructor,
+    Recruiter,
+    Public,
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "lowercase")]
+enum Purpose {
+    #[default]
+    Inform,
+    Explain,
+    Request,
+    Persuade,
+    Argue,
+    Summarize,
+}
+
+impl Audience {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::General => "general",
+            Self::Friend => "friend",
+            Self::Coworker => "coworker",
+            Self::Instructor => "instructor",
+            Self::Recruiter => "recruiter",
+            Self::Public => "public",
+        }
+    }
+
+    fn from_db(value: &str) -> Self {
+        match value {
+            "friend" => Self::Friend,
+            "coworker" => Self::Coworker,
+            "instructor" => Self::Instructor,
+            "recruiter" => Self::Recruiter,
+            "public" => Self::Public,
+            _ => Self::General,
+        }
+    }
+}
+
+impl Purpose {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Inform => "inform",
+            Self::Explain => "explain",
+            Self::Request => "request",
+            Self::Persuade => "persuade",
+            Self::Argue => "argue",
+            Self::Summarize => "summarize",
+        }
+    }
+
+    fn from_db(value: &str) -> Self {
+        match value {
+            "explain" => Self::Explain,
+            "request" => Self::Request,
+            "persuade" => Self::Persuade,
+            "argue" => Self::Argue,
+            "summarize" => Self::Summarize,
+            _ => Self::Inform,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct WritingGoals {
+    audience: Audience,
+    purpose: Purpose,
+    schema_version: i64,
+}
+
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 struct DocumentRevision {
@@ -133,6 +249,8 @@ struct Workspace {
     revisions: Vec<DocumentRevision>,
     dictionary: Vec<DictionaryEntry>,
     voice_settings: VoiceSettings,
+    style_rules: Vec<StyleRule>,
+    writing_goals: WritingGoals,
 }
 
 #[derive(Deserialize)]
@@ -264,7 +382,7 @@ fn migrate(connection: &mut Connection) -> CommandResult<()> {
     let version: i64 = connection
         .query_row("PRAGMA user_version", [], |row| row.get(0))
         .map_err(|error| error.to_string())?;
-    if version > 3 {
+    if version > 4 {
         return Err(format!(
             "Database version {version} is newer than this REDLINE build."
         ));
@@ -302,6 +420,18 @@ fn migrate(connection: &mut Connection) -> CommandResult<()> {
             .map_err(|error| error.to_string())?;
         transaction
             .pragma_update(None, "user_version", 3)
+            .map_err(|error| error.to_string())?;
+        transaction.commit().map_err(|error| error.to_string())?;
+    }
+    if version < 4 {
+        let transaction = connection
+            .transaction()
+            .map_err(|error| error.to_string())?;
+        transaction
+            .execute_batch(MIGRATION_4)
+            .map_err(|error| error.to_string())?;
+        transaction
+            .pragma_update(None, "user_version", 4)
             .map_err(|error| error.to_string())?;
         transaction.commit().map_err(|error| error.to_string())?;
     }
@@ -470,6 +600,129 @@ fn update_voice_settings_impl(
     voice_settings(connection)
 }
 
+fn normalize_style_text(value: &str) -> CommandResult<String> {
+    let value = value.trim();
+    let length = value.chars().count();
+    if !(1..=64).contains(&length) {
+        return Err("Style Guide entries must contain 1 to 64 characters.".into());
+    }
+    if value.chars().any(char::is_control) {
+        return Err("Style Guide entries may not contain control characters.".into());
+    }
+    Ok(value.to_owned())
+}
+
+fn style_rule_from_row(row: &Row<'_>) -> rusqlite::Result<StyleRule> {
+    let rule_type: String = row.get(1)?;
+    Ok(StyleRule {
+        id: row.get(0)?,
+        rule_type: StyleRuleType::from_db(&rule_type),
+        from_text: row.get(2)?,
+        to_text: row.get(3)?,
+        enabled: row.get::<_, i64>(4)? == 1,
+        created_at: row.get(5)?,
+    })
+}
+
+fn list_style_rules_impl(connection: &Connection) -> CommandResult<Vec<StyleRule>> {
+    let mut statement = connection
+        .prepare(
+            "SELECT id, rule_type, from_text, to_text, enabled, created_at FROM style_rules ORDER BY created_at, id",
+        )
+        .map_err(|error| error.to_string())?;
+    let rows = statement
+        .query_map([], style_rule_from_row)
+        .map_err(|error| error.to_string())?;
+    rows.collect::<rusqlite::Result<Vec<_>>>()
+        .map_err(|error| error.to_string())
+}
+
+fn add_style_rule_impl(
+    connection: &Connection,
+    rule_type: StyleRuleType,
+    from_text: &str,
+    to_text: &str,
+    created_at: i64,
+) -> CommandResult<StyleRule> {
+    let from_text = normalize_style_text(from_text)?;
+    let to_text = normalize_style_text(to_text)?;
+    connection
+        .execute(
+            "INSERT INTO style_rules (rule_type, from_text, to_text, enabled, created_at) VALUES (?1, ?2, ?3, 1, ?4)",
+            params![rule_type.as_str(), from_text, to_text, created_at],
+        )
+        .map_err(|error| error.to_string())?;
+    let id = connection.last_insert_rowid();
+    connection
+        .query_row(
+            "SELECT id, rule_type, from_text, to_text, enabled, created_at FROM style_rules WHERE id = ?1",
+            [id],
+            style_rule_from_row,
+        )
+        .map_err(|error| error.to_string())
+}
+
+fn remove_style_rule_impl(connection: &Connection, id: i64) -> CommandResult<()> {
+    connection
+        .execute("DELETE FROM style_rules WHERE id = ?1", [id])
+        .map_err(|error| error.to_string())?;
+    Ok(())
+}
+
+fn update_style_rule_impl(
+    connection: &Connection,
+    id: i64,
+    enabled: bool,
+) -> CommandResult<StyleRule> {
+    connection
+        .execute(
+            "UPDATE style_rules SET enabled = ?2 WHERE id = ?1",
+            params![id, i64::from(enabled)],
+        )
+        .map_err(|error| error.to_string())?;
+    connection
+        .query_row(
+            "SELECT id, rule_type, from_text, to_text, enabled, created_at FROM style_rules WHERE id = ?1",
+            [id],
+            style_rule_from_row,
+        )
+        .optional()
+        .map_err(|error| error.to_string())?
+        .ok_or_else(|| "Style Guide rule was not found.".into())
+}
+
+fn writing_goals_impl(connection: &Connection) -> CommandResult<WritingGoals> {
+    connection
+        .query_row(
+            "SELECT audience, purpose, schema_version FROM writing_goals WHERE id = 1",
+            [],
+            |row| {
+                let audience: String = row.get(0)?;
+                let purpose: String = row.get(1)?;
+                Ok(WritingGoals {
+                    audience: Audience::from_db(&audience),
+                    purpose: Purpose::from_db(&purpose),
+                    schema_version: row.get(2)?,
+                })
+            },
+        )
+        .map_err(|error| error.to_string())
+}
+
+fn update_writing_goals_impl(
+    connection: &Connection,
+    audience: Audience,
+    purpose: Purpose,
+) -> CommandResult<WritingGoals> {
+    connection
+        .execute(
+            "UPDATE writing_goals SET audience = ?1, purpose = ?2 WHERE id = 1",
+            params![audience.as_str(), purpose.as_str()],
+        )
+        .map_err(|error| error.to_string())?;
+    writing_goals_impl(connection)
+}
+
 fn load_document(connection: &Connection, id: &str) -> CommandResult<Document> {
     connection
         .query_row(
@@ -615,6 +868,8 @@ fn workspace_impl(connection: &Connection) -> CommandResult<Workspace> {
         revisions,
         dictionary: list_dictionary(connection)?,
         voice_settings: voice_settings(connection)?,
+        style_rules: list_style_rules_impl(connection)?,
+        writing_goals: writing_goals_impl(connection)?,
     })
 }
 
@@ -668,6 +923,41 @@ fn update_voice_settings(
 ) -> CommandResult<VoiceSettings> {
     store
         .with_connection(|connection| update_voice_settings_impl(connection, enabled, default_lane))
+}
+
+#[tauri::command]
+fn add_style_rule(
+    rule_type: StyleRuleType,
+    from_text: String,
+    to_text: String,
+    store: State<'_, DocumentStore>,
+) -> CommandResult<StyleRule> {
+    store.with_connection(|connection| {
+        add_style_rule_impl(connection, rule_type, &from_text, &to_text, now_ms()?)
+    })
+}
+
+#[tauri::command]
+fn remove_style_rule(id: i64, store: State<'_, DocumentStore>) -> CommandResult<()> {
+    store.with_connection(|connection| remove_style_rule_impl(connection, id))
+}
+
+#[tauri::command]
+fn update_style_rule(
+    id: i64,
+    enabled: bool,
+    store: State<'_, DocumentStore>,
+) -> CommandResult<StyleRule> {
+    store.with_connection(|connection| update_style_rule_impl(connection, id, enabled))
+}
+
+#[tauri::command]
+fn update_writing_goals(
+    audience: Audience,
+    purpose: Purpose,
+    store: State<'_, DocumentStore>,
+) -> CommandResult<WritingGoals> {
+    store.with_connection(|connection| update_writing_goals_impl(connection, audience, purpose))
 }
 
 #[tauri::command]
@@ -912,7 +1202,7 @@ mod tests {
             connection
                 .query_row("PRAGMA user_version", [], |row| row.get::<_, i64>(0))
                 .unwrap(),
-            3
+            4
         );
         assert_eq!(list_dictionary(&connection).unwrap(), Vec::new());
         assert_eq!(

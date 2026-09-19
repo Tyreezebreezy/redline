@@ -1,30 +1,29 @@
 # REDLINE current work
 
-## Roadmap: 0.5.0 → 0.7.0 (then pause for AppForge 1.0 baseline)
+## Roadmap: 0.5.0 → 0.7.0 complete; pause for AppForge 1.0 baseline
 
 - 0.5.0 — Lexical foundation + Word Tools: **complete**.
-- 0.6.0 — Clarity / Writing Intelligence: **complete** (deterministic advisory
-  engine + corpus).
-- 0.7.0 — Tone + Writing Goals + Personal Style Guide: next.
-- Then STOP. Transform Studio + My Voice maturation + final 1.0 convergence
-  wait for the updated AppForge baseline and owner's return. Live Dictation 2.0
-  remains deferred.
+- 0.6.0 — Clarity / Writing Intelligence: **complete**.
+- 0.7.0 — Tone + Writing Goals + Personal Style Guide: **complete**.
+- STOP. Transform Studio + My Voice maturation + final 1.0 convergence wait for
+  the updated AppForge baseline and the owner's return. Live Dictation 2.0
+  remains deferred. No 0.8.0 or 0.9.0.
 
-- Branch: `main` (linear, from `v0.5.0`).
+- Branch: `main` (linear, from `v0.6.0`).
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic;
   My Voice is Natural/Professional/Academic.
 
 ### Active objective
 
-Ship 0.6.0 (Clarity), then begin 0.7.0 (Tone + Writing Goals + Personal Style
-Guide).
+Ship 0.7.0 (Tone + Writing Goals + Personal Style Guide), then stop and hand
+off to the owner.
 
-### 0.6.0 status
+### 0.7.0 status
 
-- Deterministic Clarity engine integrated and shown in the Analysis panel;
-  wordy-phrase replacements are actionable; long-sentence and repeated-opener
-  signals are advisory. Writing Context controls sensitivity.
+- Personal Style Guide (preferred terms + capitalization), Writing Goals
+  (audience + purpose), and deterministic Tone summary are integrated, tested,
+  and packaged.
 
 ### Hard stops
 

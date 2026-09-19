@@ -40,18 +40,24 @@ import {
   MICROPHONE_PERMISSION_ERROR,
 } from "./dictation";
 import {
+  type Audience,
   type DictionaryEntry,
   type DocumentRecord,
   type DocumentSummary,
   desktopAvailable,
   documents,
+  type Purpose,
   type RecoveryPoint,
+  type StyleRule,
+  type StyleRuleType,
   type VoiceLane,
   type VoiceSettings,
+  type WritingGoals,
 } from "./documents";
 import { humanizerProtectedTerms } from "./humanizer";
 import { useTransformWorkflow } from "./useTransformWorkflow";
 import { analyzeClarity, type EditorClarityFinding } from "./clarity/clarity";
+import { analyzeTone } from "./tone/tone";
 import { lookupWord } from "./wordTools/lexicon";
 import { selectedWord } from "./wordTools/selection";
 import { WordToolsPanel, type WordToolsState } from "./wordTools/WordToolsPanel";
@@ -76,6 +82,12 @@ function App() {
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>({
     enabled: true,
     defaultLane: "natural",
+    schemaVersion: 1,
+  });
+  const [styleRules, setStyleRules] = useState<StyleRule[]>([]);
+  const [writingGoals, setWritingGoals] = useState<WritingGoals>({
+    audience: "general",
+    purpose: "inform",
     schemaVersion: 1,
   });
   const [title, setTitle] = useState("Untitled");
@@ -103,6 +115,7 @@ function App() {
   const analysisProjectionRef = useRef<Projection | null>(null);
   const dictionaryRef = useRef<ReadonlySet<string>>(new Set());
   const profileRef = useRef<WritingProfile>("general");
+  const styleRulesRef = useRef<StyleRule[]>([]);
   const ignoredIssuesRef = useRef<IgnoredEditorIssue[]>([]);
   const analyzeOnReadyRef = useRef(false);
   const analysisTimer = useRef<number | undefined>(undefined);
@@ -177,6 +190,9 @@ function App() {
       workspace.dictionary.map(({ normalizedTerm }) => normalizedTerm),
     );
     setDictionary(workspace.dictionary);
+    styleRulesRef.current = workspace.styleRules;
+    setStyleRules(workspace.styleRules);
+    setWritingGoals(workspace.writingGoals);
     if (documentId) {
       setRevisions(await documents.listRevisions(documentId));
     } else {
@@ -265,6 +281,7 @@ function App() {
         generation,
         issues: [],
         clarity: [],
+        tone: [],
         session,
         text: projection.text,
       });
@@ -279,6 +296,7 @@ function App() {
         {
           dictionary: dictionaryRef.current,
           profile: profileRef.current,
+          styleRules: styleRulesRef.current,
         },
       );
       if (
@@ -318,6 +336,7 @@ function App() {
             issue !== null && !isIgnoredIssue(issue, ignoredIssuesRef.current),
         ),
         clarity,
+        tone: analyzeTone(projection.text),
         session,
         text: projection.text,
       });
@@ -561,6 +580,9 @@ function App() {
         );
         setDictionary(workspace.dictionary);
         setVoiceSettings(workspace.voiceSettings);
+        styleRulesRef.current = workspace.styleRules;
+        setStyleRules(workspace.styleRules);
+        setWritingGoals(workspace.writingGoals);
         setCurrent(workspace.activeDocument, Boolean(workspace.activeDocument));
         setLoaded(true);
       })
@@ -794,6 +816,59 @@ function App() {
     }
   };
 
+  const addStyleRule = async (
+    ruleType: StyleRuleType,
+    fromText: string,
+    toText: string,
+  ) => {
+    try {
+      const rule = await documents.addStyleRule(ruleType, fromText, toText);
+      const rules = [...styleRules.filter((item) => item.id !== rule.id), rule].sort(
+        (left, right) => left.id - right.id,
+      );
+      styleRulesRef.current = rules;
+      setStyleRules(rules);
+      setSaveError(null);
+      rerunAnalysis();
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
+  const removeStyleRule = async (id: number) => {
+    try {
+      await documents.removeStyleRule(id);
+      const rules = styleRules.filter((item) => item.id !== id);
+      styleRulesRef.current = rules;
+      setStyleRules(rules);
+      rerunAnalysis();
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
+  const updateStyleRule = async (id: number, enabled: boolean) => {
+    try {
+      const rule = await documents.updateStyleRule(id, enabled);
+      const rules = styleRules.map((item) => (item.id === id ? rule : item));
+      styleRulesRef.current = rules;
+      setStyleRules(rules);
+      rerunAnalysis();
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
+  const changeWritingGoals = async (audience: Audience, purpose: Purpose) => {
+    try {
+      const goals = await documents.updateWritingGoals(audience, purpose);
+      setWritingGoals(goals);
+      setSaveError(null);
+    } catch (error) {
+      setSaveError(errorMessage(error));
+    }
+  };
+
   const canApplySuggestion = useCallback(
     (issue: EditorIssue, suggestion: AxiomSuggestion) => {
       const editor = editorRef.current;
@@ -986,9 +1061,15 @@ function App() {
         onProfileChange={changeProfile}
         onRemoveDictionaryTerm={removeFromDictionary}
         onVoiceSettingsChange={changeVoiceSettings}
+        onAddStyleRule={addStyleRule}
+        onRemoveStyleRule={removeStyleRule}
+        onUpdateStyleRule={updateStyleRule}
+        onWritingGoalsChange={changeWritingGoals}
         profile={profile}
         saveState={saveState}
+        styleRules={styleRules}
         voiceSettings={voiceSettings}
+        writingGoals={writingGoals}
       />
       <div className="app-body">
         <Sidebar

@@ -13,4 +13,8 @@ commands.allow = [
   "add_dictionary_term",
   "remove_dictionary_term",
   "update_voice_settings",
+  "add_style_rule",
+  "remove_style_rule",
+  "update_style_rule",
+  "update_writing_goals",
 ]

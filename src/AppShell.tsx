@@ -7,12 +7,18 @@ import {
 } from "./axiom/axiom";
 import type { EditorIssue } from "./axiom/projection";
 import type { EditorClarityFinding } from "./clarity/clarity";
+import type { ToneDescriptor } from "./tone/tone";
 import type {
+  Audience,
   DictionaryEntry,
   DocumentSummary,
+  Purpose,
   RecoveryPoint,
+  StyleRule,
+  StyleRuleType,
   VoiceLane,
   VoiceSettings,
+  WritingGoals,
 } from "./documents";
 import { countText } from "./editor";
 import { VOICE_LANES } from "./humanizer";
@@ -74,9 +80,15 @@ export function TopBar({
   onProfileChange,
   onRemoveDictionaryTerm,
   onVoiceSettingsChange,
+  onAddStyleRule,
+  onRemoveStyleRule,
+  onUpdateStyleRule,
+  onWritingGoalsChange,
   profile,
   saveState,
+  styleRules,
   voiceSettings,
+  writingGoals,
 }: {
   dictionary: DictionaryEntry[];
   onProfileChange: (profile: WritingProfile) => void;
@@ -85,9 +97,19 @@ export function TopBar({
     enabled: boolean,
     defaultLane: VoiceLane,
   ) => Promise<void>;
+  onAddStyleRule: (
+    ruleType: StyleRuleType,
+    fromText: string,
+    toText: string,
+  ) => Promise<void>;
+  onRemoveStyleRule: (id: number) => Promise<void>;
+  onUpdateStyleRule: (id: number, enabled: boolean) => Promise<void>;
+  onWritingGoalsChange: (audience: Audience, purpose: Purpose) => Promise<void>;
   profile: WritingProfile;
   saveState: SaveState;
+  styleRules: StyleRule[];
   voiceSettings: VoiceSettings;
+  writingGoals: WritingGoals;
 }) {
   const dictionaryDialog = useRef<HTMLDialogElement>(null);
   const dictionaryButton = useRef<HTMLButtonElement>(null);
@@ -263,6 +285,131 @@ export function TopBar({
             </p>
           )}
         </section>
+        <section aria-labelledby="style-guide-title">
+          <div className="settings-section-heading">
+            <div>
+              <p className="section-label">Personalization</p>
+              <h3 id="style-guide-title">Style Guide</h3>
+            </div>
+            <p className="dictionary-count">
+              {styleRules.length} {styleRules.length === 1 ? "rule" : "rules"}
+            </p>
+          </div>
+          <p className="dictionary-description">
+            Preferred terms and capitalization for your writing.
+          </p>
+          <form
+            className="style-rule-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const form = event.currentTarget;
+              const data = new FormData(form);
+              const ruleType = String(data.get("ruleType"));
+              const fromText = String(data.get("fromText")).trim();
+              const toText = String(data.get("toText")).trim();
+              if (!fromText || !toText) return;
+              void onAddStyleRule(ruleType as StyleRuleType, fromText, toText);
+              form.reset();
+            }}
+          >
+            <select aria-label="Rule type" name="ruleType">
+              <option value="preferred-term">Preferred term</option>
+              <option value="preferred-capitalization">
+                Preferred capitalization
+              </option>
+            </select>
+            <input
+              aria-label="Find"
+              name="fromText"
+              placeholder="Find"
+              required
+            />
+            <input
+              aria-label="Replace with"
+              name="toText"
+              placeholder="Replace with"
+              required
+            />
+            <button type="submit">Add</button>
+          </form>
+          {styleRules.length ? (
+            <ul className="dictionary-list">
+              {styleRules.map((rule) => (
+                <li key={rule.id}>
+                  <span>
+                    {rule.fromText} → {rule.toText}
+                  </span>
+                  <button
+                    onClick={() =>
+                      void onUpdateStyleRule(rule.id, !rule.enabled)
+                    }
+                    type="button"
+                  >
+                    {rule.enabled ? "Disable" : "Enable"}
+                  </button>
+                  <button
+                    onClick={() => void onRemoveStyleRule(rule.id)}
+                    type="button"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="dictionary-empty">
+              Add a preferred term or capitalization.
+            </p>
+          )}
+        </section>
+        <section aria-labelledby="writing-goals-title">
+          <div className="settings-section-heading">
+            <div>
+              <p className="section-label">Personalization</p>
+              <h3 id="writing-goals-title">Writing Goals</h3>
+            </div>
+          </div>
+          <label className="voice-default">
+            <span>Audience</span>
+            <select
+              aria-label="Audience"
+              onChange={(event) =>
+                void onWritingGoalsChange(
+                  event.target.value as Audience,
+                  writingGoals.purpose,
+                )
+              }
+              value={writingGoals.audience}
+            >
+              <option value="general">General</option>
+              <option value="friend">Friend or family</option>
+              <option value="coworker">Coworker</option>
+              <option value="instructor">Instructor</option>
+              <option value="recruiter">Recruiter</option>
+              <option value="public">Public</option>
+            </select>
+          </label>
+          <label className="voice-default">
+            <span>Purpose</span>
+            <select
+              aria-label="Purpose"
+              onChange={(event) =>
+                void onWritingGoalsChange(
+                  writingGoals.audience,
+                  event.target.value as Purpose,
+                )
+              }
+              value={writingGoals.purpose}
+            >
+              <option value="inform">Inform</option>
+              <option value="explain">Explain</option>
+              <option value="request">Request</option>
+              <option value="persuade">Persuade</option>
+              <option value="argue">Argue</option>
+              <option value="summarize">Summarize</option>
+            </select>
+          </label>
+        </section>
       </dialog>
     </header>
   );
@@ -434,6 +581,7 @@ export type AnalysisState =
       generation: number;
       issues: EditorIssue[];
       clarity: EditorClarityFinding[];
+      tone: ToneDescriptor[];
       session: number;
       text: string;
     }
@@ -787,6 +935,20 @@ export function AnalysisPanel({
             </p>
           </div>
         )}
+        {analysis.status === "complete" && analysis.tone.length ? (
+          <section className="clarity-section tone-section">
+            <h3 className="clarity-title">Tone</h3>
+            <p className="tone-summary">
+              This may read as:{" "}
+              {analysis.tone
+                .map(
+                  (descriptor) =>
+                    `${descriptor.label} (${descriptor.confidence})`,
+                )
+                .join(", ")}
+            </p>
+          </section>
+        ) : null}
         {analysis.status === "complete" && analysis.clarity.length ? (
           <section className="clarity-section">
             <h3 className="clarity-title">Clarity suggestions</h3>

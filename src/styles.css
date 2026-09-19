@@ -1735,3 +1735,41 @@ body {
   line-height: 1.45;
   color: var(--text);
 }
+.tone-summary {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.style-rule-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.style-rule-form select,
+.style-rule-form input {
+  padding: 5px 8px;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface-selected);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+}
+
+.style-rule-form input {
+  flex: 1;
+  min-width: 90px;
+}
+
+.style-rule-form button {
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface-selected);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  cursor: pointer;
+}

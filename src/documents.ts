@@ -30,6 +30,41 @@ export type VoiceSettings = {
   schemaVersion: number;
 };
 
+export type StyleRuleType =
+  | "preferred-term"
+  | "preferred-capitalization";
+
+export type StyleRule = {
+  id: number;
+  ruleType: StyleRuleType;
+  fromText: string;
+  toText: string;
+  enabled: boolean;
+  createdAt: number;
+};
+
+export type Audience =
+  | "general"
+  | "friend"
+  | "coworker"
+  | "instructor"
+  | "recruiter"
+  | "public";
+
+export type Purpose =
+  | "inform"
+  | "explain"
+  | "request"
+  | "persuade"
+  | "argue"
+  | "summarize";
+
+export type WritingGoals = {
+  audience: Audience;
+  purpose: Purpose;
+  schemaVersion: number;
+};
+
 export type RecoveryPoint = {
   id: number;
   documentId: string;
@@ -46,6 +81,8 @@ export type WorkspaceData = {
   revisions: RecoveryPoint[];
   dictionary: DictionaryEntry[];
   voiceSettings: VoiceSettings;
+  styleRules: StyleRule[];
+  writingGoals: WritingGoals;
 };
 
 export type SaveInput = {
@@ -67,6 +104,12 @@ const EMPTY_WORKSPACE: WorkspaceData = {
   voiceSettings: {
     enabled: true,
     defaultLane: "natural",
+    schemaVersion: 1,
+  },
+  styleRules: [],
+  writingGoals: {
+    audience: "general",
+    purpose: "inform",
     schemaVersion: 1,
   },
 };
@@ -116,4 +159,38 @@ export const documents = {
           defaultLane,
         })
       : Promise.resolve({ enabled, defaultLane, schemaVersion: 1 }),
+  addStyleRule: (
+    ruleType: StyleRuleType,
+    fromText: string,
+    toText: string,
+  ) =>
+    desktopAvailable
+      ? invoke<StyleRule>("add_style_rule", { ruleType, fromText, toText })
+      : Promise.resolve({
+          id: Date.now(),
+          ruleType,
+          fromText,
+          toText,
+          enabled: true,
+          createdAt: Date.now(),
+        }),
+  removeStyleRule: (id: number) =>
+    desktopAvailable
+      ? invoke<void>("remove_style_rule", { id })
+      : Promise.resolve(),
+  updateStyleRule: (id: number, enabled: boolean) =>
+    desktopAvailable
+      ? invoke<StyleRule>("update_style_rule", { id, enabled })
+      : Promise.resolve({
+          id,
+          ruleType: "preferred-term" as StyleRuleType,
+          fromText: "",
+          toText: "",
+          enabled,
+          createdAt: 0,
+        }),
+  updateWritingGoals: (audience: Audience, purpose: Purpose) =>
+    desktopAvailable
+      ? invoke<WritingGoals>("update_writing_goals", { audience, purpose })
+      : Promise.resolve({ audience, purpose, schemaVersion: 1 }),
 };

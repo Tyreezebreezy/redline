@@ -1,6 +1,7 @@
 import { findTerminologyMatches } from "./terminology.ts";
 import { contextRuleIssues } from "./contextRules.ts";
 import { structuralRuleIssues } from "./structuralRules.ts";
+import { styleRuleIssues, type StyleRuleInput } from "./styleRules.ts";
 
 export type AxiomSuggestion = {
   kind: "replace" | "remove" | "insert-after";
@@ -50,11 +51,13 @@ export type GrammarProvider = {
 export type AxiomControls = {
   dictionary: ReadonlySet<string>;
   profile: WritingProfile;
+  styleRules?: readonly StyleRuleInput[];
 };
 
 const DEFAULT_CONTROLS: AxiomControls = {
   dictionary: new Set(),
   profile: "general",
+  styleRules: [],
 };
 
 function canonicalTermIssues(text: string): AxiomIssue[] {
@@ -190,6 +193,7 @@ export async function analyzeText(
   const canonicalIssues = canonicalTermIssues(text);
   const contextIssues = contextRuleIssues(text);
   const structuralIssues = structuralRuleIssues(text);
+  const styleIssues = styleRuleIssues(text, controls.styleRules ?? []);
   const issues = (
     await provider.analyze(text, PROFILE_RULE_OVERRIDES[controls.profile])
   )
@@ -208,6 +212,7 @@ export async function analyzeText(
     .concat(canonicalIssues)
     .concat(contextIssues)
     .concat(structuralIssues)
+    .concat(styleIssues)
     .filter((issue) => validIssue(text, issue))
     .filter(
       (issue) =>

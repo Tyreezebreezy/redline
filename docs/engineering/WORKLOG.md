@@ -2,6 +2,22 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-19 — 0.7.0 Tone + Writing Goals + Personal Style Guide
+
+- Added a single-owner Personal Style Guide (SQLite `style_rules` migration 4,
+  Rust CRUD commands, bounded `documents` permission additions) with two rule
+  types: preferred-term (case-insensitive) and preferred-capitalization
+  (exact). Style rules emit AXIOM suggestions via `src/axiom/styleRules.ts`,
+  below protected spans/terminology authority and independent of the
+  personal dictionary.
+- Added Writing Goals (audience + purpose) as a single-owner singleton, stored
+  locally and edited in Settings.
+- Added a deterministic, advisory Tone summary (`src/tone/tone.ts`) shown in
+  the Analysis panel; descriptors carry a confidence level and never a score.
+- Regression: AXIOM 519 cases 184/184 zero unexplained false positives/misses,
+  terminology 377 records, Clarity 20-case corpus, 16 native tests, TypeScript
+  and Vite build all clean.
+
 ## 2026-09-19 — 0.6.0 Clarity / Writing Intelligence
 
 - Added a deterministic Tier-4 Clarity engine (`src/clarity/clarity.ts`) with

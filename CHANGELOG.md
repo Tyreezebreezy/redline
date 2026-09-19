@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.7.0 — 2026-09-19
+
+### Added
+
+- Personal Style Guide: add preferred terms and preferred capitalization that
+  REDLINE enforces as suggestions (with one-click replacement) above the
+  built-in terminology but below protected spans and quoted/code text.
+- Writing Goals: a single-owner audience and purpose setting, stored locally.
+- Tone: a deterministic, advisory tone summary (informal, tentative, confident,
+  formal, direct, or neutral) with a stated confidence level; tone is never a
+  grammar error and never a numeric score.
+
+### Deferred
+
+- Snippets remain optional future work. Transform Studio, My Voice maturation,
+  and final 1.0 convergence wait for the updated AppForge baseline. Live
+  Dictation 2.0 remains deferred.
+
 ## 0.6.0 — 2026-09-19
 
 ### Added
