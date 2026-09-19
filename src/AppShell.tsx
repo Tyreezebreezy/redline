@@ -132,7 +132,7 @@ export function TopBar({
           R
         </span>
         <span className="brand-word">REDLINE</span>
-        <span className="brand-version">0.7.0</span>
+        <span className="brand-version">1.0.0</span>
       </div>
       <label className="profile">
         <span>Writing Context</span>
