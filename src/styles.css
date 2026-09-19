@@ -1602,3 +1602,77 @@ body {
     padding-block: 12px;
   }
 }
+.wordtools-content {
+  padding: 12px 14px;
+  overflow-y: auto;
+}
+
+.wordtools-note {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.wordtools-headword {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.wordtools-sense {
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.wordtools-sense:first-of-type {
+  border-top: none;
+}
+
+.wordtools-pos {
+  margin: 0 0 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-style: italic;
+  text-transform: capitalize;
+}
+
+.wordtools-definition {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.wordtools-group {
+  margin-bottom: 8px;
+}
+
+.wordtools-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.wordtools-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wordtools-chip {
+  padding: 3px 9px;
+  color: var(--text);
+  font-size: 12px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.wordtools-chip:hover {
+  background: var(--surface-selected);
+  border-color: var(--border-strong);
+}

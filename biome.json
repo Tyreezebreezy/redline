@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!probes", "!src/axiom/terminology.v1.json"]
+    "includes": ["**", "!probes", "!src/axiom/terminology.v1.json", "!src/wordTools/lexicon.v1.json"]
   },
   "formatter": {
     "enabled": true,

@@ -2,6 +2,7 @@ import { type Editor, EditorContent, useEditorState } from "@tiptap/react";
 import { type KeyboardEvent, type ReactNode, useEffect, useState } from "react";
 import type { DictationStatus } from "./dictation";
 import { type RewriteMode, transformSelection } from "./transform";
+import { selectedWord } from "./wordTools/selection";
 
 type ToolbarButtonProps = {
   active?: boolean;
@@ -53,8 +54,10 @@ export function EditorToolbar({
   onStartDictation,
   onStopDictation,
   onTransform,
+  onWordTools,
   rewriteMode,
   voiceEnabled,
+  wordToolsOpen,
 }: {
   dictationStatus: DictationStatus;
   editor: Editor;
@@ -63,8 +66,10 @@ export function EditorToolbar({
   onStartDictation: () => void;
   onStopDictation: () => void;
   onTransform: () => void;
+  onWordTools: () => void;
   rewriteMode: RewriteMode | null;
   voiceEnabled: boolean;
+  wordToolsOpen: boolean;
 }) {
   const [tabStop, setTabStop] = useState("paragraph");
   const state = useEditorState({
@@ -81,6 +86,7 @@ export function EditorToolbar({
       orderedList: current.isActive("orderedList"),
       paragraph: current.isActive("paragraph"),
       transformSelection: transformSelection(current),
+      wordSelection: selectedWord(current),
     }),
   });
 
@@ -366,6 +372,31 @@ export function EditorToolbar({
           Transform
         </ToolbarButton>
       </fieldset>
+
+      <fieldset className="toolbar-group wordtools-group">
+        <legend className="sr-only">Word Tools</legend>
+        <ToolbarButton
+          active={wordToolsOpen}
+          disabled={
+            !state.wordSelection.ok ||
+            rewriteMode !== null ||
+            ["preparing", "listening", "processing"].includes(
+              dictationStatus.status,
+            )
+          }
+          id="word-tools"
+          label={
+            state.wordSelection.ok
+              ? "Look up selected word"
+              : state.wordSelection.reason
+          }
+          onClick={onWordTools}
+          onFocus={() => setTabStop("word-tools")}
+          tabIndex={tabIndex("word-tools")}
+        >
+          Word Tools
+        </ToolbarButton>
+      </fieldset>
     </div>
   );
 }
@@ -378,8 +409,10 @@ export function EditorWorkspace({
   onStartDictation,
   onStopDictation,
   onTransform,
+  onWordTools,
   rewriteMode,
   voiceEnabled,
+  wordToolsOpen,
 }: {
   dictationStatus: DictationStatus;
   editor: Editor | null;
@@ -388,8 +421,10 @@ export function EditorWorkspace({
   onStartDictation: () => void;
   onStopDictation: () => void;
   onTransform: () => void;
+  onWordTools: () => void;
   rewriteMode: RewriteMode | null;
   voiceEnabled: boolean;
+  wordToolsOpen: boolean;
 }) {
   return (
     <main className="workspace" id="workspace" tabIndex={-1}>
@@ -404,8 +439,10 @@ export function EditorWorkspace({
               onStartDictation={onStartDictation}
               onStopDictation={onStopDictation}
               onTransform={onTransform}
+              onWordTools={onWordTools}
               rewriteMode={rewriteMode}
               voiceEnabled={voiceEnabled}
+              wordToolsOpen={wordToolsOpen}
             />
             <div
               aria-atomic="true"

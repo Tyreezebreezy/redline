@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.0 — 2026-09-19
+
+### Added
+
+- Word Tools: on-demand lexical lookup for a selected word, showing senses
+  grouped by part of speech with definitions, synonyms, antonyms, and related
+  terms from the Open English WordNet 2025 Edition (CC BY 4.0). Choosing an
+  alternative replaces the selected word with one-step undo.
+- Integrated the Open English WordNet 2025 Edition as a lazy-loaded compact
+  snapshot (`src/wordTools/lexicon.v1.json`, ~18.9 MB) produced by a
+  deterministic, versioned, offline generator (`pnpm generate:lexicon`). The
+  lexicon is never loaded in the typing/keystroke path.
+- Added Open English WordNet attribution to the bundled third-party notices.
+
+### Fixed
+
+- Corrected the version-consistency check in the foundation gate, which had
+  been pinned to an obsolete version string.
+
 ## 0.4.0 — 2026-09-19
 
 ### Changed

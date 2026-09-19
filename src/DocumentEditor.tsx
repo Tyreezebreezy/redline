@@ -27,8 +27,10 @@ type DocumentEditorProps = {
   onStartDictation: () => void;
   onStopDictation: () => void;
   onTransform: () => void;
+  onWordTools: () => void;
   rewriteMode: RewriteMode | null;
   voiceEnabled: boolean;
+  wordToolsOpen: boolean;
 };
 
 export function DocumentEditor({
@@ -42,8 +44,10 @@ export function DocumentEditor({
   onStartDictation,
   onStopDictation,
   onTransform,
+  onWordTools,
   rewriteMode,
   voiceEnabled,
+  wordToolsOpen,
 }: DocumentEditorProps) {
   const editor = useEditor({
     autofocus: "start",
@@ -107,8 +111,10 @@ export function DocumentEditor({
       onStartDictation={onStartDictation}
       onStopDictation={onStopDictation}
       onTransform={onTransform}
+      onWordTools={onWordTools}
       rewriteMode={rewriteMode}
       voiceEnabled={voiceEnabled}
+      wordToolsOpen={wordToolsOpen}
     />
   );
 }

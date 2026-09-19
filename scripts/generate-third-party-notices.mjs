@@ -112,6 +112,10 @@ const lines = [
   "Qwen2.5-1.5B-Instruct and official Q4_K_M GGUF — Apache-2.0 — https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF",
   "llama.cpp — MIT — https://github.com/ggml-org/llama.cpp",
   "",
+  "Bundled data resources",
+  "",
+  "Open English WordNet 2025 Edition (lexical snapshot) — CC BY 4.0 — https://github.com/globalwordnet/english-wordnet",
+  "",
 ];
 
 writeFileSync(

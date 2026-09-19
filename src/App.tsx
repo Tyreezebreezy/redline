@@ -50,6 +50,9 @@ import {
 } from "./documents";
 import { humanizerProtectedTerms } from "./humanizer";
 import { useTransformWorkflow } from "./useTransformWorkflow";
+import { lookupWord } from "./wordTools/lexicon";
+import { selectedWord } from "./wordTools/selection";
+import { WordToolsPanel, type WordToolsState } from "./wordTools/WordToolsPanel";
 import "./styles.css";
 
 const IDLE_SAVE_MS = 1_000;
@@ -84,6 +87,9 @@ function App() {
     status: "idle",
   });
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
+  const [wordToolsState, setWordToolsState] = useState<WordToolsState>({
+    status: "idle",
+  });
   const editorRef = useRef<Editor | null>(null);
   const activeRef = useRef<DocumentRecord | null>(null);
   const titleRef = useRef(title);
@@ -844,6 +850,60 @@ function App() {
     }
   };
 
+  const closeWordTools = useCallback(() => {
+    setWordToolsState({ status: "idle" });
+  }, []);
+
+  const openWordTools = useCallback(async () => {
+    const editor = editorRef.current;
+    if (!editor || editor.isDestroyed) return;
+    const selection = selectedWord(editor);
+    if (!selection.ok) return;
+    await cancelInteractiveWork();
+    setWordToolsState({ status: "loading", word: selection.word });
+    try {
+      const result = await lookupWord(selection.word);
+      if (!result) {
+        setWordToolsState({ status: "not-found", word: selection.word });
+        return;
+      }
+      setWordToolsState({
+        status: "ready",
+        word: selection.word,
+        from: selection.from,
+        to: selection.to,
+        result,
+      });
+    } catch {
+      setWordToolsState({ status: "idle" });
+    }
+  }, [cancelInteractiveWork]);
+
+  const applyWordReplacement = useCallback(
+    (replacement: string) => {
+      const editor = editorRef.current;
+      if (!editor || editor.isDestroyed || wordToolsState.status !== "ready")
+        return;
+      const { from, to, word } = wordToolsState;
+      if (editor.state.doc.textBetween(from, to, "\n", " ") !== word) {
+        closeWordTools();
+        return;
+      }
+      try {
+        const marks = editor.state.doc.resolve(from).marks();
+        const transaction = editor.state.tr.replaceWith(
+          from,
+          to,
+          editor.schema.text(replacement, marks),
+        );
+        editor.view.dispatch(transaction);
+      } finally {
+        closeWordTools();
+      }
+    },
+    [closeWordTools, wordToolsState],
+  );
+
   useEffect(() => {
     if (!editorInstance || editorInstance.isDestroyed) return;
     updateAxiomDecorations(
@@ -911,15 +971,23 @@ function App() {
               if (sessionId) void finishDictation(sessionId);
             }}
             onTransform={() => openTransform("transform", "concise")}
+            onWordTools={() => void openWordTools()}
             rewriteMode={
               transformState.status === "idle" ? null : transformState.mode
             }
             voiceEnabled={voiceSettings.enabled}
+            wordToolsOpen={wordToolsState.status !== "idle"}
           />
         ) : (
           <main className="workspace" id="workspace" tabIndex={-1} />
         )}
-        {transformState.status === "idle" ? (
+        {wordToolsState.status !== "idle" ? (
+          <WordToolsPanel
+            onClose={closeWordTools}
+            onReplace={applyWordReplacement}
+            state={wordToolsState}
+          />
+        ) : transformState.status === "idle" ? (
           <AnalysisPanel
             analysis={analysis}
             canApplySuggestion={canApplySuggestion}

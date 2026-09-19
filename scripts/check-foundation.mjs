@@ -93,10 +93,11 @@ assert.match(
 );
 assert.match(cargoText, /serde_json = "=1\.0\.151"/);
 assert.doesNotMatch(appText, /Writing Score|Correctness|issue count/i);
-assert.equal(packageJson.version, "0.2.0");
-assert.equal(config.version, "0.2.0");
-assert.match(cargoText, /version = "0\.2\.0"/);
-assert.match(appText, /0\.2\.0/);
+const version = packageJson.version;
+const versionPattern = version.replace(/\./g, "\\.");
+assert.equal(config.version, version);
+assert.match(cargoText, new RegExp(`version = "${versionPattern}"`));
+assert.match(appText, new RegExp(versionPattern));
 assert.match(appText, /Always allow word/);
 assert.match(cargoText, /unicode-normalization = "=0\.1\.24"/);
 assert.equal(packageJson.dependencies["@tauri-apps/api"], "2.11.1");

@@ -2,6 +2,31 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-19 — 0.5.0 lexical foundation + Word Tools
+
+- Pre-flight verified `main`/`v0.4.0` at `45428b1`.
+- Integrated the Open English WordNet 2025 Edition (CC BY 4.0) as a
+  deterministic, versioned, offline-generated compact snapshot
+  (`scripts/generate-lexicon.mts` -> `src/wordTools/lexicon.v1.json`,
+  128,009 words / 107,519 synsets / 185,129 senses, ~18.9 MB). The generator
+  records source, license, source SHA-256, dialect (en-US), and generation
+  date; `--check` mode and `scripts/check-lexicon.mts` validate structure,
+  sense resolution, and reference integrity.
+- Added a lazy-loaded lexicon runtime (`src/wordTools/lexicon.ts`) that loads
+  the snapshot only on first use; the snapshot is code-split by Vite into a
+  separate chunk and never loaded in the keystroke path.
+- Added Word Tools UI: select a word and invoke "Word Tools" from the toolbar
+  to see senses grouped by part of speech with definitions, synonyms,
+  antonyms, and related terms. A chosen chip replaces the selected word via a
+  stale-checked ProseMirror transaction (undoable).
+- Added Open English WordNet attribution to the bundled third-party notices.
+- Fixed the foundation gate's version-consistency assertions, which were
+  pinned to an obsolete version string (now verify the four version locations
+  agree with package.json).
+- Regression: AXIOM 519 cases 184/184 with zero unexplained false
+  positives/misses, terminology 377 records, editor/dictation/transform/
+  humanizer/grammar-corpus checks all pass; TypeScript and Vite build clean.
+
 ## 2026-09-19 — AXIOM 2.1 structural subject-verb agreement
 
 - Pre-flight verified `main`/`v0.3.0` at `675a32e` (Gitea fetch returned a

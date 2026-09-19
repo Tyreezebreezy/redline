@@ -1,30 +1,29 @@
 # REDLINE current work
 
-## AXIOM 2.0 American English foundation + contextual GEC research
+## Roadmap: 0.5.0 → 0.7.0 (then pause for AppForge 1.0 baseline)
 
-- Branch: `opencode/redline-axiom-2.1-structural-grammar`
-- Baseline: `675a32e58967ebe229bac14de947907dde1d7105` (`main`, v0.3.0)
-- Status: AXIOM 2.1 structural subject-verb agreement shipped (12 known misses
-  recovered at zero false positives); secondary weaknesses (verb form, tense,
-  determiners, prepositions, missing/extra words, punctuation) documented and
-  deferred with reasons in `docs/engineering/axiom-2/axiom-2.1-structural-grammar.md`
-- Contracts: `docs/engineering/axiom-2/` (Stage A-E + stage-2.1)
+- 0.5.0 — Lexical foundation + Word Tools: **complete** (OEWN snapshot + Word
+  Tools UI).
+- 0.6.0 — Clarity / Writing Intelligence: next.
+- 0.7.0 — Tone + Writing Goals + Personal Style Guide: after 0.6.
+- Then STOP. Transform Studio + My Voice maturation + final 1.0 convergence
+  wait for the updated AppForge baseline and owner's return. Live Dictation 2.0
+  remains deferred.
+
+- Branch: `opencode/redline-0.5-word-tools` (from `main`/`v0.4.0`).
 - Product model unchanged: single-user, local-first, offline-capable,
-  precision over nagging; Writing Context is General/Professional/Academic
-  (not profiles); My Voice is Natural/Professional/Academic
+  precision over nagging; Writing Context is General/Professional/Academic;
+  My Voice is Natural/Professional/Academic.
 
 ### Active objective
 
-Release the precision-safe structural-agreement improvements as the next
-feature release if all gates pass.
+Ship 0.5.0 (lexical foundation + Word Tools), then begin 0.6.0 Clarity.
 
-### Stage summary
+### 0.5.0 status
 
-- Added HeadNounAgreement, SimpleNounAgreement, IndefiniteAgreement, and
-  CompoundSubjectAgreement (quantifier-aware, tense-aware, collective-
-  conservative).
-- 519 cases, 184 required findings, 184 TP, 0 unexplained FP/misses; known
-  misses 53 -> 41.
+- Open English WordNet 2025 (CC BY 4.0) integrated as a lazy-loaded compact
+  snapshot; Word Tools UI shows senses + synonyms/antonyms/related terms and
+  supports undoable replacement.
 
 ### Hard stops
 
