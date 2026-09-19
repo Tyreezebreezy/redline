@@ -4,13 +4,13 @@
 
 - Branch: `opencode/redline-axiom-2-research`
 - Baseline: `a172d006decece1b72e5ffbc2a9b7f1c75877019` (`main`, post-0.2.0)
-- Status: Stage A (contracts) and Stage B (lexical/semantic foundation)
-  complete; Writing Context width fix committed; Stages C-F (evaluation/corpus
-  expansion, contextual GEC bakeoff, resolver prototype, recommendation) are
-  pending and evidence-gated
+- Status: Stage A (contracts), Stage B (lexical/semantic), and Stage C
+  (evaluation system + corpus expansion) complete; Writing Context width fix
+  committed; Stage D (contextual GEC bakeoff), Stage E (resolver prototype),
+  Stage F (recommendation) are pending and evidence-gated
 - Contracts: `docs/engineering/axiom-2/` (architecture, American English
   standard, source registry, evaluation, contextual GEC, licensing, planning
-  gate, stage-b-lexical-semantic)
+  gate, stage-b-lexical-semantic, stage-c-evaluation-corpus)
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic
   (not profiles); My Voice is Natural/Professional/Academic
@@ -18,23 +18,23 @@
 ### Active objective
 
 Produce the evidence required to decide whether a local contextual GEC layer
-should join Harper + deterministic AXIOM, without regressing the 290-case
-AXIOM floor (94/94, zero unexplained false positives/misses), the 377-record
-terminology floor, privacy, speed, or voice preservation.
+should join Harper + deterministic AXIOM, without regressing the 495-case
+evaluation (165 required findings, zero unexplained false positives/misses),
+the 377-record terminology floor, privacy, speed, or voice preservation.
 
 ### Stage exit summary
 
 - Stage A complete: contracts written and internally consistent.
 - Stage B complete: Harper lexical audit; ESDB/SCOWL and OEWN licenses
   verified; coverage/noise/dialect measured; OEWN prototype measured; lexical
-  corpus added. Decisions recorded in
-  `docs/engineering/axiom-2/stage-b-lexical-semantic.md`:
-  - Harper: keep as Tier-1 base.
-  - ESDB/SCOWL: build-time only (validation + small targeted supplement).
-  - OEWN: integrate later as a generated compact snapshot (on-demand).
-- Next: Stage C (ERRANT integration + corpus expansion), then Stage D
-  (contextual GEC bakeoff), Stage E (resolver prototype), Stage F
-  (recommendation only).
+  corpus added. Decisions: Harper keep; ESDB build-time only; OEWN integrate
+  later.
+- Stage C complete: evaluation system (schema, four suites, ERRANT-aligned
+  taxonomy, per-category F0.5 metrics) and a 205-case tagged expansion
+  (combined 495 cases). 60-item known-miss inventory ranks current
+  deterministic weaknesses for Stage D.
+- Next: Stage D (contextual GEC bakeoff against the tagged corpus), then
+  Stage E (resolver prototype), Stage F (recommendation only).
 
 ### Hard stops
 

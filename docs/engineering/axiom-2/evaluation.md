@@ -9,6 +9,9 @@ correctness is measured and how the corpus evolves.
 - 290 cases; 94/94 required findings; zero unexplained false positives or
   misses; zero mapping failures; zero protected-span failures; 22 documented
   known misses; nine documented limitations.
+- Stage C expansion (`benchmarks/axiom-2-corpus.json`, +205 cases) brings the
+  combined evaluation to 495 cases with 165 required findings, four formal
+  suites, and per-category metrics. See `stage-c-evaluation-corpus.md`.
 
 The corpus is an **evaluation corpus**, not a neural training corpus. That
 distinction is important and remains.

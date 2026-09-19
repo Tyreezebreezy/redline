@@ -2,6 +2,40 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-18 — AXIOM 2.0 Stage C: evaluation system + corpus expansion
+
+- Pre-flight verified: `opencode/redline-axiom-2-research` at `8b3744c`
+  matches origin; only `probes/transform-engine/` untracked.
+- Extended `scripts/benchmark-axiom.mts` to load a tagged expansion corpus and
+  report per-suite, per-category (precision/recall/F0.5), and known-miss
+  inventory metrics, with a machine-readable summary JSON, while preserving
+  the release gate (zero unexplained FP/misses, zero mapping/protected
+  failures).
+- Added `benchmarks/axiom-2-corpus.json` (205 tagged cases) with a structured
+  schema (suite, errant, classification, context, sourceType, notes). Four
+  formal suites: correctness 112 (71 required findings, 39 known-miss, 2
+  known-limitation), negative-control 47, register 29, voice-preservation 17.
+  ERRANT-aligned plus REDLINE-specific categories; every case authored
+  originally, no restricted text committed.
+- Combined evaluation is 495 cases (290 legacy + 205 expansion), 165 required
+  findings, 165 true positives, 0 unexplained false positives, 0 unexplained
+  misses, 0 mapping failures, 0 protected-span failures; 60 known misses and
+  12 known limitations. ERRANT remains taxonomy-reference-only (v3.0.2, MIT),
+  not executed (no Python/spaCy).
+- Iterative classification captured Harper's true capability: it catches
+  MassNouns, GoodAt, ArriveTo, Discuss, ModalOf, WillNonLemma, and
+  SimplePastToPastParticiple (now required findings), while genuinely missing
+  intervening/collective agreement, contextual real-word errors, preposition
+  collocation, and several tense/word-order/punctuation classes (tracked as
+  known misses).
+- Documented limitations (current false positives on valid input): bare
+  filenames (`config.toml`) are not protected; UK spellings inside source text
+  (`centre`) are flagged; short typos `teh`/`alot` are missed.
+- Regression unchanged: `check-axiom`, terminology (377 records), grammar
+  corpus self-test all pass; production grammar/Harper config/dependency/Tauri
+  authority/CSP/model assets untouched.
+- Live Dictation 2.0 remains deferred. REDLINE remains single-user.
+
 ## 2026-09-18 — AXIOM 2.0 Stage B: lexical + semantic foundation
 
 - Pre-flight verified: branch `opencode/redline-axiom-2-research` at

@@ -24,6 +24,8 @@ type ExpectedIssue = {
   category?: string;
   ruleId?: string;
 };
+type Suite = "correctness" | "negative-control" | "register" | "voice-preservation";
+type Classification = "correction" | "suggestion" | "hidden";
 type Case = {
   audit?: "redundant-that-false-positive" | "redundant-that-true-positive";
   id: string;
@@ -36,6 +38,12 @@ type Case = {
   profile?: WritingProfile;
   protected?: boolean;
   protectedSpans?: number;
+  suite?: Suite;
+  errant?: string;
+  classification?: Classification;
+  context?: "general" | "professional" | "academic" | "all";
+  sourceType?: "authored-test" | "anonymized-real-world" | "research-derived-principle";
+  notes?: string;
 };
 type Row = {
   case: string;
@@ -52,6 +60,12 @@ type Row = {
 const corpus = JSON.parse(
   await readFile(
     new URL("../benchmarks/axiom-corpus.json", import.meta.url),
+    "utf8",
+  ),
+) as Case[];
+const expansionCorpus = JSON.parse(
+  await readFile(
+    new URL("../benchmarks/axiom-2-corpus.json", import.meta.url),
     "utf8",
   ),
 ) as Case[];
@@ -74,6 +88,20 @@ let knownMisses = 0;
 const rows: Row[] = [];
 const warmTimes: number[] = [];
 const performanceRows: object[] = [];
+const allCases = [...corpus, ...expansionCorpus];
+
+type CategoryStat = {
+  cases: number;
+  expectedFindings: number;
+  truePositives: number;
+  falseNegatives: number;
+  falsePositives: number;
+  knownMisses: number;
+};
+const suiteStats = new Map<string, CategoryStat>();
+const categoryStats = new Map<string, CategoryStat>();
+const knownMissInventory = new Map<string, { case: string; originalText: string }[]>();
+const falsePositiveRows: { case: string; category: string; originalText: string }[] = [];
 
 function matches(issue: AxiomIssue, expected: ExpectedIssue) {
   return (
@@ -95,7 +123,7 @@ function consumeMatches(issues: AxiomIssue[], expected: ExpectedIssue[]) {
 }
 
 try {
-  for (const fixture of corpus) {
+  for (const fixture of allCases) {
     const caseStarted = performance.now();
     const profile = fixture.profile ?? "general";
     await linter.setLintConfig({
@@ -139,7 +167,8 @@ try {
         (issue) => !isIgnoredIssue(issue, [ignored]),
       );
     }
-    const expectedMatches = consumeMatches(evaluatedIssues, fixture.expected);
+    const expectedIssues = fixture.expected ?? [];
+    const expectedMatches = consumeMatches(evaluatedIssues, expectedIssues);
     const knownMissMatches = consumeMatches(
       expectedMatches.remaining,
       fixture.knownMisses ?? [],
@@ -163,8 +192,8 @@ try {
       (fixture.protected ? evaluatedIssues.length : 0) + spanCountFailure;
     falsePositives += unexpected.length;
     misses += missed.length;
-    truePositives += fixture.expected.length - missed.length;
-    expectedFindings += fixture.expected.length;
+    truePositives += expectedIssues.length - missed.length;
+    expectedFindings += expectedIssues.length;
     protectedSpanFailures += protectedFailures;
     mappingFailures += failedMappings;
     knownLimitations += observedKnown;
@@ -192,6 +221,57 @@ try {
       ms: elapsed,
       protectedFailures,
     });
+
+    const fpCount = unexpected.length;
+    const fnCount = missed.length;
+    const tpCount = expectedIssues.length - fnCount;
+    const suite = fixture.suite ?? "correctness";
+    const suiteStat = suiteStats.get(suite) ?? {
+      cases: 0,
+      expectedFindings: 0,
+      truePositives: 0,
+      falseNegatives: 0,
+      falsePositives: 0,
+      knownMisses: 0,
+    };
+    suiteStat.cases += 1;
+    suiteStat.expectedFindings += expectedIssues.length;
+    suiteStat.truePositives += tpCount;
+    suiteStat.falseNegatives += fnCount;
+    suiteStat.falsePositives += fpCount;
+    suiteStat.knownMisses += knownMissMatches.missed.length;
+    suiteStats.set(suite, suiteStat);
+
+    if (fixture.errant) {
+      const catStat = categoryStats.get(fixture.errant) ?? {
+        cases: 0,
+        expectedFindings: 0,
+        truePositives: 0,
+        falseNegatives: 0,
+        falsePositives: 0,
+        knownMisses: 0,
+      };
+      catStat.cases += 1;
+      catStat.expectedFindings += expectedIssues.length;
+      catStat.truePositives += tpCount;
+      catStat.falseNegatives += fnCount;
+      catStat.falsePositives += fpCount;
+      catStat.knownMisses += knownMissMatches.missed.length;
+      categoryStats.set(fixture.errant, catStat);
+    }
+
+    for (const missedExpected of knownMissMatches.missed) {
+      const bucket = knownMissInventory.get(fixture.errant ?? "OTHER") ?? [];
+      bucket.push({ case: fixture.id, originalText: missedExpected.originalText });
+      knownMissInventory.set(fixture.errant ?? "OTHER", bucket);
+    }
+    for (const fp of unexpected) {
+      falsePositiveRows.push({
+        case: fixture.id,
+        category: fixture.errant ?? "OTHER",
+        originalText: fp.originalText,
+      });
+    }
   }
 
   const redundantThatCases = corpus.filter(({ audit }) => audit);
@@ -296,28 +376,113 @@ try {
 console.table(rows);
 console.table(performanceRows);
 const sortedTimes = warmTimes.toSorted((left, right) => left - right);
-console.log(
-  JSON.stringify(
+
+function precision(tp: number, fp: number) {
+  const denominator = tp + fp;
+  return denominator === 0 ? 1 : Number((tp / denominator).toFixed(4));
+}
+function recall(tp: number, fn: number) {
+  const denominator = tp + fn;
+  return denominator === 0 ? 1 : Number((tp / denominator).toFixed(4));
+}
+function f05(p: number, r: number) {
+  const denominator = 0.25 * p + r;
+  return denominator === 0 ? 1 : Number(((1.25 * p * r) / denominator).toFixed(4));
+}
+
+const overallPrecision = precision(truePositives, falsePositives);
+const overallRecall = recall(truePositives, misses);
+const overallF05 = f05(overallPrecision, overallRecall);
+
+const suiteReport = Object.fromEntries(
+  [...suiteStats.entries()].map(([suite, stat]) => [
+    suite,
     {
-      cases: corpus.length,
-      expectedFindings,
-      truePositives,
-      falsePositives,
-      misses,
-      protectedSpanFailures,
-      mappingFailures,
-      knownLimitations,
-      knownMisses,
-      initializationMs: Number(initializationMs.toFixed(1)),
-      warmP50Ms: sortedTimes[Math.floor(sortedTimes.length * 0.5)],
-      warmP95Ms: sortedTimes[Math.floor(sortedTimes.length * 0.95)],
-      warmMaxMs: sortedTimes.at(-1),
+      cases: stat.cases,
+      expectedFindings: stat.expectedFindings,
+      truePositives: stat.truePositives,
+      falseNegatives: stat.falseNegatives,
+      falsePositives: stat.falsePositives,
+      knownMisses: stat.knownMisses,
+      precision: precision(stat.truePositives, stat.falsePositives),
+      recall: recall(stat.truePositives, stat.falseNegatives),
+      f05: f05(
+        precision(stat.truePositives, stat.falsePositives),
+        recall(stat.truePositives, stat.falseNegatives),
+      ),
     },
-    null,
-    2,
-  ),
+  ]),
 );
-assert.ok(corpus.length >= 180);
+
+const categoryReport = Object.fromEntries(
+  [...categoryStats.entries()].map(([category, stat]) => [
+    category,
+    {
+      cases: stat.cases,
+      positives: stat.expectedFindings,
+      truePositives: stat.truePositives,
+      falseNegatives: stat.falseNegatives,
+      falsePositives: stat.falsePositives,
+      knownMisses: stat.knownMisses,
+      precision: precision(stat.truePositives, stat.falsePositives),
+      recall: recall(stat.truePositives, stat.falseNegatives),
+      f05: f05(
+        precision(stat.truePositives, stat.falsePositives),
+        recall(stat.truePositives, stat.falseNegatives),
+      ),
+    },
+  ]),
+);
+
+const knownMissReport = Object.fromEntries(
+  [...knownMissInventory.entries()].map(([category, items]) => [category, items]),
+);
+
+const summary = {
+  cases: allCases.length,
+  legacyCases: corpus.length,
+  expansionCases: expansionCorpus.length,
+  expectedFindings,
+  truePositives,
+  falsePositives,
+  falseNegatives: misses,
+  precision: overallPrecision,
+  recall: overallRecall,
+  f05: overallF05,
+  protectedSpanFailures,
+  mappingFailures,
+  knownLimitations,
+  knownMisses,
+  initializationMs: Number(initializationMs.toFixed(1)),
+  warmP50Ms: sortedTimes[Math.floor(sortedTimes.length * 0.5)],
+  warmP95Ms: sortedTimes[Math.floor(sortedTimes.length * 0.95)],
+  warmMaxMs: sortedTimes.at(-1),
+  suites: suiteReport,
+  categories: categoryReport,
+  knownMissInventory: knownMissReport,
+  falsePositiveRows,
+};
+
+console.log("\n=== AXIOM Evaluation Summary ===");
+console.log(
+  `Overall: ${allCases.length} cases, ${expectedFindings} required findings, TP ${truePositives}, FP ${falsePositives}, FN ${misses}`,
+);
+console.log(
+  `Precision ${overallPrecision}  Recall ${overallRecall}  F0.5 ${overallF05}`,
+);
+console.log(`Known misses ${knownMisses}, known limitations ${knownLimitations}, protected failures ${protectedSpanFailures}, mapping failures ${mappingFailures}`);
+console.log("\n=== Suite distribution ===");
+console.table(suiteReport);
+console.log("=== Category distribution ===");
+console.table(categoryReport);
+if (falsePositiveRows.length > 0) {
+  console.log("=== False positives (each is a defect) ===");
+  console.table(falsePositiveRows);
+}
+console.log(
+  JSON.stringify(summary, null, 2),
+);
+assert.ok(allCases.length >= 180);
 assert.equal(falsePositives, 0);
 assert.equal(misses, 0);
 assert.equal(protectedSpanFailures, 0);

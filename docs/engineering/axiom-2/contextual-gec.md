@@ -3,6 +3,12 @@
 Status: research contract for the contextual grammatical-error-correction
 bakeoff (Stage D). No production integration is authorized by this document.
 
+Stage C is complete: the evaluation system (`stage-c-evaluation-corpus.md`)
+now provides 495 tagged cases across four suites, per-category metrics, and a
+60-item known-miss inventory. Stage D candidates are scored against this
+corpus; the known-miss set measures "does contextual GEC help", while the
+negative-control and voice suites measure "does it hurt".
+
 ## 1. Mission
 
 Detect mistakes deterministic rules struggle with:
