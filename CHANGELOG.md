@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.3.0 — 2026-09-19
+
+### Changed
+
+- Added high-confidence deterministic contextual word-choice and contraction
+  checks to AXIOM: accept/except, loose/lose, its/it's, your/you're, and
+  cite/site. These recover seven previously documented known misses with zero
+  new false positives and remain subject to protected-span and canonical
+  terminology authority.
+- Fixed the Writing Context selector so General, Professional, and Academic
+  display fully at supported window sizes.
+- Expanded the AXIOM evaluation corpus from 290 to 505 cases with four formal
+  suites (correctness, negative controls, register, voice preservation) and
+  per-category precision/recall/F0.5 reporting.
+
+### Deferred
+
+- A local contextual grammatical-error-correction model (Tier 2) remains
+  research-only; current evidence does not support shipping one. Clarity,
+  Tone, Writing Goals, Word Tools, and streaming Dictation 2.0 remain
+  evidence-gated.
+
 ## 0.2.0 — 2026-09-17
 
 ### Changed

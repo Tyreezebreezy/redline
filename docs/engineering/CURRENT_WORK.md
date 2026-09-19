@@ -4,37 +4,30 @@
 
 - Branch: `opencode/redline-axiom-2-research`
 - Baseline: `a172d006decece1b72e5ffbc2a9b7f1c75877019` (`main`, post-0.2.0)
-- Status: Stage A (contracts), Stage B (lexical/semantic), and Stage C
-  (evaluation system + corpus expansion) complete; Writing Context width fix
-  committed; Stage D (contextual GEC bakeoff), Stage E (resolver prototype),
-  Stage F (recommendation) are pending and evidence-gated
+- Status: Stages A-E complete. Stage D bakeoff found no shippable neural GEC
+  candidate; five deterministic context rules were integrated into production
+  AXIOM (AcceptExcept, LooseLose, ItsContraction, YourContraction, CiteSite)
+  and the evaluation corpus grew to 505 cases. Stage F is the recommendation
+  (below). Version is being incremented to 0.3.0.
 - Contracts: `docs/engineering/axiom-2/` (architecture, American English
   standard, source registry, evaluation, contextual GEC, licensing, planning
-  gate, stage-b-lexical-semantic, stage-c-evaluation-corpus)
+  gate, stage-b-lexical-semantic, stage-c-evaluation-corpus,
+  stage-d-e-bakeoff)
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic
   (not profiles); My Voice is Natural/Professional/Academic
 
 ### Active objective
 
-Produce the evidence required to decide whether a local contextual GEC layer
-should join Harper + deterministic AXIOM, without regressing the 495-case
-evaluation (165 required findings, zero unexplained false positives/misses),
-the 377-record terminology floor, privacy, speed, or voice preservation.
+Release the precision-safe AXIOM improvements (Writing Context display fix +
+  deterministic context rules) as 0.3.0 if all gates pass.
 
 ### Stage exit summary
 
-- Stage A complete: contracts written and internally consistent.
-- Stage B complete: Harper lexical audit; ESDB/SCOWL and OEWN licenses
-  verified; coverage/noise/dialect measured; OEWN prototype measured; lexical
-  corpus added. Decisions: Harper keep; ESDB build-time only; OEWN integrate
-  later.
-- Stage C complete: evaluation system (schema, four suites, ERRANT-aligned
-  taxonomy, per-category F0.5 metrics) and a 205-case tagged expansion
-  (combined 495 cases). 60-item known-miss inventory ranks current
-  deterministic weaknesses for Stage D.
-- Next: Stage D (contextual GEC bakeoff against the tagged corpus), then
-  Stage E (resolver prototype), Stage F (recommendation only).
+- Stage A-D complete (see prior entries). Stage D/E outcome: no neural model
+  ships; deterministic rules recover 7 known misses at zero false positives.
+- Known misses reduced 60 -> 53; 0 unexplained false positives/misses;
+  terminology, protected spans, and personal-dictionary authority preserved.
 
 ### Hard stops
 

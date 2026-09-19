@@ -2,6 +2,32 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-19 — AXIOM 2.0 Stage D/E + 0.3.0 integration
+
+- Pre-flight verified: research branch `1648f87` matches origin; main at
+  `a172d00`; tags v0.1.0/v0.2.0 intact; version 0.2.0 across package/Tauri/Rust.
+- Stage D bakeoff: GECToR (Apache-2.0 code; weights trained on restricted
+  BEA/Lang-8 corpora; Python/PyTorch, no clean ONNX) and a BART seq2seq
+  spelling model (MIT weights but 0.1B params, F32, "experimental",
+  spelling-only, unbounded rewriting) are not cleanly distributable or
+  precision-safe. Deterministic Candidate C was implemented and benchmarked:
+  recovers 7/61 known misses at zero false positives across 261 controls.
+- Integrated five deterministic context rules into production
+  (`src/axiom/contextRules.ts`, wired into `analyzeText`): AcceptExcept,
+  LooseLose, ItsContraction, YourContraction, CiteSite. Head-noun agreement
+  heuristic was deliberately left out (needs quantifier-aware controls).
+- Stage E resolver proved via new corpus cases: context rules respect
+  protected spans (`PROT-CONTEXT-001`) and coexist with canonical terminology
+  (`COEXIST-001`); existing protected-span, terminology, and personal-dictionary
+  authority is preserved.
+- Evaluation after integration: 505 cases, 172 required findings, 172 true
+  positives, 0 unexplained false positives/misses, 0 mapping/protected
+  failures; known misses reduced 60 -> 53.
+- Regression: `check-axiom`, terminology (377 records), grammar-corpus
+  self-test, and TypeScript all pass.
+- No neural model was shipped. REDLINE remains single-user; Live Dictation 2.0
+  remains deferred.
+
 ## 2026-09-18 — AXIOM 2.0 Stage C: evaluation system + corpus expansion
 
 - Pre-flight verified: `opencode/redline-axiom-2-research` at `8b3744c`
