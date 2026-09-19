@@ -6,6 +6,7 @@ import {
   type WritingProfile,
 } from "./axiom/axiom";
 import type { EditorIssue } from "./axiom/projection";
+import type { EditorClarityFinding } from "./clarity/clarity";
 import type {
   DictionaryEntry,
   DocumentSummary,
@@ -432,6 +433,7 @@ export type AnalysisState =
       status: "complete";
       generation: number;
       issues: EditorIssue[];
+      clarity: EditorClarityFinding[];
       session: number;
       text: string;
     }
@@ -451,6 +453,12 @@ const CATEGORY_LABELS: Record<EditorIssue["category"], string> = {
   spelling: "Spelling",
   style: "Style",
   "word-choice": "Word choice",
+};
+
+const CLARITY_LABELS: Record<EditorClarityFinding["category"], string> = {
+  "long-sentence": "Long sentence",
+  "repeated-opener": "Repeated opener",
+  "wordy-phrase": "Wordy phrase",
 };
 
 const contextSegmenter = new Intl.Segmenter(undefined, {
@@ -510,6 +518,7 @@ export function AnalysisPanel({
   disabled,
   onAnalyze,
   onAddToDictionary,
+  onApplyClarity,
   onApplySuggestion,
   onIgnoreIssue,
   onSelectIssue,
@@ -523,6 +532,7 @@ export function AnalysisPanel({
   disabled: boolean;
   onAnalyze: () => void;
   onAddToDictionary: (issueId: string) => void;
+  onApplyClarity: (findingId: string) => void;
   onApplySuggestion: (issueId: string, suggestionIndex: number) => void;
   onIgnoreIssue: (issueId: string) => void;
   onSelectIssue: (issueId: string) => void;
@@ -777,6 +787,29 @@ export function AnalysisPanel({
             </p>
           </div>
         )}
+        {analysis.status === "complete" && analysis.clarity.length ? (
+          <section className="clarity-section">
+            <h3 className="clarity-title">Clarity suggestions</h3>
+            <ul className="clarity-list">
+              {analysis.clarity.map((finding) => (
+                <li className="clarity-item" key={finding.id}>
+                  <div className="clarity-meta">
+                    <span>{CLARITY_LABELS[finding.category]}</span>
+                    {finding.replacement ? (
+                      <button
+                        onClick={() => onApplyClarity(finding.id)}
+                        type="button"
+                      >
+                        Apply
+                      </button>
+                    ) : null}
+                  </div>
+                  <p>{finding.message}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
         <button
           className="analyze-button"
           disabled={disabled}

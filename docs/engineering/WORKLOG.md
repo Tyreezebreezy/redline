@@ -2,6 +2,25 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-19 — 0.6.0 Clarity / Writing Intelligence
+
+- Added a deterministic Tier-4 Clarity engine (`src/clarity/clarity.ts`) with
+  three evidence-gated categories: wordy phrases (fixed phrase -> simpler
+  replacement), unusually long sentences (>40 words), and repeated sentence
+  openers (3+ consecutive). Writing Context sensitivity: General surfaces only
+  wordy-phrase suggestions; Professional/Academic add sentence-level signals.
+- Wordy-phrase findings are actionable (one-click replacement via a
+  stale-checked ProseMirror transaction with undo); sentence-level findings
+  are advisory only. Clarity findings render in a dedicated "Clarity
+  suggestions" section of the Analysis panel, visually distinct from AXIOM
+  corrections.
+- Added a 20-case Clarity corpus (`benchmarks/clarity-corpus.json`) with
+  positive and negative controls and a check script
+  (`scripts/check-clarity.mts`); the suite passes with zero false positives
+  and zero misses.
+- Regression: AXIOM 519 cases 184/184 zero unexplained false positives/misses,
+  terminology 377 records, TypeScript and Vite build clean.
+
 ## 2026-09-19 — 0.5.0 lexical foundation + Word Tools
 
 - Pre-flight verified `main`/`v0.4.0` at `45428b1`.

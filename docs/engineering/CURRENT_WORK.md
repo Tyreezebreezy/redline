@@ -2,28 +2,29 @@
 
 ## Roadmap: 0.5.0 → 0.7.0 (then pause for AppForge 1.0 baseline)
 
-- 0.5.0 — Lexical foundation + Word Tools: **complete** (OEWN snapshot + Word
-  Tools UI).
-- 0.6.0 — Clarity / Writing Intelligence: next.
-- 0.7.0 — Tone + Writing Goals + Personal Style Guide: after 0.6.
+- 0.5.0 — Lexical foundation + Word Tools: **complete**.
+- 0.6.0 — Clarity / Writing Intelligence: **complete** (deterministic advisory
+  engine + corpus).
+- 0.7.0 — Tone + Writing Goals + Personal Style Guide: next.
 - Then STOP. Transform Studio + My Voice maturation + final 1.0 convergence
   wait for the updated AppForge baseline and owner's return. Live Dictation 2.0
   remains deferred.
 
-- Branch: `opencode/redline-0.5-word-tools` (from `main`/`v0.4.0`).
+- Branch: `main` (linear, from `v0.5.0`).
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic;
   My Voice is Natural/Professional/Academic.
 
 ### Active objective
 
-Ship 0.5.0 (lexical foundation + Word Tools), then begin 0.6.0 Clarity.
+Ship 0.6.0 (Clarity), then begin 0.7.0 (Tone + Writing Goals + Personal Style
+Guide).
 
-### 0.5.0 status
+### 0.6.0 status
 
-- Open English WordNet 2025 (CC BY 4.0) integrated as a lazy-loaded compact
-  snapshot; Word Tools UI shows senses + synonyms/antonyms/related terms and
-  supports undoable replacement.
+- Deterministic Clarity engine integrated and shown in the Analysis panel;
+  wordy-phrase replacements are actionable; long-sentence and repeated-opener
+  signals are advisory. Writing Context controls sensitivity.
 
 ### Hard stops
 

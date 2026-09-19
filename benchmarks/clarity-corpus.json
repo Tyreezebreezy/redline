@@ -1,0 +1,22 @@
+[
+  { "id": "wordy-due-to", "text": "We delayed the launch due to the fact that it rained.", "profile": "general", "expected": ["wordy-phrase"] },
+  { "id": "wordy-in-order-to", "text": "She studied late in order to pass the exam.", "profile": "general", "expected": ["wordy-phrase"] },
+  { "id": "wordy-in-the-event", "text": "Call me in the event that the plan changes.", "profile": "general", "expected": ["wordy-phrase"] },
+  { "id": "wordy-at-this-point", "text": "At this point in time, we have no update.", "profile": "general", "expected": ["wordy-phrase"] },
+  { "id": "wordy-a-large-number", "text": "A large number of people attended the event.", "profile": "general", "expected": ["wordy-phrase"] },
+  { "id": "wordy-vast-majority", "text": "The vast majority of users approved the change.", "profile": "general", "expected": ["wordy-phrase"] },
+  { "id": "wordy-with-regard", "text": "With regard to the schedule, we are on track.", "profile": "professional", "expected": ["wordy-phrase"] },
+  { "id": "wordy-for-purpose", "text": "We met for the purpose of planning the release.", "profile": "professional", "expected": ["wordy-phrase"] },
+  { "id": "long-sentence", "text": "The report, which was prepared by the committee after several weeks of careful review and consultation with a wide range of stakeholders across the organization, was finally approved on Monday after a lengthy discussion that covered every remaining concern in detail.", "profile": "professional", "expected": ["long-sentence"] },
+  { "id": "repeated-opener", "text": "Tyree reviewed the draft. Tyree checked the numbers. Tyree approved the release.", "profile": "professional", "expected": ["repeated-opener"] },
+  { "id": "clean-concise", "text": "The report is ready for review.", "profile": "general", "expected": [] },
+  { "id": "clean-professional", "text": "We should cut latency without adding dependencies.", "profile": "professional", "expected": [] },
+  { "id": "clean-academic", "text": "These findings suggest that the intervention improved retention.", "profile": "academic", "expected": [] },
+  { "id": "clean-short-sentences", "text": "The team met on Monday. They agreed on a plan. Work began on Tuesday.", "profile": "professional", "expected": [] },
+  { "id": "clean-varied-openers", "text": "First, we reviewed the data. Next, we tested the change. Finally, we shipped it.", "profile": "professional", "expected": [] },
+  { "id": "clean-technical", "text": "The API returned a 404 status code.", "profile": "general", "expected": [] },
+  { "id": "clean-intentional-repetition", "text": "I really, really liked it.", "profile": "general", "expected": [] },
+  { "id": "clean-contraction", "text": "I don't think that's going to work.", "profile": "general", "expected": [] },
+  { "id": "clean-because", "text": "We delayed the launch because it rained.", "profile": "general", "expected": [] },
+  { "id": "clean-to", "text": "She studied late to pass the exam.", "profile": "general", "expected": [] }
+]

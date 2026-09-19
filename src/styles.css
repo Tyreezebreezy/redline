@@ -1676,3 +1676,62 @@ body {
   background: var(--surface-selected);
   border-color: var(--border-strong);
 }
+.clarity-section {
+  padding: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.clarity-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.clarity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clarity-item {
+  padding: 10px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.clarity-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.clarity-meta span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.clarity-meta button {
+  padding: 2px 10px;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface-selected);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clarity-item p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}

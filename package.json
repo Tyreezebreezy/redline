@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "pnpm typecheck && vite build",
-    "check": "pnpm typecheck && biome check . && pnpm test:foundation && pnpm test:editor && pnpm test:dictation && pnpm test:transform && pnpm test:humanizer && pnpm test:axiom && pnpm test:terminology && pnpm test:grammar-corpus && pnpm test:lexicon && pnpm test:persistence",
+    "check": "pnpm typecheck && biome check . && pnpm test:foundation && pnpm test:editor && pnpm test:dictation && pnpm test:transform && pnpm test:humanizer && pnpm test:axiom && pnpm test:terminology && pnpm test:grammar-corpus && pnpm test:lexicon && pnpm test:clarity && pnpm test:persistence",
     "format": "biome format .",
     "format:write": "biome format --write .",
     "lint": "biome lint .",
@@ -21,6 +21,7 @@
     "test:grammar-corpus": "node scripts/grammar-corpus.mts --self-test",
     "test:lexicon": "node scripts/generate-lexicon.mts --check && node scripts/check-lexicon.mts",
     "generate:lexicon": "node scripts/generate-lexicon.mts",
+    "test:clarity": "node scripts/check-clarity.mts",
     "benchmark:axiom": "node scripts/benchmark-axiom.mts",
     "evaluate:grammar": "node scripts/grammar-corpus.mts",
     "benchmark:dictation": "cargo test --release --manifest-path src-tauri/Cargo.toml benchmark_dictation_corpus -- --ignored --nocapture",

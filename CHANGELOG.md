@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.0 — 2026-09-19
+
+### Added
+
+- Clarity suggestions: a deterministic, advisory Tier-4 analysis that flags
+  wordy phrases (with one-click replacement), unusually long sentences, and
+  repeated sentence openers. These are suggestions, never grammar errors, and
+  remain separate from AXIOM corrections. Writing Context controls the
+  sensitivity (General surfaces only wordy-phrase suggestions; Professional
+  and Academic add sentence-level signals).
+
+### Deferred
+
+- Tone, Writing Goals, Personal Style Guide, and Snippets remain evidence-gated.
+
 ## 0.5.0 — 2026-09-19
 
 ### Added

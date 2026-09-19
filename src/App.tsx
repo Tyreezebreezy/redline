@@ -12,6 +12,7 @@ import {
   TransformPanel,
 } from "./AppShell";
 import {
+  type AxiomIssue,
   type AxiomSuggestion,
   analyzeText,
   getGrammarProvider,
@@ -50,6 +51,7 @@ import {
 } from "./documents";
 import { humanizerProtectedTerms } from "./humanizer";
 import { useTransformWorkflow } from "./useTransformWorkflow";
+import { analyzeClarity, type EditorClarityFinding } from "./clarity/clarity";
 import { lookupWord } from "./wordTools/lexicon";
 import { selectedWord } from "./wordTools/selection";
 import { WordToolsPanel, type WordToolsState } from "./wordTools/WordToolsPanel";
@@ -262,6 +264,7 @@ function App() {
         status: "complete",
         generation,
         issues: [],
+        clarity: [],
         session,
         text: projection.text,
       });
@@ -294,6 +297,19 @@ function App() {
       }
       analysisProjectionRef.current = projection;
       setSelectedIssueId(null);
+      const clarity: EditorClarityFinding[] = analyzeClarity(
+        projection.text,
+        profileRef.current,
+      )
+        .map((finding, index) => {
+          const mapped = mapIssue(projection, finding as unknown as AxiomIssue);
+          return {
+            ...finding,
+            id: `c${index + 1}`,
+            editorFrom: mapped?.editorFrom ?? -1,
+            editorTo: mapped?.editorTo ?? -1,
+          };
+        });
       setAnalysis({
         status: "complete",
         generation,
@@ -301,6 +317,7 @@ function App() {
           (issue): issue is EditorIssue =>
             issue !== null && !isIgnoredIssue(issue, ignoredIssuesRef.current),
         ),
+        clarity,
         session,
         text: projection.text,
       });
@@ -904,6 +921,39 @@ function App() {
     [closeWordTools, wordToolsState],
   );
 
+  const applyClaritySuggestion = useCallback(
+    (findingId: string) => {
+      const editor = editorRef.current;
+      if (!editor || editor.isDestroyed || analysis.status !== "complete")
+        return;
+      const finding = analysis.clarity.find((item) => item.id === findingId);
+      if (!finding?.replacement || finding.editorFrom < 0) return;
+      if (
+        editor.state.doc.textBetween(
+          finding.editorFrom,
+          finding.editorTo,
+          "\n",
+          "\n",
+        ) !== finding.originalText
+      ) {
+        scheduleAnalysis(editor);
+        return;
+      }
+      try {
+        const marks = editor.state.doc.resolve(finding.editorFrom).marks();
+        const transaction = editor.state.tr.replaceWith(
+          finding.editorFrom,
+          finding.editorTo,
+          editor.schema.text(finding.replacement, marks),
+        );
+        editor.view.dispatch(transaction);
+      } catch {
+        scheduleAnalysis(editor);
+      }
+    },
+    [analysis, scheduleAnalysis],
+  );
+
   useEffect(() => {
     if (!editorInstance || editorInstance.isDestroyed) return;
     updateAxiomDecorations(
@@ -994,6 +1044,7 @@ function App() {
             disabled={!editorInstance}
             onAnalyze={() => void runAnalysis()}
             onAddToDictionary={(issueId) => void addToDictionary(issueId)}
+            onApplyClarity={applyClaritySuggestion}
             onApplySuggestion={applySuggestion}
             onIgnoreIssue={ignoreIssue}
             onSelectIssue={selectIssue}
