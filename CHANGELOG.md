@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.0.0 — 2026-09-19
+
+### Added
+
+- Applied the approved REDLINE 1.0 visual identity: Editorial Graphite + Warm
+  Paper + restrained REDLINE Crimson, with a Windows-native typography stack
+  and semantic accent families for corrections (crimson), Clarity (amber),
+  Tone (cool blue), My Voice (violet-neutral), and success (muted green).
+  Corrections read stronger than suggestions.
+- Expanded Transform Studio with three additional explicit rewrite modes:
+  Simplify, Expand, and Improve Flow, unified behind the existing local
+  llama.cpp/Qwen runtime. Transform remains preview-first with stale-target
+  safety and undo.
+
+### Changed
+
+- Preserved the 0.5.0-0.7.0 feature set (Word Tools, Clarity, Tone, Writing
+  Goals, Personal Style Guide) with the AXIOM floor unchanged.
+
+### Known limitations
+
+- Live Dictation 2.0 (streaming partial transcription) remains the primary
+  outstanding item; production dictation still uses the record → stop →
+  local Whisper transcription → insert workflow with the established local
+  fallback.
+- Writing Context rendered QA remains a manual follow-up.
+- The installer is unsigned/private-use and may trigger SmartScreen.
+
 ## 0.7.0 — 2026-09-19
 
 ### Added

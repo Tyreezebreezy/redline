@@ -1,29 +1,26 @@
 # REDLINE current work
 
-## Roadmap: 0.5.0 → 0.7.0 complete; pause for AppForge 1.0 baseline
+## 1.0 convergence (in progress → tagged)
 
-- 0.5.0 — Lexical foundation + Word Tools: **complete**.
-- 0.6.0 — Clarity / Writing Intelligence: **complete**.
-- 0.7.0 — Tone + Writing Goals + Personal Style Guide: **complete**.
-- STOP. Transform Studio + My Voice maturation + final 1.0 convergence wait for
-  the updated AppForge baseline and the owner's return. Live Dictation 2.0
-  remains deferred. No 0.8.0 or 0.9.0.
-
-- Branch: `main` (linear, from `v0.6.0`).
+- 1.0 design system (Editorial Graphite + Warm Paper + Crimson) and Transform
+  Studio (Simplify / Expand / Improve Flow) are implemented and verified.
+- Live Dictation 2.0 (streaming partials) is the remaining item; production
+  dictation retains the record → stop → local Whisper → insert fallback.
+- Branch: `opencode/redline-1.0-convergence` (from `main`/`v0.7.0`).
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic;
   My Voice is Natural/Professional/Academic.
 
 ### Active objective
 
-Ship 0.7.0 (Tone + Writing Goals + Personal Style Guide), then stop and hand
-off to the owner.
+Tag and publish REDLINE 1.0.0 once all gates pass.
 
-### 0.7.0 status
+### Blockers
 
-- Personal Style Guide (preferred terms + capitalization), Writing Goals
-  (audience + purpose), and deterministic Tone summary are integrated, tested,
-  and packaged.
+- Private Gitea server reports "no space left on device" for large release
+  attachments; publication of the installer/artifact set needs the owner to
+  free server disk space. The 0.7.0 offline model zip is also still missing
+  from its release for the same reason.
 
 ### Hard stops
 

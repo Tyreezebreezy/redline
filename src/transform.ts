@@ -10,7 +10,13 @@ import type { Editor } from "@tiptap/react";
 import { marksForTextSelection } from "./editor.ts";
 import { changedHumanizerTerm } from "./humanizer.ts";
 
-export type TransformPreset = "concise" | "professional" | "academic";
+export type TransformPreset =
+  | "concise"
+  | "professional"
+  | "academic"
+  | "simplify"
+  | "expand"
+  | "improve-flow";
 export type VoicePreset = "natural" | "professional" | "academic";
 export type RewritePreset = TransformPreset | VoicePreset;
 export type RewriteMode = "transform" | "humanizer";

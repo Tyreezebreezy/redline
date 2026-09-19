@@ -989,7 +989,10 @@ export function AnalysisPanel({
 const TRANSFORM_LABELS: Record<TransformPreset, string> = {
   academic: "Academic",
   concise: "Concise",
+  "improve-flow": "Improve Flow",
+  expand: "Expand",
   professional: "Professional",
+  simplify: "Simplify",
 };
 
 const VOICE_LABELS = Object.fromEntries(
@@ -1116,8 +1119,11 @@ export function TransformPanel({
             ) : (
               <>
                 <option value="concise">Concise</option>
+                <option value="simplify">Simplify</option>
                 <option value="professional">Professional</option>
                 <option value="academic">Academic</option>
+                <option value="expand">Expand</option>
+                <option value="improve-flow">Improve Flow</option>
               </>
             )}
           </select>

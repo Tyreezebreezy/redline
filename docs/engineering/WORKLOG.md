@@ -2,6 +2,28 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-19 — REDLINE 1.0 convergence + Transform Studio + design system
+
+- Verified the AppForge / The Forge baseline: `the-forge` `v1.7.0` at
+  `9c9a7a6b2720adb61190f9486eb80a0c9a07d8a2` (ui-design pack v1.1.0
+  capability present).
+- Applied the approved 1.0 design tokens (Editorial Graphite + Warm Paper +
+  REDLINE Crimson) to the dark and light palettes, including semantic accent
+  families for corrections, Clarity, Tone, My Voice, and success.
+- Expanded Transform Studio with three explicit rewrite modes (Simplify,
+  Expand, Improve Flow) in the Rust `TransformPreset` registry and the
+  frontend preset selector, unified behind the existing local llama.cpp/Qwen
+  runtime with preview-first safety.
+- Dictation 2.0 (live streaming partials) remains the primary outstanding
+  item; production dictation keeps the record → stop → local Whisper →
+  insert workflow as the evidence-backed local fallback.
+- Regression: AXIOM 519 cases 184/184, terminology 377 records, Clarity
+  20-case corpus, lexicon validation, 16 native tests, TypeScript, and Vite
+  build all clean.
+- Gitea storage preflight: the server still reports "no space left on device"
+  for large release attachments; the 0.7.0 offline model zip remains
+  unuploaded and no destructive cleanup was performed without authority.
+
 ## 2026-09-19 — 0.7.0 Tone + Writing Goals + Personal Style Guide
 
 - Added a single-owner Personal Style Guide (SQLite `style_rules` migration 4,

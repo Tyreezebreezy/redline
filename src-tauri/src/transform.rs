@@ -56,6 +56,10 @@ pub enum TransformPreset {
     Natural,
     Professional,
     Academic,
+    Simplify,
+    Expand,
+    #[serde(rename = "improve-flow")]
+    ImproveFlow,
 }
 
 impl TransformPreset {
@@ -65,6 +69,9 @@ impl TransformPreset {
             Self::Natural => "natural",
             Self::Professional => "professional",
             Self::Academic => "academic",
+            Self::Simplify => "simplify",
+            Self::Expand => "expand",
+            Self::ImproveFlow => "improve-flow",
         }
     }
 
@@ -78,6 +85,15 @@ impl TransformPreset {
             }
             (RewriteMode::Transform, Self::Academic) => {
                 "Use formal academic prose. Preserve technical terminology and stated evidence. Do not invent citations."
+            }
+            (RewriteMode::Transform, Self::Simplify) => {
+                "Rewrite using plainer words and shorter sentences while keeping every key point and the original meaning."
+            }
+            (RewriteMode::Transform, Self::Expand) => {
+                "Expand with additional relevant detail while keeping the tone and meaning. Do not invent facts, figures, or citations."
+            }
+            (RewriteMode::Transform, Self::ImproveFlow) => {
+                "Improve the flow and transitions between ideas without changing the meaning or removing detail."
             }
             (RewriteMode::Humanizer, Self::Natural) => {
                 "Organize the thought while preserving contractions, directness, opinions, skepticism, ordinary vocabulary, natural emphasis, intentional repetition, and personal cadence. Remove only filler, accidental duplication, abandoned starts, transcription artifacts, and clearly confusing order."
@@ -498,6 +514,9 @@ fn validate_request(request: &TransformRequest) -> TransformResult<()> {
         (request.mode, request.preset),
         (RewriteMode::Transform, TransformPreset::Natural)
             | (RewriteMode::Humanizer, TransformPreset::Concise)
+            | (RewriteMode::Humanizer, TransformPreset::Simplify)
+            | (RewriteMode::Humanizer, TransformPreset::Expand)
+            | (RewriteMode::Humanizer, TransformPreset::ImproveFlow)
     ) {
         return Err("The requested rewrite preset does not belong to this workflow.".into());
     }
