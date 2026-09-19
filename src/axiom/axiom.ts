@@ -1,5 +1,6 @@
 import { findTerminologyMatches } from "./terminology.ts";
 import { contextRuleIssues } from "./contextRules.ts";
+import { structuralRuleIssues } from "./structuralRules.ts";
 
 export type AxiomSuggestion = {
   kind: "replace" | "remove" | "insert-after";
@@ -188,6 +189,7 @@ export async function analyzeText(
   const protectedSpans = findProtectedSpans(text);
   const canonicalIssues = canonicalTermIssues(text);
   const contextIssues = contextRuleIssues(text);
+  const structuralIssues = structuralRuleIssues(text);
   const issues = (
     await provider.analyze(text, PROFILE_RULE_OVERRIDES[controls.profile])
   )
@@ -205,6 +207,7 @@ export async function analyzeText(
     )
     .concat(canonicalIssues)
     .concat(contextIssues)
+    .concat(structuralIssues)
     .filter((issue) => validIssue(text, issue))
     .filter(
       (issue) =>

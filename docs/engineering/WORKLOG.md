@@ -2,6 +2,33 @@
 
 Append entries; do not rewrite earlier evidence.
 
+## 2026-09-19 — AXIOM 2.1 structural subject-verb agreement
+
+- Pre-flight verified `main`/`v0.3.0` at `675a32e` (Gitea fetch returned a
+  transient 504; local state correct). Created
+  `opencode/redline-axiom-2.1-structural-grammar`.
+- Re-measured baseline: 505 cases, 172 required findings, 172 TP, 0 unexplained
+  FP/misses, 53 known misses; terminology 377 records.
+- Added four deterministic structural-agreement rules in
+  `src/axiom/structuralRules.ts` wired into `analyzeText`:
+  `HeadNounAgreement`, `SimpleNounAgreement`, `IndefiniteAgreement`
+  (each/every/everyone/one), and `CompoundSubjectAgreement` (proper names).
+  Quantifier-aware head classification distinguishes `a number of` (plural)
+  from `the number of` (singular) and skips collective/ambiguous heads
+  (`team`, `group`, `committee`, `majority`, `data`, ...). Tense-aware
+  replacements produce `is/are` and `was/were` correctly.
+- Result: 519 cases, 184 required findings, 184 TP, 0 unexplained false
+  positives/misses, 0 mapping/protected failures; known misses 53 -> 41
+  (12 recovered). Added 14 SVA negative controls including quantifier,
+  collective, mass-noun, and compound-dish (`macaroni and cheese is`) cases.
+- Rules tested and rejected: collective-noun correction (the `the team are`
+  control), naive `X and Y = plural`, `to + -ing`/`to + -ed` infinitives,
+  `these/those` determiner, and the complement/compliment, principal/principle,
+  bare/bear, than/then confusion sets (no deterministic high-precision context).
+- Regression: `check-axiom`, terminology (377 records), grammar-corpus
+  self-test, TypeScript, and Vite build all pass. No neural model; REDLINE
+  remains single-user; Live Dictation 2.0 remains deferred.
+
 ## 2026-09-19 — AXIOM 2.0 Stage D/E + 0.3.0 integration
 
 - Pre-flight verified: research branch `1648f87` matches origin; main at

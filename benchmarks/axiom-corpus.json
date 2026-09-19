@@ -1281,30 +1281,22 @@
   {
     "id": "coverage-agreement-singular-noun-miss",
     "text": "The report are ready.",
-    "expected": [],
-    "knownMisses": [{ "originalText": "report are", "category": "grammar" }]
+    "expected": [{ "originalText": "are", "category": "grammar", "ruleId": "SimpleNounAgreement" }]
   },
   {
     "id": "coverage-agreement-plural-noun-miss",
     "text": "The reports is ready.",
-    "expected": [],
-    "knownMisses": [{ "originalText": "reports is", "category": "grammar" }]
+    "expected": [{ "originalText": "is", "category": "grammar", "ruleId": "SimpleNounAgreement" }]
   },
   {
     "id": "coverage-agreement-intervening-noun-miss",
     "text": "The report from the teams are ready.",
-    "expected": [],
-    "knownMisses": [
-      { "originalText": "report from the teams are", "category": "grammar" }
-    ]
+    "expected": [{ "originalText": "are", "category": "grammar", "ruleId": "HeadNounAgreement" }]
   },
   {
     "id": "coverage-agreement-compound-subject-miss",
     "text": "Alice and Bob is ready.",
-    "expected": [],
-    "knownMisses": [
-      { "originalText": "Alice and Bob is", "category": "grammar" }
-    ]
+    "expected": [{ "originalText": "is", "category": "grammar", "ruleId": "CompoundSubjectAgreement" }]
   },
   {
     "id": "coverage-agreement-singular-control",

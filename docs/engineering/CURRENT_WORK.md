@@ -2,32 +2,29 @@
 
 ## AXIOM 2.0 American English foundation + contextual GEC research
 
-- Branch: `opencode/redline-axiom-2-research`
-- Baseline: `a172d006decece1b72e5ffbc2a9b7f1c75877019` (`main`, post-0.2.0)
-- Status: Stages A-E complete. Stage D bakeoff found no shippable neural GEC
-  candidate; five deterministic context rules were integrated into production
-  AXIOM (AcceptExcept, LooseLose, ItsContraction, YourContraction, CiteSite)
-  and the evaluation corpus grew to 505 cases. Stage F is the recommendation
-  (below). Version is being incremented to 0.3.0.
-- Contracts: `docs/engineering/axiom-2/` (architecture, American English
-  standard, source registry, evaluation, contextual GEC, licensing, planning
-  gate, stage-b-lexical-semantic, stage-c-evaluation-corpus,
-  stage-d-e-bakeoff)
+- Branch: `opencode/redline-axiom-2.1-structural-grammar`
+- Baseline: `675a32e58967ebe229bac14de947907dde1d7105` (`main`, v0.3.0)
+- Status: AXIOM 2.1 structural subject-verb agreement shipped (12 known misses
+  recovered at zero false positives); secondary weaknesses (verb form, tense,
+  determiners, prepositions, missing/extra words, punctuation) documented and
+  deferred with reasons in `docs/engineering/axiom-2/axiom-2.1-structural-grammar.md`
+- Contracts: `docs/engineering/axiom-2/` (Stage A-E + stage-2.1)
 - Product model unchanged: single-user, local-first, offline-capable,
   precision over nagging; Writing Context is General/Professional/Academic
   (not profiles); My Voice is Natural/Professional/Academic
 
 ### Active objective
 
-Release the precision-safe AXIOM improvements (Writing Context display fix +
-  deterministic context rules) as 0.3.0 if all gates pass.
+Release the precision-safe structural-agreement improvements as the next
+feature release if all gates pass.
 
-### Stage exit summary
+### Stage summary
 
-- Stage A-D complete (see prior entries). Stage D/E outcome: no neural model
-  ships; deterministic rules recover 7 known misses at zero false positives.
-- Known misses reduced 60 -> 53; 0 unexplained false positives/misses;
-  terminology, protected spans, and personal-dictionary authority preserved.
+- Added HeadNounAgreement, SimpleNounAgreement, IndefiniteAgreement, and
+  CompoundSubjectAgreement (quantifier-aware, tense-aware, collective-
+  conservative).
+- 519 cases, 184 required findings, 184 TP, 0 unexplained FP/misses; known
+  misses 53 -> 41.
 
 ### Hard stops
 
