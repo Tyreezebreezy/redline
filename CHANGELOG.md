@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.4.0 — 2026-09-19
+
+### Changed
+
+- Added structural subject-verb agreement checks to AXIOM: head-noun
+  agreement across intervening phrases, simple subject/verb number, each /
+  every / everyone / one agreement, and coordinated proper-name subjects.
+  These recover twelve previously documented known misses with zero new false
+  positives and remain subject to protected-span, personal-dictionary, and
+  canonical-terminology authority. Collective nouns and neither/either
+  constructions remain conservative.
+- Expanded the AXIOM evaluation corpus to 519 cases with 14 additional
+  subject-verb agreement negative controls (quantifiers, collectives, mass
+  nouns, and singular compound nouns).
+
+### Deferred
+
+- Verb-form, tense, determiner, preposition, missing/extra-word, and
+  punctuation corrections require lexical or clause-level evidence and remain
+  evidence-gated. Clarity, Tone, Word Tools, and streaming Dictation 2.0
+  remain deferred.
+
 ## 0.3.0 — 2026-09-19
 
 ### Changed
