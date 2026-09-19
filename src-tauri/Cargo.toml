@@ -1,6 +1,6 @@
 [package]
 name = "redline"
-version = "0.5.0"
+version = "0.6.0"
 description = "Local-first writing assistant foundation"
 authors = ["Tyree"]
 edition = "2024"
