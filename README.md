@@ -20,7 +20,15 @@ I built REDLINE because I wanted a writing tool that stays on my side of the pag
 
 ## Screenshots
 
-I haven't added screenshots yet. REDLINE is a writing app, so a real capture would show a real document, and I want to make them from a synthetic sample rather than anything I've written.
+Real captures of the running desktop app, using a short made-up note I typed in. None of it is my own writing.
+
+![REDLINE editor with grammar and spelling issues underlined, an issue card, a tone read and a clarity suggestion](docs/screenshots/editor-review.png)
+
+| Word Tools | Transform |
+| --- | --- |
+| ![Word Tools showing synonyms for a selected word](docs/screenshots/word-tools.png) | ![Transform panel with presets, showing the optional model is not installed](docs/screenshots/transform.png) |
+
+The Transform shot is honest about its state: the rewrite model is a separate ~1 GB optional download that I didn't install for the capture, so you see the preset list and the "model not installed" message rather than a rewrite. I didn't capture dictation because it needs a live microphone and I didn't want to fake it.
 
 ## Built with
 
@@ -31,9 +39,9 @@ Tauri 2, React, TypeScript and Tiptap on the front end, with Rust owning SQLite 
 - **Released baseline:** 1.0.0 (`v1.0.0` tag, 2026-09-19). The [CHANGELOG](CHANGELOG.md) has the full version history from 0.1.x.
 - **In development, not in `main`:** a 1.1 candidate with live dictation and a UI modernization. Until it passes the release checks in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md), treat live dictation as unfinished.
 - **Windows 10/11 x64 only**, with the Microsoft Edge WebView2 Runtime. The installer is unsigned and private-use, so SmartScreen may warn.
-- **Known gaps:** Writing Context rendered QA is still a manual follow-up (see the CHANGELOG). `pnpm check` does not fully pass from a clean clone of `main` right now: the Transform check script still expects three modes while the source has five, and the lexicon check needs a local Open English WordNet reference dataset that isn't in the repository.
-- **Large files:** the bundled Whisper model (`ggml-base.en.bin`, about 141 MB) is stored with Git LFS, so you need Git LFS installed to clone it.
-- **License:** none chosen yet; all rights reserved for now. Third-party components are listed in `src-tauri/resources/THIRD_PARTY_NOTICES.txt`.
+- **Known gaps:** Writing Context rendered QA is still a manual follow-up (see the CHANGELOG). `pnpm check` does not pass from a clean clone of `main` right now. When I ran the scripts individually, `test:foundation`, `test:editor`, `test:dictation`, `test:humanizer`, `test:axiom`, `test:terminology`, `test:grammar-corpus` and `test:clarity` passed and `tsc --noEmit` is clean. `test:transform` fails because the check script expects three Transform modes while the source has more, and `test:lexicon` fails because it needs a local Open English WordNet reference dataset (`probes/axiom-reference/oewn`) that isn't in the repository. `biome check` also reports import-ordering and formatting complaints. I haven't fixed any of these yet.
+- **Large file (Git LFS):** the bundled dictation model is `ggml-base.en.bin`, OpenAI's Whisper `base.en` converted by whisper.cpp (about 141 MiB, SHA-256 `a03779c8...c6d002`). Both the model and whisper.cpp are MIT licensed. It's stored with Git LFS, so install Git LFS before cloning. GitHub gives free accounts a small LFS bandwidth allowance, so if a clone fails with an LFS quota error, clone with `GIT_LFS_SKIP_SMUDGE=1` and download `ggml-base.en.bin` from the [whisper.cpp model repo](https://huggingface.co/ggerganov/whisper.cpp) into `src-tauri/resources/models/`. `pnpm tauri build` expects the file there, and the app verifies its hash before using it.
+- **License:** the source is publicly viewable, but I haven't granted an open-source license, so all rights are reserved for now. Third-party components are listed in `src-tauri/resources/THIRD_PARTY_NOTICES.txt`.
 
 ## Run it from source
 
