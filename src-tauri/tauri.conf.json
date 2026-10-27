@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "identifier": "com.tyree.redline",
   "build": {
-    "beforeDevCommand": "pnpm dev",
+    "beforeDevCommand": "pnpm fetch:model && pnpm dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "pnpm build",
+    "beforeBuildCommand": "pnpm fetch:model && pnpm build",
     "frontendDist": "../dist"
   },
   "app": {

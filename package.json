@@ -30,6 +30,7 @@
     "benchmark:transform": "cargo test --release --manifest-path src-tauri/Cargo.toml benchmark_transform_corpus -- --ignored --nocapture --test-threads=1",
     "benchmark:humanizer": "cargo test --release --manifest-path src-tauri/Cargo.toml benchmark_humanizer_corpus -- --ignored --nocapture --test-threads=1",
     "package:transform-model": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package-transform-model.ps1",
+    "fetch:model": "node scripts/fetch-whisper-model.mjs",
     "notices": "node scripts/generate-third-party-notices.mjs",
     "test:persistence": "cargo test --manifest-path src-tauri/Cargo.toml",
     "typecheck": "tsc --noEmit",

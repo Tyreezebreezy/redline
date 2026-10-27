@@ -40,7 +40,7 @@ Tauri 2, React, TypeScript and Tiptap on the front end, with Rust owning SQLite 
 - **In development, not in `main`:** a 1.1 candidate with live dictation and a UI modernization. Until it passes the release checks in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md), treat live dictation as unfinished.
 - **Windows 10/11 x64 only**, with the Microsoft Edge WebView2 Runtime. The installer is unsigned and private-use, so SmartScreen may warn.
 - **Known gaps:** Writing Context rendered QA is still a manual follow-up (see the CHANGELOG). `pnpm check` does not pass from a clean clone of `main` right now. When I ran the scripts individually, `test:foundation`, `test:editor`, `test:dictation`, `test:humanizer`, `test:axiom`, `test:terminology`, `test:grammar-corpus` and `test:clarity` passed and `tsc --noEmit` is clean. `test:transform` fails because the check script expects three Transform modes while the source has more, and `test:lexicon` fails because it needs a local Open English WordNet reference dataset (`probes/axiom-reference/oewn`) that isn't in the repository. `biome check` also reports import-ordering and formatting complaints. I haven't fixed any of these yet.
-- **Large file (Git LFS):** the bundled dictation model is `ggml-base.en.bin`, OpenAI's Whisper `base.en` converted by whisper.cpp (about 141 MiB, SHA-256 `a03779c8...c6d002`). Both the model and whisper.cpp are MIT licensed. It's stored with Git LFS, so install Git LFS before cloning. GitHub gives free accounts a small LFS bandwidth allowance, so if a clone fails with an LFS quota error, clone with `GIT_LFS_SKIP_SMUDGE=1` and download `ggml-base.en.bin` from the [whisper.cpp model repo](https://huggingface.co/ggerganov/whisper.cpp) into `src-tauri/resources/models/`. `pnpm tauri build` expects the file there, and the app verifies its hash before using it.
+- **Whisper model (downloaded, not in Git):** the bundled dictation model is `ggml-base.en.bin`, OpenAI's Whisper `base.en` converted by whisper.cpp (about 141 MiB, SHA-256 `a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002`). Both the model and whisper.cpp are MIT licensed. The file is not stored in this repository; `pnpm fetch:model` downloads it, verifies the hash and puts it in `src-tauri/resources/models/`. See "Run it from source" below.
 - **License:** the source is publicly viewable, but I haven't granted an open-source license, so all rights are reserved for now. Third-party components are listed in `src-tauri/resources/THIRD_PARTY_NOTICES.txt`.
 
 ## Run it from source
@@ -49,11 +49,16 @@ You need Node.js 20.19+ or 22.12+ with Corepack-managed pnpm 11.16.0, a stable R
 
 ```powershell
 pnpm install
+pnpm fetch:model    # download + verify the Whisper model (needed once)
 pnpm dev            # Vite front end only
 pnpm tauri dev      # Windows desktop app
 pnpm check          # typecheck, Biome, and the project's check scripts
 pnpm tauri build    # production NSIS installer
 ```
+
+**The Whisper model is not in Git.** `pnpm fetch:model` downloads `ggml-base.en.bin` (147,964,211 bytes) to a temporary file, checks its SHA-256 (`a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002`), and only then moves it to `src-tauri/resources/models/ggml-base.en.bin`. If a verified copy is already there it does nothing. `pnpm tauri dev` and `pnpm tauri build` run it automatically before the frontend step, but **a direct `cargo test` does not**, so run `pnpm fetch:model` first if you run the Rust tests yourself (they and the Tauri build need the file to exist).
+
+Primary source: the [`model-assets-v1` release](https://github.com/Tyreezebreezy/redline/releases/tag/model-assets-v1) on this repository. Fallback: the [whisper.cpp model repo on Hugging Face](https://huggingface.co/ggerganov/whisper.cpp). To do it by hand, download `ggml-base.en.bin` from either place into `src-tauri/resources/models/` and check that its SHA-256 matches.
 
 The local dictation model ships with the installer. The Transform / My Voice model is a separate optional package (`pnpm package:transform-model`) and Transform stays disabled until its verified model is installed.
 

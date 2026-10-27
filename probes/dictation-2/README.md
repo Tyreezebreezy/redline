@@ -31,7 +31,9 @@ src-tauri/target/redline-1.0-research/model/sherpa-onnx-streaming-zipformer-en-2
 ```
 
 The official model is published with the sherpa-onnx 1.13.8 examples/releases.
-Keep model binaries and generated reports outside Git. Verify every file hash
+Keep model binaries and generated reports outside Git (`pnpm fetch:model` from
+the repository root downloads and verifies `ggml-base.en.bin`; it is gitignored).
+Verify every file hash
 before use. The sherpa Rust build helper acquires its native shared runtime at
 build time; a production integration would require a separately reviewed,
 hash-pinned offline DLL packaging path.
